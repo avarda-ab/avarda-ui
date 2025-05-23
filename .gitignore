@@ -1,0 +1,23 @@
+# Desktop Services Store on macOS
+.DS_Store
+
+# Editors
+.idea
+.vscode/
+
+# Distribution
+/build/
+/storybook-static/
+
+# Dependency directories
+node_modules/
+/elm-stuff/
+/tests/elm-stuff/
+/review/elm-stuff/
+
+
+# elm-coverage
+/.coverage/
+
+# Project
+.env.local
