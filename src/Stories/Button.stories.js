@@ -2,7 +2,7 @@ import { Elm } from "./Button.elm";
 
 export default {
   title: "Button",
-  argTypes: { label: { control: "text" } },
+  argTypes: { label: { control: "text" }, disabled: { control: "boolean" } },
 };
 
 export const Button = (controls) => {

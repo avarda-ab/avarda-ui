@@ -1,8 +1,9 @@
 module Ui.Button exposing (view)
 
-import Html exposing (Html)
+import Html.Styled as Html exposing (Html)
+import Html.Styled.Attributes as Attributes
 
 
-view : String -> Html msg
-view label =
-    Html.button [] [ Html.text label ]
+view : String -> Bool -> Html msg
+view label isDisabled =
+    Html.button [ Attributes.disabled isDisabled ] [ Html.text label ]
