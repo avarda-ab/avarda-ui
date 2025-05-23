@@ -21,9 +21,8 @@ type alias ControlsModel controls =
 
 decodeControlWithFallback : ControlsPayload -> (String -> a) -> Decode.Decoder a
 decodeControlWithFallback { field, fallback } controls =
-    Decode.map (Maybe.withDefault fallback)
-        (Decode.maybe (Decode.field field Decode.string))
-        |> Decode.map controls
+    Decode.maybe (Decode.field field Decode.string)
+        |> Decode.map (Maybe.withDefault fallback >> controls)
 
 
 decodeControls : ControlsFlags -> ControlsPayload -> (String -> a) -> a

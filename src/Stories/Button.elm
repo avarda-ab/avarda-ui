@@ -6,10 +6,6 @@ import Ui.Button
 import Util.ControlsHelper exposing (ControlsFlags, ControlsModel, LabelControls, decodeControls)
 
 
-
--- Define your controls with defaults
-
-
 type Msg
     = UserClickedButton
 
