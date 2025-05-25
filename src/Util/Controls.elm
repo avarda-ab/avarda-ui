@@ -1,4 +1,4 @@
-module Util.ControlsHelper exposing (ControlsFlags, ControlsModel, decodeBoolControl, decodeControls, decodeStringControl)
+module Util.Controls exposing (ControlsFlags, ControlsModel, decodeBoolControl, decodeControls, decodeStringControl)
 
 import Json.Decode as Decode
 import Json.Decode.Pipeline as Pipeline
