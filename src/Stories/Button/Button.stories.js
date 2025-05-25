@@ -20,7 +20,7 @@ export default {
     },
   },
   args: {
-    label: "Click me!",
+    label: "Click me",
     disabled: false,
     showIconLeft: false,
     showIconRight: false,

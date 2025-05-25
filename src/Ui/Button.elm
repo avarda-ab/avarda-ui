@@ -1,6 +1,7 @@
 module Ui.Button exposing (newPrimary, newSecondary, view, withBaseStyles, withHoverStyles, withIsDisabled, withLeftChild, withMsgTypeLink, withMsgTypeOnClick, withMsgTypeSubmit, withRightChild, withSizeSmall, withSizeXSmall)
 
 import Css
+import Css.Global
 import Html.Styled as Html exposing (Attribute, Html)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
@@ -47,8 +48,8 @@ type Button msgTypeState msg
         , styleVariant : Variant
         , leftChild : Maybe (Html msg)
         , rightChild : Maybe (Html msg)
-        , baseStyles : List Css.Style
-        , hoverStyles : List Css.Style
+        , additionalBaseStyles : List Css.Style
+        , additionalHoverStyles : List Css.Style
         , msgType : MsgType msg
         }
 
@@ -66,8 +67,8 @@ initSettings styleVariant { label } =
         , styleVariant = styleVariant
         , leftChild = Nothing
         , rightChild = Nothing
-        , baseStyles = []
-        , hoverStyles = []
+        , additionalBaseStyles = []
+        , additionalHoverStyles = []
         , msgType = Submit
         }
 
@@ -106,6 +107,10 @@ withSizeSmall (Settings model) =
     Settings { model | size = Small }
 
 
+
+-- TODO: When using withSizeXSmall, dont allow children
+
+
 withSizeXSmall : Button msgTypeState msg -> Button msgTypeState msg
 withSizeXSmall (Settings model) =
     Settings { model | size = XSmall }
@@ -113,12 +118,12 @@ withSizeXSmall (Settings model) =
 
 withBaseStyles : List Css.Style -> Button msgTypeState msg -> Button msgTypeState msg
 withBaseStyles styles (Settings model) =
-    Settings { model | baseStyles = styles }
+    Settings { model | additionalBaseStyles = styles }
 
 
 withHoverStyles : List Css.Style -> Button msgTypeState msg -> Button msgTypeState msg
 withHoverStyles styles (Settings model) =
-    Settings { model | hoverStyles = styles }
+    Settings { model | additionalHoverStyles = styles }
 
 
 withMsgTypeLink : { link : String, attributes : List (Attribute msg) } -> Button MsgTypeUnset msg -> Button MsgTypeSet msg
@@ -137,23 +142,59 @@ withMsgTypeSubmit (Settings model) =
 
 
 view : Button MsgTypeSet msg -> Html msg
-view (Settings { label, isDisabled, leftChild, rightChild, hoverStyles, baseStyles, size, styleVariant, msgType }) =
+view (Settings { label, isDisabled, leftChild, rightChild, additionalHoverStyles, additionalBaseStyles, size, styleVariant, msgType }) =
     let
+        className =
+            "avd-button"
+
         styles =
             baseButtonStyles
-                ++ stylesBasedOnSize size
-                ++ stylesBasedOnVariant styleVariant
-                ++ baseStyles
-                ++ hoverStyles
+                ++ stylesBasedOnSizeAndVariant size styleVariant
+                ++ additionalBaseStyles
+                ++ additionalHoverStyles
+
+        iconHeightGlobalStyle =
+            Css.Global.global
+                [ Css.Global.class className
+                    [ Css.Global.descendants [ Css.Global.svg [ iconHeightBasedOnSize size ] ]
+                    ]
+                ]
     in
     msgTypeToElement msgType
-        ([ Attributes.css styles, Attributes.disabled isDisabled ] ++ msgTypeToAttributes msgType)
-        [ iconView leftChild, Html.text label, iconView rightChild ]
+        ([ Attributes.css styles, Attributes.disabled isDisabled, Attributes.class className ] ++ msgTypeToAttributes msgType)
+        [ iconView leftChild
+        , Html.text label
+        , iconView rightChild
+        , iconHeightGlobalStyle
+        ]
 
 
 iconView : Maybe (Html msg) -> Html msg
 iconView =
     Maybe.map identity >> Maybe.withDefault (Html.text "")
+
+
+
+-- TODO: This will / would require us to set only height in icons and compute the width automatically
+-- NOTE: Achievable if using builder pattern with Svgs
+
+
+iconHeightBasedOnSize : Size -> Css.Style
+iconHeightBasedOnSize size =
+    let
+        heightStyle =
+            Css.height << Css.px
+    in
+    case size of
+        Default ->
+            heightStyle 24
+
+        Small ->
+            heightStyle 20
+
+        -- NOTE: By design, XSmall buttons shouldn't have an option to display icons
+        XSmall ->
+            heightStyle 0
 
 
 
@@ -175,60 +216,77 @@ baseButtonStyles =
     ]
 
 
-stylesBasedOnSize : Size -> List Css.Style
-stylesBasedOnSize size =
-    case size of
-        Default ->
-            [ Css.property "gap" "8px"
-            , Css.padding2 (Css.px 12) (Css.px 20)
-            , Css.fontSize (Css.px 16)
-            , Css.letterSpacing (Css.px -0.272)
-            , Css.lineHeight (Css.px 20)
-            ]
+stylesBasedOnSizeAndVariant : Size -> Variant -> List Css.Style
+stylesBasedOnSizeAndVariant size variant =
+    let
+        secondaryButtonBorderWidth =
+            2
 
-        Small ->
-            [ Css.property "gap" "4px"
-            , Css.padding2 (Css.px 8) (Css.px 16)
-            , Css.fontSize (Css.px 14)
-            , Css.letterSpacing (Css.px -0.28)
-            , Css.lineHeight (Css.px 18)
-            ]
+        -- Reason behind this is that secondary button was bigger in size because of its border
+        -- box-sizing: border-box didn't do anything so i went with this solution for now
+        padding2_ p1 p2 =
+            if variant == Secondary then
+                Css.padding2 (Css.px <| p1 - secondaryButtonBorderWidth) (Css.px <| p2 - secondaryButtonBorderWidth)
 
-        XSmall ->
-            [ Css.padding2 (Css.px 4) (Css.px 12)
-            , Css.fontSize (Css.px 14)
-            , Css.letterSpacing (Css.px -0.28)
-            , Css.lineHeight (Css.px 18)
-            ]
+            else
+                Css.padding2 (Css.px p1) (Css.px p2)
 
+        -- TODO: Extract values to Colors/Theme file
+        variantStyles =
+            case variant of
+                Primary ->
+                    [ Css.backgroundColor (Css.hex "#000000")
+                    , Css.color (Css.hex "#FFFFFF")
+                    , Css.hover [ Css.backgroundColor (Css.hex "#141414") ]
+                    , Css.active [ Css.backgroundColor (Css.hex "#262626") ]
+                    , Css.disabled
+                        [ Css.backgroundColor (Css.hex "#CCCCCC")
+                        , Css.color (Css.hex "#767676")
+                        , Css.cursor Css.notAllowed
+                        ]
+                    ]
 
-stylesBasedOnVariant : Variant -> List Css.Style
-stylesBasedOnVariant variant =
-    case variant of
-        Primary ->
-            [ Css.backgroundColor (Css.hex "#000000")
-            , Css.color (Css.hex "#FFFFFF")
-            , Css.hover [ Css.backgroundColor (Css.hex "#141414") ]
-            , Css.active [ Css.backgroundColor (Css.hex "#262626") ]
-            , Css.disabled
-                [ Css.backgroundColor (Css.hex "#CCCCCC")
-                , Css.color (Css.hex "#767676")
-                , Css.cursor Css.notAllowed
-                ]
-            ]
+                Secondary ->
+                    [ Css.backgroundColor (Css.hex "#00000000")
+                    , Css.color (Css.hex "#000000")
+                    , Css.borderStyle Css.solid
+                    , Css.borderColor (Css.hex "#000000")
+                    , Css.borderWidth (Css.px secondaryButtonBorderWidth)
+                    , Css.hover [ Css.borderColor (Css.hex "#141414") ]
+                    , Css.active [ Css.borderColor (Css.hex "#262626") ]
+                    , Css.disabled
+                        [ Css.borderColor (Css.hex "#CCCCCC")
+                        , Css.color (Css.hex "#767676")
+                        , Css.cursor Css.notAllowed
+                        ]
+                    ]
 
-        Secondary ->
-            [ Css.backgroundColor (Css.hex "#00000000")
-            , Css.color (Css.hex "#000000")
-            , Css.property "border" "2px solid #000000"
-            , Css.hover [ Css.borderColor (Css.hex "#141414") ]
-            , Css.active [ Css.borderColor (Css.hex "#262626") ]
-            , Css.disabled
-                [ Css.borderColor (Css.hex "#CCCCCC")
-                , Css.color (Css.hex "#767676")
-                , Css.cursor Css.notAllowed
-                ]
-            ]
+        sizeStyles =
+            case size of
+                Default ->
+                    [ Css.property "gap" "8px"
+                    , padding2_ 12 20
+                    , Css.fontSize (Css.px 16)
+                    , Css.letterSpacing (Css.px -0.272)
+                    , Css.lineHeight (Css.px 20)
+                    ]
+
+                Small ->
+                    [ Css.property "gap" "6px"
+                    , padding2_ 10 16
+                    , Css.fontSize (Css.px 14)
+                    , Css.letterSpacing (Css.px -0.28)
+                    , Css.lineHeight (Css.px 18)
+                    ]
+
+                XSmall ->
+                    [ padding2_ 7 12
+                    , Css.fontSize (Css.px 14)
+                    , Css.letterSpacing (Css.px -0.28)
+                    , Css.lineHeight (Css.px 18)
+                    ]
+    in
+    variantStyles ++ sizeStyles
 
 
 

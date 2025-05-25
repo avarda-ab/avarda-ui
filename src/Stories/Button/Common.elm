@@ -17,6 +17,10 @@ type alias Controls =
     }
 
 
+
+-- NOTE: Currently always overwritten by Button.stories.js (args property)
+
+
 defaultControls : Controls
 defaultControls =
     { label = "Click me"
@@ -25,6 +29,11 @@ defaultControls =
     , showIconRight = False
     , size = "medium"
     }
+
+
+
+-- TODO: Discuss if it wouldn't be easier to do Pipeline.required since defaults will come from JS anyways, if setup correctly
+-- I would go with that since these defaultControls are a bit misleading since they will always be overwritten
 
 
 decoder : Decode.Decoder Controls

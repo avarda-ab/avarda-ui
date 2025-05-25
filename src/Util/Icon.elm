@@ -8,8 +8,7 @@ import Svg.Styled.Attributes as SvgAttributes
 mockIconView : Html msg
 mockIconView =
     Svg.svg
-        [ SvgAttributes.width "24"
-        , SvgAttributes.height "24"
+        [ SvgAttributes.height "24"
         , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
