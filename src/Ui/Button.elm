@@ -150,6 +150,7 @@ view (Settings { label, isDisabled, leftChild, rightChild, additionalHoverStyles
         styles =
             baseButtonStyles
                 ++ stylesBasedOnSizeAndVariant size styleVariant
+                ++ stylesBasedOnMsgType msgType
                 ++ additionalBaseStyles
                 ++ additionalHoverStyles
 
@@ -289,6 +290,19 @@ stylesBasedOnSizeAndVariant size variant =
     variantStyles ++ sizeStyles
 
 
+stylesBasedOnMsgType : MsgType msg -> List Css.Style
+stylesBasedOnMsgType msgType =
+    case msgType of
+        OnClick _ ->
+            []
+
+        Submit ->
+            []
+
+        Link _ _ ->
+            [ Css.textDecoration Css.none, Css.textAlign Css.center ]
+
+
 
 -- Helpers
 
@@ -319,10 +333,4 @@ msgTypeToAttributes msgType =
 
         -- TODO: Should we be able to disable Link?
         Link url additionalAttributes ->
-            [ Attributes.href url
-            , Attributes.css
-                [ Css.textDecoration Css.none
-                , Css.textAlign Css.center
-                ]
-            ]
-                ++ additionalAttributes
+            Attributes.href url :: additionalAttributes

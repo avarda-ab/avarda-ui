@@ -10,11 +10,30 @@ export const Secondary = (controls) =>
 
 export default {
   argTypes: {
-    label: { control: "text" },
-    disabled: { control: "boolean" },
-    showIconLeft: { control: "boolean" },
-    showIconRight: { control: "boolean" },
+    label: {
+      type: { required: true },
+      name: "Button label",
+      control: "text",
+    },
+    disabled: {
+      defaultValue: { summary: "false" },
+      name: "Disabled",
+      control: "boolean",
+    },
+    showIconLeft: {
+      defaultValue: { summary: "false" },
+      name: "Show icon left",
+      control: "boolean",
+    },
+    showIconRight: {
+      defaultValue: { summary: "false" },
+      name: "Show icon right",
+      control: "boolean",
+    },
     size: {
+      defaultValue: { summary: "medium" },
+      type: { name: "medium | small | xsmall" },
+      name: "Size",
       control: { type: "select" },
       options: ["medium", "small", "xsmall"],
     },
