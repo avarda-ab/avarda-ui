@@ -1,12 +1,16 @@
 import { createElmStory } from "../../../.storybook/util";
 import { Elm as PrimaryElm } from "./Primary.elm";
 import { Elm as SecondaryElm } from "./Secondary.elm";
+import { Elm as TertiaryElm } from "./Tertiary.elm";
 
 export const Primary = (controls) =>
   createElmStory(PrimaryElm.Stories.Button.Primary, controls);
 
 export const Secondary = (controls) =>
   createElmStory(SecondaryElm.Stories.Button.Secondary, controls);
+
+export const Tertiary = (controls) =>
+  createElmStory(TertiaryElm.Stories.Button.Tertiary, controls);
 
 export default {
   argTypes: {

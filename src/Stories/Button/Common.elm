@@ -49,6 +49,7 @@ decoder =
 type Variant
     = Primary
     | Secondary
+    | Tertiary
 
 
 view : Variant -> Controls -> Html msg
@@ -61,6 +62,9 @@ view variant { label, isDisabled, showIconLeft, showIconRight, size } =
 
                 Secondary ->
                     Ui.Button.newSecondary { label = label }
+
+                Tertiary ->
+                    Ui.Button.newTertiary { label = label }
 
         sizeBuilder =
             case size of

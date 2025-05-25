@@ -1,4 +1,4 @@
-module Ui.Button exposing (newPrimary, newSecondary, view, withBaseStyles, withHoverStyles, withIsDisabled, withLeftChild, withMsgTypeLink, withMsgTypeOnClick, withMsgTypeSubmit, withRightChild, withSizeSmall, withSizeXSmall)
+module Ui.Button exposing (newPrimary, newSecondary, newTertiary, view, withBaseStyles, withHoverStyles, withIsDisabled, withLeftChild, withMsgTypeLink, withMsgTypeOnClick, withMsgTypeSubmit, withRightChild, withSizeSmall, withSizeXSmall)
 
 import Css
 import Css.Global
@@ -31,13 +31,10 @@ type Size
     | XSmall
 
 
-
--- TODO: Button Tertiary?
-
-
 type Variant
     = Primary
     | Secondary
+    | Tertiary
 
 
 type Button msgTypeState msg
@@ -85,6 +82,11 @@ newPrimary =
 newSecondary : InitSettings -> Button MsgTypeUnset msg
 newSecondary =
     initSettings Secondary
+
+
+newTertiary : InitSettings -> Button MsgTypeUnset msg
+newTertiary =
+    initSettings Tertiary
 
 
 withIsDisabled : Bool -> Button msgTypeState msg -> Button msgTypeState msg
@@ -213,7 +215,6 @@ baseButtonStyles =
     , Css.display Css.inlineFlex
     , Css.borderRadius (Css.px 200)
     , Css.padding (Css.px 0)
-    , Css.borderWidth Css.zero
     ]
 
 
@@ -237,6 +238,7 @@ stylesBasedOnSizeAndVariant size variant =
             case variant of
                 Primary ->
                     [ Css.backgroundColor (Css.hex "#000000")
+                    , Css.borderWidth Css.zero
                     , Css.color (Css.hex "#FFFFFF")
                     , Css.hover [ Css.backgroundColor (Css.hex "#141414") ]
                     , Css.active [ Css.backgroundColor (Css.hex "#262626") ]
@@ -257,6 +259,19 @@ stylesBasedOnSizeAndVariant size variant =
                     , Css.active [ Css.borderColor (Css.hex "#262626") ]
                     , Css.disabled
                         [ Css.borderColor (Css.hex "#CCCCCC")
+                        , Css.color (Css.hex "#767676")
+                        , Css.cursor Css.notAllowed
+                        ]
+                    ]
+
+                Tertiary ->
+                    [ Css.backgroundColor (Css.hex "#00000000")
+                    , Css.color (Css.hex "#000000")
+                    , Css.borderWidth Css.zero
+                    , Css.hover [ Css.backgroundColor (Css.hex "#F2F2F2") ]
+                    , Css.active [ Css.backgroundColor (Css.hex "#00000000") ]
+                    , Css.disabled
+                        [ Css.backgroundColor (Css.hex "#00000000")
                         , Css.color (Css.hex "#767676")
                         , Css.cursor Css.notAllowed
                         ]
