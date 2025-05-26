@@ -18,7 +18,7 @@ type alias Controls =
 
 
 
--- NOTE: Currently always overwritten by Button.stories.js (args property)
+-- NOTE: Currently always overwritten by Button.stories.js (args property) unless decoder fails
 
 
 defaultControls : Controls
@@ -31,19 +31,14 @@ defaultControls =
     }
 
 
-
--- TODO: Discuss if it wouldn't be easier to do Pipeline.required since defaults will come from JS anyways, if setup correctly
--- I would go with that since these defaultControls are a bit misleading since they will always be overwritten
-
-
 decoder : Decode.Decoder Controls
 decoder =
     Decode.succeed Controls
-        |> decodeStringControl { field = "label", fallback = defaultControls.label }
-        |> decodeBoolControl { field = "disabled", fallback = defaultControls.isDisabled }
-        |> decodeBoolControl { field = "showIconLeft", fallback = defaultControls.showIconLeft }
-        |> decodeBoolControl { field = "showIconRight", fallback = defaultControls.showIconRight }
-        |> decodeStringControl { field = "size", fallback = defaultControls.size }
+        |> decodeStringControl "label"
+        |> decodeBoolControl "disabled"
+        |> decodeBoolControl "showIconLeft"
+        |> decodeBoolControl "showIconRight"
+        |> decodeStringControl "size"
 
 
 type Variant

@@ -8,22 +8,21 @@ type alias ControlsFlags =
     Decode.Value
 
 
-decodeStringControl : StringControlsPayload -> Decode.Decoder (String -> b) -> Decode.Decoder b
-decodeStringControl { field, fallback } =
-    Pipeline.optional field Decode.string fallback
+decodeStringControl : String -> Decode.Decoder (String -> b) -> Decode.Decoder b
+decodeStringControl field =
+    Pipeline.required field Decode.string
 
 
-decodeBoolControl : BoolControlsPayload -> Decode.Decoder (Bool -> b) -> Decode.Decoder b
-decodeBoolControl { field, fallback } =
-    Pipeline.optional field Decode.bool fallback
+decodeBoolControl : String -> Decode.Decoder (Bool -> b) -> Decode.Decoder b
+decodeBoolControl field =
+    Pipeline.required field Decode.bool
 
 
-type alias StringControlsPayload =
-    { field : String, fallback : String }
 
-
-type alias BoolControlsPayload =
-    { field : String, fallback : Bool }
+-- type alias MaybeStringControlsPayload =
+--     { field : String, fallback : String }
+-- type alias MaybeBoolControlsPayload =
+--     { field : String, fallback : Bool }
 
 
 type alias ControlsModel controls =
