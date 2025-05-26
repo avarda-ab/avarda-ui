@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "storybook dev -p 6006",
@@ -23,7 +24,7 @@
     "elm": "0.19.1-6",
     "elm-format": "^0.8.7",
     "storybook": "^8.6.14",
-    "vite": "^6.3.5",
+    "vite": "^5",
     "vite-plugin-elm": "^3.0.1"
   }
 }

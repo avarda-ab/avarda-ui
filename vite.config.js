@@ -1,7 +1,17 @@
 import { defineConfig } from "vite";
-import { plugin } from "vite-plugin-elm";
+import plugin from "vite-plugin-elm";
 
-export default defineConfig({
-  plugins: [plugin({ debug: false })],
-  root: ".",
+export default defineConfig(({ mode }) => {
+  const [debug, optimize] = mode === "dev" ? [true, false] : [false, true];
+  return {
+    plugins: [
+      plugin({
+        nodeElmCompilerOptions: {
+          debug,
+          optimize,
+        },
+      }),
+    ],
+    root: ".",
+  };
 });
