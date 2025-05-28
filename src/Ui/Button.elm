@@ -174,6 +174,7 @@ view (Settings { label, isDisabled, leftChild, rightChild, additionalHoverStyles
 
 iconView : Maybe (Html msg) -> Html msg
 iconView =
+    -- TODO: If size == XSmall then (Html.text "")
     Maybe.map identity >> Maybe.withDefault (Html.text "")
 
 

@@ -7,8 +7,8 @@ export default defineConfig(({ mode }) => {
     plugins: [
       plugin({
         nodeElmCompilerOptions: {
-          debug,
-          optimize,
+          debug: true,
+          optimize: false,
         },
       }),
     ],
