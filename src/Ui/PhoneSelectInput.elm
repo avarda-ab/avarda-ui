@@ -212,7 +212,7 @@ view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, may
                 |> Select.withIsDisabled isDisabled
                 |> Select.withAriaLabel selectAriaLabel
                 |> Select.withAdditionalWrapperStyles [ Css.borderStyle Css.none, Css.padding Css.zero ]
-                |> Select.withWrapperPosition (Css.position Css.static)
+                |> Select.withContainerPosition Css.static
                 |> Select.withCustomOptionViewFn optionView
                 |> Select.withCustomSelectedOptionViewFn (selectedOptionView selectModel isDisabled)
                 |> Select.setOptions countryCodeList

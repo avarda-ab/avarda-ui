@@ -1,4 +1,4 @@
-module Ui.Select exposing (Model, Msg, init, new, onSelectCallback, setOptions, setSelectedOption, update, updateWithCallbacks, view, withAdditionalWrapperStyles, withAriaLabel, withBorderRadius, withCustomOptionViewFn, withCustomSelectedOptionViewFn, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withPlaceholder, withTopPx, withWrapperPosition)
+module Ui.Select exposing (Model, Msg, init, new, onSelectCallback, setOptions, setSelectedOption, update, updateWithCallbacks, view, withAdditionalWrapperStyles, withAriaLabel, withBorderRadius, withContainerPosition, withCustomOptionViewFn, withCustomSelectedOptionViewFn, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withPlaceholder, withTopPx)
 
 import Css
 import Css.Global
@@ -64,7 +64,7 @@ type Select a msg
         , borderRadius : Float
         , topPx : Float
         , additionalWrapperStyles : List Css.Style
-        , wrapperPosition : Css.Style
+        , containerPosition : Css.Position {}
         , ariaLabel : Maybe String
         }
 
@@ -76,7 +76,7 @@ new { selectModel, label, optionToString } =
             8
 
         defaultTopPx =
-            78
+            76
     in
     Settings
         { selectModel = selectModel
@@ -93,7 +93,7 @@ new { selectModel, label, optionToString } =
         , optionViewFn = Nothing
         , selectedOptionViewFn = Nothing
         , additionalWrapperStyles = []
-        , wrapperPosition = Css.position Css.relative
+        , containerPosition = Css.relative
         , ariaLabel = Nothing
         }
 
@@ -143,9 +143,9 @@ withAdditionalWrapperStyles additionalWrapperStyles (Settings model) =
     Settings { model | additionalWrapperStyles = additionalWrapperStyles }
 
 
-withWrapperPosition : Css.Style -> Select a msg -> Select a msg
-withWrapperPosition positionStyle (Settings model) =
-    Settings { model | wrapperPosition = positionStyle }
+withContainerPosition : Css.Position {} -> Select a msg -> Select a msg
+withContainerPosition position (Settings model) =
+    Settings { model | containerPosition = position }
 
 
 withPlaceholder : String -> Select a msg -> Select a msg
@@ -164,7 +164,7 @@ setOptions optionList (Settings ({ optionToString } as model)) =
 
 
 view : (Msg a -> msg) -> Select a msg -> Html msg
-view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadius, selectedOptionViewFn, optionToString, additionalWrapperStyles, wrapperPosition, placeholder, isRequired, ariaLabel, maybeError }) as viewModel) =
+view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadius, selectedOptionViewFn, optionToString, additionalWrapperStyles, containerPosition, placeholder, isRequired, ariaLabel, maybeError }) as viewModel) =
     let
         isInvalid =
             maybeError /= Nothing
@@ -219,7 +219,7 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
             , Css.fontSize (Css.px 16)
             , Css.lineHeight (Css.px 12)
             , Css.property "gap" "4px"
-            , wrapperPosition
+            , Css.position containerPosition
             ]
         ]
         [ maybeLabelView
