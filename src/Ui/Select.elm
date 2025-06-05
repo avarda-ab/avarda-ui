@@ -59,7 +59,7 @@ type Select a msg
         , maybeMaxHeight : Maybe Int
         , isRequired : Bool
         , isDisabled : Bool
-        , placeholder : String
+        , placeholder : Maybe String
         , label : String
         , borderRadius : Float
         , topPx : Float
@@ -85,7 +85,7 @@ new { selectModel, label, optionToString } =
         , isRequired = False
         , isDisabled = False
         , optionList = []
-        , placeholder = ""
+        , placeholder = Nothing
         , label = label
         , borderRadius = defaultBorderRadius
         , optionToString = optionToString
@@ -150,7 +150,7 @@ withContainerPosition position (Settings model) =
 
 withPlaceholder : String -> Select a msg -> Select a msg
 withPlaceholder placeholder (Settings model) =
-    Settings { model | placeholder = placeholder }
+    Settings { model | placeholder = Just placeholder }
 
 
 withAriaLabel : String -> Select a msg -> Select a msg
@@ -195,7 +195,7 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
                     (\selectedOption ->
                         selectedOptionViewFn
                             |> Maybe.map (\fn -> fn selectedOption)
-                            |> Maybe.withDefault (defaultSelectedOptionView selectModel (optionToString selectedOption))
+                            |> Maybe.withDefault (defaultSelectedOptionView selectModel <| Just (optionToString selectedOption))
                     )
                 |> Maybe.withDefault (defaultSelectedOptionView selectModel placeholder)
 
@@ -249,8 +249,8 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
                 ++ attributesBasedOnIsDisabled
             )
             [ selectedOptionView ]
-        , errorView maybeError (Model.getErrorId selectModel)
         , optionListView wrapMsg viewModel
+        , errorView maybeError (Model.getErrorId selectModel)
         ]
 
 
@@ -268,10 +268,19 @@ errorView maybeError id =
             Html.text ""
 
 
-defaultSelectedOptionView : Model a -> String -> Html msg
-defaultSelectedOptionView selectModel option =
-    Html.div [ Attributes.css [ Css.displayFlex, Css.alignItems Css.center, Css.width (Css.pct 100), Css.justifyContent Css.spaceBetween ] ]
-        [ Html.text option
+defaultSelectedOptionView : Model a -> Maybe String -> Html msg
+defaultSelectedOptionView selectModel maybeOption =
+    let
+        ( maybeOptionView, justifyContentStyle ) =
+            case maybeOption of
+                Just option ->
+                    ( Html.text option, Css.justifyContent Css.spaceBetween )
+
+                Nothing ->
+                    ( Html.text "", Css.justifyContent Css.flexEnd )
+    in
+    Html.div [ Attributes.css [ Css.displayFlex, Css.alignItems Css.center, Css.width (Css.pct 100), justifyContentStyle ] ]
+        [ maybeOptionView
         , if Model.getIsOpen selectModel then
             Icon.arrowUp
 

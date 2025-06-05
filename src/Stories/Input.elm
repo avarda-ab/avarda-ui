@@ -4,13 +4,57 @@ import Browser
 import Css
 import Html.Styled as Html
 import Html.Styled.Attributes as Attributes
+import Json.Decode as Decode
 import Ui.Input
-import Util.Controls exposing (ControlsFlags)
+import Util.Components exposing (withConditionalBuilder, withMaybeBuilder)
+import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeStringControl, decodeStringControl)
 import Util.Icon exposing (mockIconView)
 
 
+type alias Controls =
+    { label : String
+    , placeholder : Maybe String
+    , hint : Maybe String
+    , error : Maybe String
+    , isRequired : Bool
+    , isDisabled : Bool
+    , showIconLeft : Bool
+    , showIconRight : Bool
+    }
+
+
+
+-- NOTE: Currently always overwritten by Button.stories.js (args property) unless decoder fails
+
+
+defaultControls : Controls
+defaultControls =
+    { label = "Test input"
+    , placeholder = Nothing
+    , hint = Nothing
+    , error = Nothing
+    , isRequired = False
+    , isDisabled = False
+    , showIconLeft = False
+    , showIconRight = False
+    }
+
+
+decoder : Decode.Decoder Controls
+decoder =
+    Decode.succeed Controls
+        |> decodeStringControl "label"
+        |> decodeMaybeStringControl "placeholder"
+        |> decodeMaybeStringControl "hint"
+        |> decodeMaybeStringControl "error"
+        |> decodeBoolControl "required"
+        |> decodeBoolControl "disabled"
+        |> decodeBoolControl "showIconLeft"
+        |> decodeBoolControl "showIconRight"
+
+
 type alias Model =
-    { value : String }
+    ControlsModelExtended Controls { value : String }
 
 
 type Msg
@@ -31,12 +75,22 @@ update msg model =
 main : Program ControlsFlags Model Msg
 main =
     Browser.element
-        { init = \_ -> ( { value = "" }, Cmd.none )
+        { init = \controls -> ( { controls = decodeControls controls decoder defaultControls, value = "" }, Cmd.none )
         , update = \msg model -> update msg model
         , view =
-            \{ value } ->
-                Ui.Input.new "test-input" { value = value, msg = InsertedValue, label = "Test input" }
-                    |> Ui.Input.withLeftChild mockIconView
+            \{ value, controls } ->
+                let
+                    { isDisabled, isRequired, error, hint, label, placeholder, showIconLeft, showIconRight } =
+                        controls
+                in
+                Ui.Input.new "test-input" { value = value, msg = InsertedValue, label = label }
+                    |> Ui.Input.withMaybeError error
+                    |> Ui.Input.withIsDisabled isDisabled
+                    |> withConditionalBuilder (Ui.Input.withLeftChild mockIconView) showIconLeft
+                    |> withConditionalBuilder (Ui.Input.withRightChild mockIconView) showIconRight
+                    |> withConditionalBuilder Ui.Input.withIsRequired isRequired
+                    |> withMaybeBuilder Ui.Input.withPlaceholder placeholder
+                    |> withMaybeBuilder Ui.Input.withHint hint
                     |> Ui.Input.view
                     |> List.singleton
                     |> Html.div [ Attributes.css [ Css.maxWidth (Css.px 300) ] ]

@@ -4,25 +4,61 @@ import Browser
 import Css
 import Html.Styled as Html
 import Html.Styled.Attributes as Attributes
+import Json.Decode as Decode
+import Shared.Data exposing (CountryCode(..))
 import Ui.PhoneSelectInput
-import Util.Controls exposing (ControlsFlags)
+import Util.Components exposing (withConditionalBuilder, withMaybeBuilder)
+import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeIntControl, decodeMaybeStringControl, decodeStringControl)
+
+
+type alias Controls =
+    { label : String
+    , placeholder : Maybe String
+    , hint : Maybe String
+    , error : Maybe String
+    , maxHeight : Maybe Int
+    , isRequired : Bool
+    , isDisabled : Bool
+    }
 
 
 
--- type Value a
---     = Valid a
---     | Invalid a String
+-- NOTE: Currently always overwritten by Button.stories.js (args property) unless decoder fails
+
+
+defaultControls : Controls
+defaultControls =
+    { label = "Test input"
+    , placeholder = Nothing
+    , hint = Nothing
+    , error = Nothing
+    , maxHeight = Nothing
+    , isRequired = False
+    , isDisabled = False
+    }
+
+
+controlsDecoder : Decode.Decoder Controls
+controlsDecoder =
+    Decode.succeed Controls
+        |> decodeStringControl "label"
+        |> decodeMaybeStringControl "placeholder"
+        |> decodeMaybeStringControl "hint"
+        |> decodeMaybeStringControl "error"
+        |> decodeMaybeIntControl "maxHeight"
+        |> decodeBoolControl "required"
+        |> decodeBoolControl "disabled"
 
 
 type Msg
     = HandlePhoneSelectInput Ui.PhoneSelectInput.Msg
-    | OnSelect Ui.PhoneSelectInput.CountryCode
+    | OnSelect CountryCode
     | OnInput String
     | NoOp
 
 
 type alias Model =
-    { phoneSelectInputModel : Ui.PhoneSelectInput.Model }
+    ControlsModelExtended Controls { phoneSelectInputModel : Ui.PhoneSelectInput.Model }
 
 
 update : Model -> Msg -> ( Model, Cmd Msg )
@@ -63,19 +99,30 @@ main : Program ControlsFlags Model Msg
 main =
     Browser.element
         { init =
-            \_ ->
+            \controls ->
                 ( { phoneSelectInputModel =
                         Ui.PhoneSelectInput.init "dialing-code"
-                            |> Ui.PhoneSelectInput.setSelectedOption Ui.PhoneSelectInput.SE
+                            |> Ui.PhoneSelectInput.setSelectedOption SE
+                  , controls = decodeControls controls controlsDecoder defaultControls
                   }
                 , Cmd.none
                 )
         , update = \msg model -> update model msg
         , view =
-            \{ phoneSelectInputModel } ->
+            \{ phoneSelectInputModel, controls } ->
+                let
+                    { error, isDisabled, isRequired, label, maxHeight, placeholder, hint } =
+                        controls
+                in
                 Html.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.maxWidth (Css.px 300) ] ]
-                    [ Ui.PhoneSelectInput.new { inputLabel = "Phone number", selectAriaLabel = "Dialing code", phoneSelectInputModel = phoneSelectInputModel }
-                        |> Ui.PhoneSelectInput.setOptions [ Ui.PhoneSelectInput.SE, Ui.PhoneSelectInput.CZ, Ui.PhoneSelectInput.FI, Ui.PhoneSelectInput.SE, Ui.PhoneSelectInput.NO, Ui.PhoneSelectInput.DK ]
+                    [ Ui.PhoneSelectInput.new { inputLabel = label, selectAriaLabel = "Dialing code", phoneSelectInputModel = phoneSelectInputModel }
+                        |> Ui.PhoneSelectInput.setOptions [ SE, CZ, FI, SE, NO, DK ]
+                        |> Ui.PhoneSelectInput.withIsDisabled isDisabled
+                        |> Ui.PhoneSelectInput.withMaybeError error
+                        |> withConditionalBuilder Ui.PhoneSelectInput.withIsRequired isRequired
+                        |> withMaybeBuilder Ui.PhoneSelectInput.withMenuMaxHeight maxHeight
+                        |> withMaybeBuilder Ui.PhoneSelectInput.withInputPlaceholder placeholder
+                        |> withMaybeBuilder Ui.PhoneSelectInput.withHint hint
                         |> Ui.PhoneSelectInput.view HandlePhoneSelectInput
                     ]
                     |> Html.toUnstyled

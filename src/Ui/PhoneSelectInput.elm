@@ -1,9 +1,10 @@
-module Ui.PhoneSelectInput exposing (CountryCode(..), Model, Msg, countryCodeFromString, init, new, onInputCallback, onSelectCallback, setOptions, setSelectedOption, update, updateWithCallbacks, view, withBorderRadius, withIsDisabled, withIsRequired, withMaxHeight, withMaybeError)
+module Ui.PhoneSelectInput exposing (Model, Msg, init, new, onInputCallback, onSelectCallback, setOptions, setSelectedOption, update, updateWithCallbacks, view, withBorderRadius, withHint, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight)
 
-import Css exposing (maxHeight)
+import Css
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attributes
 import List.Extra
+import Shared.Data as Data exposing (CountryCode(..))
 import Task
 import Ui.Input as Input
 import Ui.Select as Select
@@ -147,8 +148,10 @@ type PhoneSelectInput msg
         , isRequired : Bool
         , isDisabled : Bool
         , inputLabel : String
+        , inputPlaceholder : Maybe String
         , borderRadius : Float
         , selectAriaLabel : String
+        , hint : Maybe String
         }
 
 
@@ -166,13 +169,15 @@ new { inputLabel, selectAriaLabel, phoneSelectInputModel } =
         , isRequired = False
         , isDisabled = False
         , inputLabel = inputLabel
+        , inputPlaceholder = Nothing
         , borderRadius = defaultBorderRadius
         , selectAriaLabel = selectAriaLabel
+        , hint = Nothing
         }
 
 
-withMaxHeight : Int -> PhoneSelectInput msg -> PhoneSelectInput msg
-withMaxHeight maxHeight (Settings model) =
+withMenuMaxHeight : Int -> PhoneSelectInput msg -> PhoneSelectInput msg
+withMenuMaxHeight maxHeight (Settings model) =
     Settings { model | maybeMaxHeight = Just maxHeight }
 
 
@@ -181,9 +186,9 @@ withBorderRadius borderRadius (Settings model) =
     Settings { model | borderRadius = borderRadius }
 
 
-withIsRequired : Bool -> PhoneSelectInput msg -> PhoneSelectInput msg
-withIsRequired isRequired (Settings model) =
-    Settings { model | isRequired = isRequired }
+withIsRequired : PhoneSelectInput msg -> PhoneSelectInput msg
+withIsRequired (Settings model) =
+    Settings { model | isRequired = True }
 
 
 withIsDisabled : Bool -> PhoneSelectInput msg -> PhoneSelectInput msg
@@ -196,19 +201,29 @@ withMaybeError maybeError (Settings model) =
     Settings { model | maybeError = maybeError }
 
 
+withHint : String -> PhoneSelectInput msg -> PhoneSelectInput msg
+withHint hint (Settings model) =
+    Settings { model | hint = Just hint }
+
+
+withInputPlaceholder : String -> PhoneSelectInput msg -> PhoneSelectInput msg
+withInputPlaceholder placeholder (Settings model) =
+    Settings { model | inputPlaceholder = Just placeholder }
+
+
 setOptions : List CountryCode -> PhoneSelectInput msg -> PhoneSelectInput msg
 setOptions countryCodeList (Settings model) =
-    Settings { model | countryCodeList = countryCodeList |> List.Extra.unique |> List.sortBy countryCodeToString }
+    Settings { model | countryCodeList = countryCodeList |> List.Extra.unique |> List.sortBy Data.countryCodeToString }
 
 
 view : (Msg -> msg) -> PhoneSelectInput msg -> Html msg
-view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, maybeError, isRequired, isDisabled, borderRadius, countryCodeList, maybeMaxHeight }) =
+view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, maybeError, isRequired, isDisabled, borderRadius, countryCodeList, maybeMaxHeight, hint, inputPlaceholder }) =
     let
         selectModel =
             getSelectModel phoneSelectInputModel
 
         selectView =
-            Select.new { label = "", selectModel = selectModel, optionToString = countryCodeToString }
+            Select.new { label = "", selectModel = selectModel, optionToString = Data.countryCodeToString }
                 |> Select.withIsDisabled isDisabled
                 |> Select.withAriaLabel selectAriaLabel
                 |> Select.withAdditionalWrapperStyles [ Css.borderStyle Css.none, Css.padding Css.zero ]
@@ -226,6 +241,8 @@ view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, may
         |> Input.withIsDisabled isDisabled
         |> Input.withBorderRadius borderRadius
         |> withConditionalBuilder Input.withIsRequired isRequired
+        |> withMaybeBuilder Input.withHint hint
+        |> withMaybeBuilder Input.withPlaceholder inputPlaceholder
         |> Input.view
         |> Html.map wrapMsg
 
@@ -234,7 +251,7 @@ selectedOptionView : Select.Model CountryCode -> Bool -> CountryCode -> Html msg
 selectedOptionView selectModel isDisabled countryCode =
     let
         dialingCode =
-            countryCodeToNumericalCode countryCode
+            Data.countryCodeToDialingCode countryCode
 
         flag =
             countryCodeToIcon countryCode
@@ -263,7 +280,7 @@ optionView : CountryCode -> Html msg
 optionView countryCode =
     let
         dialingCode =
-            countryCodeToNumericalCode countryCode
+            Data.countryCodeToDialingCode countryCode
 
         flag =
             countryCodeToIcon countryCode
@@ -279,171 +296,6 @@ maybeFlagView maybeFlag =
     maybeFlag
         |> Maybe.map (\flag -> Html.div [ Attributes.css [ Css.padding2 (Css.px 5) (Css.px 3) ] ] [ flag ])
         |> Maybe.withDefault (Html.text "")
-
-
-type CountryCode
-    = SE
-    | FI
-    | NO
-    | DK
-    | PL
-    | EE
-    | LV
-    | SK
-    | CZ
-    | AT
-    | DE
-    | XI
-    | GL
-    | FO
-    | Unknown
-
-
-countryCodeToString : CountryCode -> String
-countryCodeToString code =
-    case code of
-        SE ->
-            "SE"
-
-        FI ->
-            "FI"
-
-        NO ->
-            "NO"
-
-        DK ->
-            "DK"
-
-        PL ->
-            "PL"
-
-        EE ->
-            "EE"
-
-        LV ->
-            "LV"
-
-        SK ->
-            "SK"
-
-        CZ ->
-            "CZ"
-
-        AT ->
-            "AT"
-
-        DE ->
-            "DE"
-
-        XI ->
-            "XI"
-
-        GL ->
-            "GL"
-
-        FO ->
-            "FO"
-
-        Unknown ->
-            ""
-
-
-countryCodeFromString : String -> CountryCode
-countryCodeFromString code =
-    case code of
-        "SE" ->
-            SE
-
-        "FI" ->
-            FI
-
-        "NO" ->
-            NO
-
-        "DK" ->
-            DK
-
-        "PL" ->
-            PL
-
-        "EE" ->
-            EE
-
-        "LV" ->
-            LV
-
-        "SK" ->
-            SK
-
-        "CZ" ->
-            CZ
-
-        "AT" ->
-            AT
-
-        "DE" ->
-            DE
-
-        "XI" ->
-            XI
-
-        "GL" ->
-            GL
-
-        "FO" ->
-            FO
-
-        _ ->
-            Unknown
-
-
-countryCodeToNumericalCode : CountryCode -> String
-countryCodeToNumericalCode code =
-    case code of
-        SE ->
-            "+46"
-
-        FI ->
-            "+358"
-
-        NO ->
-            "+47"
-
-        DK ->
-            "+45"
-
-        PL ->
-            "+48"
-
-        EE ->
-            "+372"
-
-        LV ->
-            "+371"
-
-        SK ->
-            "+421"
-
-        CZ ->
-            "+420"
-
-        AT ->
-            "+43"
-
-        DE ->
-            "+49"
-
-        XI ->
-            ""
-
-        GL ->
-            "+299"
-
-        FO ->
-            "+298"
-
-        Unknown ->
-            ""
 
 
 

@@ -4,8 +4,46 @@ import Browser
 import Css
 import Html.Styled as Html
 import Html.Styled.Attributes as Attributes
+import Json.Decode as Decode
 import Ui.Select
-import Util.Controls exposing (ControlsFlags)
+import Util.Components exposing (withConditionalBuilder, withMaybeBuilder)
+import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeIntControl, decodeMaybeStringControl, decodeStringControl)
+
+
+type alias Controls =
+    { label : String
+    , placeholder : Maybe String
+    , error : Maybe String
+    , maxHeight : Maybe Int
+    , isRequired : Bool
+    , isDisabled : Bool
+    }
+
+
+
+-- NOTE: Currently always overwritten by Button.stories.js (args property) unless decoder fails
+
+
+defaultControls : Controls
+defaultControls =
+    { label = "Test input"
+    , placeholder = Nothing
+    , error = Nothing
+    , maxHeight = Nothing
+    , isRequired = False
+    , isDisabled = False
+    }
+
+
+controlsDecoder : Decode.Decoder Controls
+controlsDecoder =
+    Decode.succeed Controls
+        |> decodeStringControl "label"
+        |> decodeMaybeStringControl "placeholder"
+        |> decodeMaybeStringControl "error"
+        |> decodeMaybeIntControl "maxHeight"
+        |> decodeBoolControl "required"
+        |> decodeBoolControl "disabled"
 
 
 type Option
@@ -38,7 +76,7 @@ type Msg
 
 
 type alias Model =
-    { selectModel : Ui.Select.Model Option }
+    ControlsModelExtended Controls { selectModel : Ui.Select.Model Option }
 
 
 update : Model -> Msg -> ( Model, Cmd Msg )
@@ -69,8 +107,9 @@ main : Program ControlsFlags Model Msg
 main =
     Browser.element
         { init =
-            \_ ->
-                ( { selectModel =
+            \controls ->
+                ( { controls = decodeControls controls controlsDecoder defaultControls
+                  , selectModel =
                         Ui.Select.init "test-options"
 
                   -- |> Ui.Select.setSelectedOption Option1
@@ -79,13 +118,20 @@ main =
                 )
         , update = \msg model -> update model msg
         , view =
-            \{ selectModel } ->
+            \{ selectModel, controls } ->
+                let
+                    { error, isDisabled, isRequired, label, maxHeight, placeholder } =
+                        controls
+                in
                 Html.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.maxWidth (Css.px 300) ] ]
-                    [ Ui.Select.new { label = "Option select", selectModel = selectModel, optionToString = optionToString }
+                    [ Ui.Select.new { label = label, selectModel = selectModel, optionToString = optionToString }
                         |> Ui.Select.setOptions [ Option1, Option2, Option3, Option4 ]
-                        |> Ui.Select.withPlaceholder "Select option"
-                        |> Ui.Select.withIsRequired
+                        |> Ui.Select.withIsDisabled isDisabled
                         |> Ui.Select.withBorderRadius 8
+                        |> Ui.Select.withMaybeError error
+                        |> withConditionalBuilder Ui.Select.withIsRequired isRequired
+                        |> withMaybeBuilder Ui.Select.withPlaceholder placeholder
+                        |> withMaybeBuilder Ui.Select.withMenuMaxHeight maxHeight
                         |> Ui.Select.view HandleSelect
                     ]
                     |> Html.toUnstyled
