@@ -303,9 +303,9 @@ optionListView wrapMsg ((Settings { selectModel, maybeMaxHeight, borderRadius, o
         listboxId =
             Model.getListboxId selectModel
 
-        divider =
-            Css.Global.global
-                [ Css.Global.selector ("#" ++ listboxId ++ " > *:not(:last-child)")
+        dividerStyle =
+            Css.Global.descendants
+                [ Css.Global.selector "*:not(:last-child)"
                     [ Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "0000001A") ]
                 ]
 
@@ -331,12 +331,13 @@ optionListView wrapMsg ((Settings { selectModel, maybeMaxHeight, borderRadius, o
                 Css.displayFlex
 
               else
-                Css.display Css.none
+                Css.displayFlex
+            , dividerStyle
             ]
         , AccessibilityUtil.role "listbox"
         , Attributes.tabindex -1
         ]
-        (divider :: List.indexedMap (\index option -> optionView wrapMsg viewModel option index) optionList)
+        (List.indexedMap (\index option -> optionView wrapMsg viewModel option index) optionList)
 
 
 optionView : (Msg a -> msg) -> Select a msg -> a -> Int -> Html msg
