@@ -146,29 +146,19 @@ withMsgTypeSubmit (Settings model) =
 view : Button MsgTypeSet msg -> Html msg
 view (Settings { label, isDisabled, leftChild, rightChild, additionalHoverStyles, additionalBaseStyles, size, styleVariant, msgType }) =
     let
-        className =
-            "avd-button"
-
         styles =
-            baseButtonStyles
+            Css.Global.descendants [ Css.Global.svg [ iconHeightBasedOnSize size ] ]
+                :: baseButtonStyles
                 ++ stylesBasedOnSizeAndVariant size styleVariant
                 ++ stylesBasedOnMsgType msgType
                 ++ additionalBaseStyles
                 ++ additionalHoverStyles
-
-        iconHeightGlobalStyle =
-            Css.Global.global
-                [ Css.Global.class className
-                    [ Css.Global.descendants [ Css.Global.svg [ iconHeightBasedOnSize size ] ]
-                    ]
-                ]
     in
     msgTypeToElement msgType
-        ([ Attributes.css styles, Attributes.disabled isDisabled, Attributes.class className ] ++ msgTypeToAttributes msgType)
+        ([ Attributes.css styles, Attributes.disabled isDisabled ] ++ msgTypeToAttributes msgType)
         [ iconView leftChild
         , Html.text label
         , iconView rightChild
-        , iconHeightGlobalStyle
         ]
 
 

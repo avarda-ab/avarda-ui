@@ -76,7 +76,7 @@ new { selectModel, label, optionToString } =
             8
 
         defaultTopPx =
-            76
+            58
     in
     Settings
         { selectModel = selectModel
@@ -201,7 +201,15 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
 
         maybeLabelView =
             if ariaLabel == Nothing then
-                Html.div [ Attributes.css [ Css.fontSize (Css.px 14), Css.lineHeight (Css.px 18) ], Attributes.id (Model.getLabelId selectModel) ] [ Html.text label, AccessibilityUtil.requiredAsterisk isRequired ]
+                let
+                    labelStyles =
+                        if Model.getSelectedOption selectModel == Nothing then
+                            [ Css.fontSize (Css.px 16), Css.color (Css.hex "#454545"), Css.position Css.absolute, Css.top (Css.px 22), Css.left (Css.px 16), Css.lineHeight (Css.px 12) ]
+
+                        else
+                            [ Css.fontSize (Css.px 14), Css.position Css.absolute, Css.top (Css.px -9), Css.left (Css.px 10), Css.lineHeight (Css.px 18), Css.padding2 (Css.px 0) (Css.px 6), Css.backgroundColor (Css.hex "#FFFFFF") ]
+                in
+                Html.span [ Attributes.css labelStyles, Attributes.id (Model.getLabelId selectModel) ] [ Html.text label, AccessibilityUtil.requiredAsterisk isRequired ]
 
             else
                 Html.text ""
@@ -212,8 +220,7 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
                 |> Maybe.withDefault (AccessibilityUtil.ariaLabelledBy (Model.getLabelId selectModel))
     in
     Html.div
-        [ Attributes.id (Model.getContainerId selectModel)
-        , Attributes.css
+        [ Attributes.css
             [ Css.displayFlex
             , Css.flexDirection Css.column
             , Css.fontSize (Css.px 16)
@@ -231,6 +238,7 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
                  , Css.border3 (Css.px 1) Css.solid (Css.hex "#767676")
                  , Css.width (Css.pct 100)
                  , Css.borderRadius (Css.px borderRadius)
+                 , Css.height (Css.px 54)
                  , disabledStyle isDisabled
                  , invalidStyle isInvalid
                  ]

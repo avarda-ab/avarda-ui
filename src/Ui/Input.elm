@@ -13,6 +13,11 @@ inputId id =
     "avd-input-" ++ id
 
 
+labelId : String -> String
+labelId id =
+    "avd-input-" ++ id ++ "-label"
+
+
 inputWrapperId : String -> String
 inputWrapperId id =
     "avd-input-" ++ id ++ "-wrapper"
@@ -26,11 +31,6 @@ errorId id =
 hintId : String -> String
 hintId id =
     "avd-input-" ++ id ++ "-hint"
-
-
-childWrapperClass : String -> String
-childWrapperClass id =
-    "avd-input-" ++ id ++ "-child-class"
 
 
 type Input msg
@@ -136,7 +136,7 @@ withBorderRadius borderRadius (Settings model) =
 
 
 view : Input msg -> Html msg
-view ((Settings { label, leftChild, rightChild, borderRadius, id, isRequired, isDisabled, hintText, additionalWrapperStyles, maybeError }) as model) =
+view ((Settings { leftChild, rightChild, borderRadius, id, isDisabled, hintText, additionalWrapperStyles, maybeError }) as model) =
     let
         inputView_ =
             let
@@ -146,41 +146,39 @@ view ((Settings { label, leftChild, rightChild, borderRadius, id, isRequired, is
 
                     else
                         invalidStyle
-
-                iconSizeGlobalStyle =
-                    Css.Global.global
-                        [ Css.Global.selector
-                            -- TODO:
-                            (String.join " "
-                                [ "." ++ childWrapperClass id
-                                , ">"
-                                , "svg"
-                                ]
-                            )
-                            [ Css.height (Css.px 24) ]
-                        ]
             in
             if List.all ((==) Nothing) [ leftChild, rightChild ] then
-                inputView model [ Css.minHeight (Css.px 48), invalidStyle_, disabledStyle isDisabled, Css.padding (Css.px 12) ]
+                labelWithInputView model
+                    [ Css.minHeight (Css.px 48)
+                    , invalidStyle_
+                    , disabledStyle isDisabled
+                    , Css.padding (Css.px 16)
+                    , Css.pseudoClass "focus-visible" [ defaultPlaceholderColor ]
+                    , Css.height (Css.px 54)
+                    ]
 
             else
                 Html.div
                     [ Attributes.id (inputWrapperId id)
                     , Attributes.css
                         [ Css.displayFlex
-                        , Css.minHeight (Css.px 48)
+                        , Css.height (Css.px 54)
                         , Css.pseudoClass "focus-within" [ defaultFocusOutline, invalidStyle_ ]
                         , inputBorderStyle borderRadius
                         , invalidStyle_
                         , disabledStyle isDisabled
                         , Css.property "gap" "12px"
-                        , Css.padding (Css.px 12)
+                        , Css.padding (Css.px 16)
+                        , Css.alignItems Css.center
                         ]
                     ]
-                    [ childView leftChild id
-                    , inputView model [ Css.borderStyle Css.none, Css.pseudoClass "focus-visible" [ Css.outline Css.none ], Css.width (Css.pct 100) ]
-                    , childView rightChild id
-                    , iconSizeGlobalStyle
+                    [ childView leftChild
+                    , labelWithInputView model
+                        [ Css.borderStyle Css.none
+                        , Css.pseudoClass "focus-visible" [ Css.outline Css.none, defaultPlaceholderColor ]
+                        , Css.width (Css.pct 100)
+                        ]
+                    , childView rightChild
                     ]
 
         isValid =
@@ -194,14 +192,12 @@ view ((Settings { label, leftChild, rightChild, borderRadius, id, isRequired, is
              , Css.lineHeight (Css.px 20)
              , Css.fontSize (Css.px 14)
              , Css.width (Css.pct 100)
+             , Css.position Css.relative
              ]
                 ++ additionalWrapperStyles
             )
         ]
-        [ Html.label
-            [ Attributes.for (inputId id), Attributes.css [ Css.lineHeight (Css.px 18) ] ]
-            [ Html.text label, AccessibilityUtil.requiredAsterisk isRequired ]
-        , inputView_
+        [ inputView_
         , hintView isValid hintText id
         , errorView maybeError id
         ]
@@ -239,14 +235,95 @@ inputView (Settings { id, isDisabled, value, msg, borderRadius, isRequired, inpu
         []
 
 
-childView : Maybe (Html msg) -> String -> Html msg
-childView child id =
+childView : Maybe (Html msg) -> Html msg
+childView child =
     case child of
         Just child_ ->
-            Html.div [ Attributes.class (childWrapperClass id), Attributes.css [ Css.displayFlex ] ] [ child_ ]
+            Html.div
+                [ Attributes.css
+                    [ Css.displayFlex
+                    , Css.Global.children
+                        [ Css.Global.svg [ Css.height (Css.px 24) ]
+                        ]
+                    ]
+                ]
+                [ child_ ]
 
         Nothing ->
             Html.text ""
+
+
+labelWithInputView : Input msg -> List Css.Style -> Html msg
+labelWithInputView ((Settings { value, isRequired, label, leftChild, id }) as model) inputStyles =
+    let
+        notFocusedLabelStyles =
+            if String.isEmpty value then
+                let
+                    ( topPx, leftPx ) =
+                        if leftChild /= Nothing then
+                            ( 5, 0 )
+
+                        else
+                            ( 22, 16 )
+                in
+                [ Css.fontSize (Css.px 16)
+                , Css.color (Css.hex "#454545")
+                , Css.position Css.absolute
+                , Css.top (Css.px topPx)
+                , Css.left (Css.px leftPx)
+                , Css.lineHeight (Css.px 12)
+                , Css.padding Css.zero
+                ]
+
+            else
+                focusedLabelStyles
+
+        focusedLabelStyles =
+            [ Css.fontSize (Css.px 14)
+            , Css.position Css.absolute
+            , Css.top (Css.px -9)
+            , Css.left (Css.px 10)
+            , Css.lineHeight (Css.px 18)
+            , Css.padding2 (Css.px 0) (Css.px 6)
+            , Css.backgroundColor (Css.hex "#FFFFFF")
+            , Css.color (Css.hex "#000000")
+            ]
+    in
+    Html.div
+        [ Attributes.css
+            ([ Css.displayFlex
+             , Css.width (Css.pct 100)
+             , Css.Global.children
+                [ Css.Global.input
+                    [ Css.focus
+                        [ Css.Global.generalSiblings
+                            [ Css.Global.label focusedLabelStyles ]
+                        ]
+                    ]
+                ]
+             ]
+                ++ (if leftChild /= Nothing then
+                        [ if String.isEmpty value then
+                            Css.position Css.relative
+
+                          else
+                            Css.position Css.static
+                        , Css.pseudoClass "focus-within" [ Css.position Css.static ]
+                        ]
+
+                    else
+                        []
+                   )
+            )
+        ]
+        [ inputView model inputStyles
+        , Html.label
+            [ Attributes.id (labelId id)
+            , Attributes.for (inputId id)
+            , Attributes.css notFocusedLabelStyles
+            ]
+            [ Html.text label, AccessibilityUtil.requiredAsterisk isRequired ]
+        ]
 
 
 errorView : Maybe String -> String -> Html msg
@@ -296,6 +373,8 @@ baseInputStyle borderRadius =
         , inputBorderStyle borderRadius
         , Css.fontFamily Css.inherit
         , Css.fontSize (Css.px 16)
+        , Css.width (Css.pct 100)
+        , Css.pseudoElement "placeholder" [ Css.color Css.transparent ]
         ]
 
 
@@ -329,3 +408,8 @@ defaultFocusOutline =
         [ Css.property "outline" "Highlight auto 2px"
         , Css.property "outline" "-webkit-focus-ring-color auto 2px"
         ]
+
+
+defaultPlaceholderColor : Css.Style
+defaultPlaceholderColor =
+    Css.pseudoElement "placeholder" [ Css.color (Css.hex "#454545") ]

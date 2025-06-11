@@ -1,4 +1,4 @@
-module Ui.SelectInternal.Model exposing (Model, closeSelect, getComboboxId, getContainerId, getErrorId, getIsOpen, getLabelId, getListboxId, getListboxOptionId, getMaybeHighlightedIndex, getSelectedOption, init, moveHighlight, openSelect, setSelectedOption)
+module Ui.SelectInternal.Model exposing (Model, closeSelect, getComboboxId, getErrorId, getIsOpen, getLabelId, getListboxId, getListboxOptionId, getMaybeHighlightedIndex, getSelectedOption, init, moveHighlight, openSelect, setSelectedOption)
 
 
 type Model a
@@ -69,11 +69,6 @@ getListboxId (ModelInternal { id }) =
 getComboboxId : Model a -> String
 getComboboxId (ModelInternal { id }) =
     "avd-select-" ++ id ++ "-combobox"
-
-
-getContainerId : Model a -> String
-getContainerId (ModelInternal { id }) =
-    "avd-select-" ++ id ++ "-container"
 
 
 getListboxOptionId : Model a -> Int -> String

@@ -63,6 +63,7 @@ updateRaw { onSelect } wrapMsg msg model =
             else
                 ( model, Cmd.none )
                     |> andThen openSelect
+                    |> andThen (\updatedModel -> moveHighlight wrapMsg (Model.getSelectedOption updatedModel |> Maybe.andThen (\selectedOption -> optionList |> List.Extra.findIndex (\option -> option == selectedOption))) updatedModel)
 
         Close ->
             ( model, Cmd.none )
@@ -77,6 +78,7 @@ updateRaw { onSelect } wrapMsg msg model =
                 ( model, Cmd.none )
                     |> andThen openSelect
                     |> andThen (scrollToSelectedCountry wrapMsg optionList)
+                    |> andThen (\updatedModel -> moveHighlight wrapMsg (Model.getSelectedOption updatedModel |> Maybe.andThen (\selectedOption -> optionList |> List.Extra.findIndex (\option -> option == selectedOption))) updatedModel)
 
         Select option ->
             ( model, Cmd.none )
@@ -90,9 +92,8 @@ updateRaw { onSelect } wrapMsg msg model =
 
             else
                 ( model, Cmd.none )
-                    -- TODO: I still work with the original model, i dont updated one in the pipeline
                     |> andThen openSelect
-                    |> andThen (moveHighlight wrapMsg (Model.getSelectedOption model |> Maybe.andThen (\selectedOption -> optionList |> List.Extra.findIndex (\option -> option == selectedOption))))
+                    |> andThen (\updatedModel -> moveHighlight wrapMsg (Model.getSelectedOption updatedModel |> Maybe.andThen (\selectedOption -> optionList |> List.Extra.findIndex (\option -> option == selectedOption))) updatedModel)
 
         HandleArrowUp ->
             if isSelectOpened then
