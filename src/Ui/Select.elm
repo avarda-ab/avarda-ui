@@ -331,7 +331,7 @@ optionListView wrapMsg ((Settings { selectModel, maybeMaxHeight, borderRadius, o
                 Css.displayFlex
 
               else
-                Css.displayFlex
+                Css.display Css.none
             , dividerStyle
             ]
         , AccessibilityUtil.role "listbox"
