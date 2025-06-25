@@ -52,6 +52,13 @@ export default {
       name: "Show icon right",
       control: "boolean",
     },
+    withMaxLength: { name: "With max length", control: "boolean" },
+    maxLength: {
+      defaultValue: { summary: 524288 },
+      name: "Max length",
+      control: "number",
+      if: { arg: "withMaxLength" },
+    },
   },
   args: {
     label: "Test input",
@@ -65,5 +72,7 @@ export default {
     disabled: false,
     showIconLeft: false,
     showIconRight: false,
+    withMaxLength: false,
+    maxLength: "",
   },
 };

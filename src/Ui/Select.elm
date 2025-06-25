@@ -1,9 +1,9 @@
-module Ui.Select exposing (Model, Msg, init, new, onSelectCallback, setOptions, setSelectedOption, update, updateWithCallbacks, view, withAdditionalWrapperStyles, withAriaLabel, withBorderRadius, withContainerPosition, withCustomOptionViewFn, withCustomSelectedOptionViewFn, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withPlaceholder, withTopPx)
+module Ui.Select exposing (Model, Msg, init, new, onSelectCallback, setOptions, setSelectedOption, update, updateWithCallbacks, view, withAdditionalWrapperStyles, withAriaLabel, withBorderRadius, withContainerPosition, withCustomOptionViewFn, withCustomSelectedOptionViewFn, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withTopPx)
 
 import Css
 import Css.Global
 import Html.Styled as Html exposing (Attribute, Html)
-import Html.Styled.Attributes as Attributes exposing (placeholder)
+import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Json.Decode as Decode
 import List.Extra
@@ -12,7 +12,7 @@ import Ui.SelectInternal.Msg as Msg exposing (Msg(..))
 import Ui.SelectInternal.Update as Update
 import Util.Accessibility as AccessibilityUtil
 import Util.Icon as Icon
-import Util.KeyPress as KeyPress
+import Util.KeyPress as KeyPressUtil
 
 
 type alias Model a =
@@ -59,7 +59,6 @@ type Select a msg
         , maybeMaxHeight : Maybe Int
         , isRequired : Bool
         , isDisabled : Bool
-        , placeholder : Maybe String
         , label : String
         , borderRadius : Float
         , topPx : Float
@@ -85,7 +84,6 @@ new { selectModel, label, optionToString } =
         , isRequired = False
         , isDisabled = False
         , optionList = []
-        , placeholder = Nothing
         , label = label
         , borderRadius = defaultBorderRadius
         , optionToString = optionToString
@@ -148,11 +146,6 @@ withContainerPosition position (Settings model) =
     Settings { model | containerPosition = position }
 
 
-withPlaceholder : String -> Select a msg -> Select a msg
-withPlaceholder placeholder (Settings model) =
-    Settings { model | placeholder = Just placeholder }
-
-
 withAriaLabel : String -> Select a msg -> Select a msg
 withAriaLabel id (Settings model) =
     Settings { model | ariaLabel = Just id }
@@ -164,7 +157,7 @@ setOptions optionList (Settings ({ optionToString } as model)) =
 
 
 view : (Msg a -> msg) -> Select a msg -> Html msg
-view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadius, selectedOptionViewFn, optionToString, additionalWrapperStyles, containerPosition, placeholder, isRequired, ariaLabel, maybeError }) as viewModel) =
+view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadius, selectedOptionViewFn, optionToString, additionalWrapperStyles, containerPosition, isRequired, ariaLabel, maybeError }) as viewModel) =
     let
         isInvalid =
             maybeError /= Nothing
@@ -178,12 +171,12 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
 
             else
                 [ Events.onClick (wrapMsg <| Toggle optionList)
-                , KeyPress.onMultipleKeys KeyPress.KeyDown
-                    [ ( KeyPress.ArrowDown, wrapMsg <| HandleArrowDown optionList )
-                    , ( KeyPress.ArrowUp, wrapMsg HandleArrowUp )
-                    , ( KeyPress.Enter, wrapMsg <| HandleEnterOrSpace optionList )
-                    , ( KeyPress.Space, wrapMsg <| HandleEnterOrSpace optionList )
-                    , ( KeyPress.Esc, wrapMsg Close )
+                , KeyPressUtil.onKeyDown
+                    [ ( KeyPressUtil.ArrowDown, wrapMsg <| HandleArrowDown optionList )
+                    , ( KeyPressUtil.ArrowUp, wrapMsg HandleArrowUp )
+                    , ( KeyPressUtil.Enter, wrapMsg <| HandleEnterOrSpace optionList )
+                    , ( KeyPressUtil.Space, wrapMsg <| HandleEnterOrSpace optionList )
+                    , ( KeyPressUtil.Esc, wrapMsg Close )
                     ]
                 , Attributes.tabindex 0
                 , Events.onBlur (wrapMsg <| HandleOnBlur optionList)
@@ -197,7 +190,7 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
                             |> Maybe.map (\fn -> fn selectedOption)
                             |> Maybe.withDefault (defaultSelectedOptionView selectModel <| Just (optionToString selectedOption))
                     )
-                |> Maybe.withDefault (defaultSelectedOptionView selectModel placeholder)
+                |> Maybe.withDefault (defaultSelectedOptionView selectModel Nothing)
 
         maybeLabelView =
             if ariaLabel == Nothing then
@@ -304,7 +297,7 @@ optionListView wrapMsg ((Settings { selectModel, maybeMaxHeight, borderRadius, o
             Model.getListboxId selectModel
 
         dividerStyle =
-            Css.Global.descendants
+            Css.Global.children
                 [ Css.Global.selector "*:not(:last-child)"
                     [ Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "0000001A") ]
                 ]
@@ -323,6 +316,7 @@ optionListView wrapMsg ((Settings { selectModel, maybeMaxHeight, borderRadius, o
             , Css.left (Css.px 0)
             , Css.border3 (Css.px 1) Css.solid (Css.hex "#CCC")
             , Css.backgroundColor (Css.hex "#FFF")
+            , Css.zIndex (Css.int 4)
             , Css.borderRadius (Css.px borderRadius)
             , Css.flexDirection Css.column
             , maxHeightStyle

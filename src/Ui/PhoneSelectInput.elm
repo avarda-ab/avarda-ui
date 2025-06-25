@@ -1,4 +1,4 @@
-module Ui.PhoneSelectInput exposing (Model, Msg, init, new, onInputCallback, onSelectCallback, setOptions, setSelectedOption, update, updateWithCallbacks, view, withBorderRadius, withHint, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight)
+module Ui.PhoneSelectInput exposing (Model, Msg, init, new, onInputCallback, onInputTabKeyDownCallback, onSelectCallback, setOptions, setPhoneInputValue, setSelectedOption, update, updateWithCallbacks, view, withBorderRadius, withHint, withInputMaxLength, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight)
 
 import Css
 import Html.Styled as Html exposing (Html)
@@ -9,18 +9,21 @@ import Task
 import Ui.Input as Input
 import Ui.Select as Select
 import Ui.SelectInternal.Model
-import Util.Components exposing (withConditionalBuilder, withMaybeBuilder)
+import Util.Components exposing (withMaybeBuilder)
 import Util.Icon as Icon
+import Util.KeyPress as KeyPressUtil
 
 
 type Callback msg
     = OnSelect (CountryCode -> msg)
     | OnInput (String -> msg)
+    | OnInputTabKeyDown msg
 
 
 type alias Callbacks msg =
     { onSelect : Maybe (CountryCode -> msg)
     , onInput : Maybe (String -> msg)
+    , onInputTabKeyDown : Maybe msg
     }
 
 
@@ -34,9 +37,14 @@ onInputCallback =
     OnInput
 
 
+onInputTabKeyDownCallback : msg -> Callback msg
+onInputTabKeyDownCallback =
+    OnInputTabKeyDown
+
+
 defaultCallbacks : Callbacks msg
 defaultCallbacks =
-    { onSelect = Nothing, onInput = Nothing }
+    { onSelect = Nothing, onInput = Nothing, onInputTabKeyDown = Nothing }
 
 
 callbacksFromList : List (Callback msg) -> Callbacks msg
@@ -49,6 +57,9 @@ callbacksFromList =
 
                 OnInput msg ->
                     { opts | onInput = Just msg }
+
+                OnInputTabKeyDown msg ->
+                    { opts | onInputTabKeyDown = Just msg }
         )
         defaultCallbacks
 
@@ -57,6 +68,7 @@ type Msg
     = HandleSelect (Select.Msg CountryCode)
     | SelectedCountryCode CountryCode
     | InsertedValue String
+    | InputTabKeyDown
 
 
 update : (Msg -> msg) -> Msg -> Model -> ( Model, Cmd msg )
@@ -70,7 +82,7 @@ updateWithCallbacks callbackList =
 
 
 updateRaw : Callbacks msg -> (Msg -> msg) -> Msg -> Model -> ( Model, Cmd msg )
-updateRaw { onInput, onSelect } wrapMsg msg ((ModelInternal ({ selectModel } as modelInternal)) as model) =
+updateRaw { onInput, onSelect, onInputTabKeyDown } wrapMsg msg ((ModelInternal ({ selectModel } as modelInternal)) as model) =
     case msg of
         HandleSelect subMsg ->
             let
@@ -88,13 +100,27 @@ updateRaw { onInput, onSelect } wrapMsg msg ((ModelInternal ({ selectModel } as 
         InsertedValue value ->
             ( ModelInternal { modelInternal | phoneInputValue = value }, maybeTriggerParentMsg onInput value )
 
+        InputTabKeyDown ->
+            ( model, maybeTriggerParentMsgWithoutValue onInputTabKeyDown )
+
 
 maybeTriggerParentMsg : Maybe (value -> msg) -> value -> Cmd msg
-maybeTriggerParentMsg maybeMsg countryCode =
+maybeTriggerParentMsg maybeMsg value =
     case maybeMsg of
         Just msg ->
             Task.succeed ()
-                |> Task.perform (\_ -> msg countryCode)
+                |> Task.perform (\_ -> msg value)
+
+        Nothing ->
+            Cmd.none
+
+
+maybeTriggerParentMsgWithoutValue : Maybe msg -> Cmd msg
+maybeTriggerParentMsgWithoutValue maybeMsg =
+    case maybeMsg of
+        Just msg ->
+            Task.succeed ()
+                |> Task.perform (\_ -> msg)
 
         Nothing ->
             Cmd.none
@@ -128,13 +154,16 @@ setSelectedOption countryCode (ModelInternal ({ selectModel } as modelInternal))
     ModelInternal { modelInternal | selectModel = Select.setSelectedOption countryCode selectModel }
 
 
+setPhoneInputValue : String -> Model -> Model
+setPhoneInputValue value (ModelInternal modelInternal) =
+    ModelInternal { modelInternal | phoneInputValue = value }
+
+
 init : String -> Model
 init id =
     ModelInternal
         { id = id
         , selectModel = Select.init id
-
-        -- TODO: nejspis bude potreba mit moznost poslat input value z parenta (predvyplneny value)
         , phoneInputValue = ""
         }
 
@@ -152,6 +181,7 @@ type PhoneSelectInput msg
         , borderRadius : Float
         , selectAriaLabel : String
         , hint : Maybe String
+        , inputMaxLength : Maybe Int
         }
 
 
@@ -173,6 +203,7 @@ new { inputLabel, selectAriaLabel, phoneSelectInputModel } =
         , borderRadius = defaultBorderRadius
         , selectAriaLabel = selectAriaLabel
         , hint = Nothing
+        , inputMaxLength = Nothing
         }
 
 
@@ -186,9 +217,9 @@ withBorderRadius borderRadius (Settings model) =
     Settings { model | borderRadius = borderRadius }
 
 
-withIsRequired : PhoneSelectInput msg -> PhoneSelectInput msg
-withIsRequired (Settings model) =
-    Settings { model | isRequired = True }
+withIsRequired : Bool -> PhoneSelectInput msg -> PhoneSelectInput msg
+withIsRequired isRequired (Settings model) =
+    Settings { model | isRequired = isRequired }
 
 
 withIsDisabled : Bool -> PhoneSelectInput msg -> PhoneSelectInput msg
@@ -211,13 +242,23 @@ withInputPlaceholder placeholder (Settings model) =
     Settings { model | inputPlaceholder = Just placeholder }
 
 
+withInputMaxLength : Int -> PhoneSelectInput msg -> PhoneSelectInput msg
+withInputMaxLength maxLength (Settings model) =
+    Settings { model | inputMaxLength = Just maxLength }
+
+
+withMaybeBuilder : (prop -> builder -> builder) -> Maybe prop -> (builder -> builder)
+withMaybeBuilder builder =
+    Maybe.map builder >> Maybe.withDefault identity
+
+
 setOptions : List CountryCode -> PhoneSelectInput msg -> PhoneSelectInput msg
 setOptions countryCodeList (Settings model) =
     Settings { model | countryCodeList = countryCodeList |> List.Extra.unique |> List.sortBy Data.countryCodeToString }
 
 
 view : (Msg -> msg) -> PhoneSelectInput msg -> Html msg
-view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, maybeError, isRequired, isDisabled, borderRadius, countryCodeList, maybeMaxHeight, hint, inputPlaceholder }) =
+view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, maybeError, isRequired, inputMaxLength, isDisabled, borderRadius, countryCodeList, maybeMaxHeight, hint, inputPlaceholder }) =
     let
         selectModel =
             getSelectModel phoneSelectInputModel
@@ -240,9 +281,14 @@ view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, may
         |> Input.withMaybeError maybeError
         |> Input.withIsDisabled isDisabled
         |> Input.withBorderRadius borderRadius
-        |> withConditionalBuilder Input.withIsRequired isRequired
+        |> Input.withInputType "tel"
+        |> Input.withAutocomplete "tel-national"
+        |> Input.withAttributes [ Attributes.name "phone" ]
+        |> Input.withIsRequired isRequired
+        |> Input.withOnKeyDown [ ( KeyPressUtil.Tab, InputTabKeyDown ) ]
         |> withMaybeBuilder Input.withHint hint
         |> withMaybeBuilder Input.withPlaceholder inputPlaceholder
+        |> withMaybeBuilder Input.withMaxLength inputMaxLength
         |> Input.view
         |> Html.map wrapMsg
 

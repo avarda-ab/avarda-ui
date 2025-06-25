@@ -12,12 +12,6 @@ export default {
       name: "Label",
       control: "text",
     },
-    withPlaceholder: { name: "With placeholder", control: "boolean" },
-    placeholder: {
-      name: "Placeholder",
-      control: "text",
-      if: { arg: "withPlaceholder" },
-    },
     withError: { name: "With error", control: "boolean" },
     error: {
       name: "Error",
@@ -46,8 +40,6 @@ export default {
   },
   args: {
     label: "Test select",
-    withPlaceholder: false,
-    placeholder: "",
     withError: false,
     error: "",
     withMaxHeight: false,

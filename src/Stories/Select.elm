@@ -12,7 +12,6 @@ import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolC
 
 type alias Controls =
     { label : String
-    , placeholder : Maybe String
     , error : Maybe String
     , maxHeight : Maybe Int
     , isRequired : Bool
@@ -27,7 +26,6 @@ type alias Controls =
 defaultControls : Controls
 defaultControls =
     { label = "Test input"
-    , placeholder = Nothing
     , error = Nothing
     , maxHeight = Nothing
     , isRequired = False
@@ -39,7 +37,6 @@ controlsDecoder : Decode.Decoder Controls
 controlsDecoder =
     Decode.succeed Controls
         |> decodeStringControl "label"
-        |> decodeMaybeStringControl "placeholder"
         |> decodeMaybeStringControl "error"
         |> decodeMaybeIntControl "maxHeight"
         |> decodeBoolControl "required"
@@ -120,7 +117,7 @@ main =
         , view =
             \{ selectModel, controls } ->
                 let
-                    { error, isDisabled, isRequired, label, maxHeight, placeholder } =
+                    { error, isDisabled, isRequired, label, maxHeight } =
                         controls
                 in
                 Html.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.maxWidth (Css.px 300) ] ]
@@ -130,7 +127,6 @@ main =
                         |> Ui.Select.withBorderRadius 8
                         |> Ui.Select.withMaybeError error
                         |> withConditionalBuilder Ui.Select.withIsRequired isRequired
-                        |> withMaybeBuilder Ui.Select.withPlaceholder placeholder
                         |> withMaybeBuilder Ui.Select.withMenuMaxHeight maxHeight
                         |> Ui.Select.view HandleSelect
                     ]

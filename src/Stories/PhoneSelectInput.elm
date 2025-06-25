@@ -7,7 +7,7 @@ import Html.Styled.Attributes as Attributes
 import Json.Decode as Decode
 import Shared.Data exposing (CountryCode(..))
 import Ui.PhoneSelectInput
-import Util.Components exposing (withConditionalBuilder, withMaybeBuilder)
+import Util.Components exposing (withMaybeBuilder)
 import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeIntControl, decodeMaybeStringControl, decodeStringControl)
 
 
@@ -119,7 +119,7 @@ main =
                         |> Ui.PhoneSelectInput.setOptions [ SE, CZ, FI, SE, NO, DK ]
                         |> Ui.PhoneSelectInput.withIsDisabled isDisabled
                         |> Ui.PhoneSelectInput.withMaybeError error
-                        |> withConditionalBuilder Ui.PhoneSelectInput.withIsRequired isRequired
+                        |> Ui.PhoneSelectInput.withIsRequired isRequired
                         |> withMaybeBuilder Ui.PhoneSelectInput.withMenuMaxHeight maxHeight
                         |> withMaybeBuilder Ui.PhoneSelectInput.withInputPlaceholder placeholder
                         |> withMaybeBuilder Ui.PhoneSelectInput.withHint hint

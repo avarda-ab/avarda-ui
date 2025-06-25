@@ -1,4 +1,4 @@
-module Util.KeyPress exposing (KeyboardEvent(..), KeyboardKey(..), onKeyDown, onKeyPress, onKeyUp, onMultipleKeys)
+module Util.KeyPress exposing (KeyboardEvent(..), KeyboardKey(..), onKeyDown, onKeyDownPreventDefault, onKeyPress, onKeyPressPreventDefault, onKeyUp, onKeyUpPreventDefault)
 
 import Html.Styled exposing (Attribute)
 import Html.Styled.Events as Events
@@ -33,23 +33,18 @@ keyboardEventToString keyboardEvent =
             "keydown"
 
 
-onKey : KeyboardEvent -> List KeyboardKey -> msg -> Attribute msg
-onKey keyboardEvent keyboardKeys msg =
-    decodePressedKey keyboardKeys msg
+onKeyPreventDefault : KeyboardEvent -> List ( KeyboardKey, msg ) -> Attribute msg
+onKeyPreventDefault keyboardEvent keyMsgPairs =
+    decodePressedKey keyMsgPairs
         |> Decode.map alwaysPreventDefault
         |> Events.preventDefaultOn (keyboardEventToString keyboardEvent)
 
 
-onMultipleKeys : KeyboardEvent -> List ( KeyboardKey, msg ) -> Attribute msg
-onMultipleKeys keyboardEvent keyboardKeysWithMsg =
-    keyboardKeysWithMsg
-        |> List.map
-            (\( keyboardKey, msg ) ->
-                decodePressedKey [ keyboardKey ] msg
-                    |> Decode.map alwaysPreventDefault
-            )
-        |> Decode.oneOf
-        |> Events.preventDefaultOn (keyboardEventToString keyboardEvent)
+onKey : KeyboardEvent -> List ( KeyboardKey, msg ) -> Attribute msg
+onKey keyboardEvent keyMsgPairs =
+    decodePressedKey keyMsgPairs
+        |> Decode.map identity
+        |> Events.on (keyboardEventToString keyboardEvent)
 
 
 keyboardKeyToKeyCode : KeyboardKey -> Int
@@ -74,19 +69,34 @@ keyboardKeyToKeyCode keyboardKey =
             32
 
 
-onKeyPress : List KeyboardKey -> msg -> Attribute msg
+onKeyPress : List ( KeyboardKey, msg ) -> Attribute msg
 onKeyPress =
     onKey KeyPress
 
 
-onKeyUp : List KeyboardKey -> msg -> Attribute msg
+onKeyUp : List ( KeyboardKey, msg ) -> Attribute msg
 onKeyUp =
     onKey KeyUp
 
 
-onKeyDown : List KeyboardKey -> msg -> Attribute msg
+onKeyDown : List ( KeyboardKey, msg ) -> Attribute msg
 onKeyDown =
     onKey KeyDown
+
+
+onKeyDownPreventDefault : List ( KeyboardKey, msg ) -> Attribute msg
+onKeyDownPreventDefault =
+    onKeyPreventDefault KeyDown
+
+
+onKeyUpPreventDefault : List ( KeyboardKey, msg ) -> Attribute msg
+onKeyUpPreventDefault =
+    onKeyPreventDefault KeyUp
+
+
+onKeyPressPreventDefault : List ( KeyboardKey, msg ) -> Attribute msg
+onKeyPressPreventDefault =
+    onKeyPreventDefault KeyPress
 
 
 alwaysPreventDefault : msg -> ( msg, Bool )
@@ -94,20 +104,21 @@ alwaysPreventDefault msg =
     ( msg, True )
 
 
-hasKey : Int -> List KeyboardKey -> Bool
-hasKey keyCode =
-    List.map keyboardKeyToKeyCode
-        >> List.member keyCode
-
-
-decodePressedKey : List KeyboardKey -> msg -> Decode.Decoder msg
-decodePressedKey keyboardKeys msg =
-    Events.keyCode
+decodePressedKey : List ( KeyboardKey, msg ) -> Decode.Decoder msg
+decodePressedKey keyMsgPairs =
+    Decode.map
+        (\keyCode ->
+            List.filter (Tuple.first >> keyboardKeyToKeyCode >> (==) keyCode) keyMsgPairs
+                |> List.head
+                |> Maybe.map Tuple.second
+        )
+        Events.keyCode
         |> Decode.andThen
-            (\keyCode ->
-                if hasKey keyCode keyboardKeys then
-                    Decode.succeed msg
+            (\maybeMsg ->
+                case maybeMsg of
+                    Just msg ->
+                        Decode.succeed msg
 
-                else
-                    Decode.fail "Key not pressed"
+                    Nothing ->
+                        Decode.fail "No action for this key"
             )

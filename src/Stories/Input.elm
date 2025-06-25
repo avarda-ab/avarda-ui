@@ -7,7 +7,7 @@ import Html.Styled.Attributes as Attributes
 import Json.Decode as Decode
 import Ui.Input
 import Util.Components exposing (withConditionalBuilder, withMaybeBuilder)
-import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeStringControl, decodeStringControl)
+import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeIntControl, decodeMaybeStringControl, decodeStringControl)
 import Util.Icon exposing (mockIconView)
 
 
@@ -20,6 +20,7 @@ type alias Controls =
     , isDisabled : Bool
     , showIconLeft : Bool
     , showIconRight : Bool
+    , maxLength : Maybe Int
     }
 
 
@@ -37,6 +38,7 @@ defaultControls =
     , isDisabled = False
     , showIconLeft = False
     , showIconRight = False
+    , maxLength = Nothing
     }
 
 
@@ -51,6 +53,7 @@ decoder =
         |> decodeBoolControl "disabled"
         |> decodeBoolControl "showIconLeft"
         |> decodeBoolControl "showIconRight"
+        |> decodeMaybeIntControl "maxLength"
 
 
 type alias Model =
@@ -80,7 +83,7 @@ main =
         , view =
             \{ value, controls } ->
                 let
-                    { isDisabled, isRequired, error, hint, label, placeholder, showIconLeft, showIconRight } =
+                    { isDisabled, isRequired, error, hint, label, placeholder, showIconLeft, showIconRight, maxLength } =
                         controls
                 in
                 Ui.Input.new "test-input" { value = value, msg = InsertedValue, label = label }
@@ -88,9 +91,10 @@ main =
                     |> Ui.Input.withIsDisabled isDisabled
                     |> withConditionalBuilder (Ui.Input.withLeftChild mockIconView) showIconLeft
                     |> withConditionalBuilder (Ui.Input.withRightChild mockIconView) showIconRight
-                    |> withConditionalBuilder Ui.Input.withIsRequired isRequired
+                    |> Ui.Input.withIsRequired isRequired
                     |> withMaybeBuilder Ui.Input.withPlaceholder placeholder
                     |> withMaybeBuilder Ui.Input.withHint hint
+                    |> withMaybeBuilder Ui.Input.withMaxLength maxLength
                     |> Ui.Input.view
                     |> List.singleton
                     |> Html.div [ Attributes.css [ Css.maxWidth (Css.px 300) ] ]

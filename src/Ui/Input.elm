@@ -1,4 +1,4 @@
-module Ui.Input exposing (new, view, withAdditionalWrapperStyles, withBorderRadius, withHint, withInputType, withIsDisabled, withIsRequired, withLeftChild, withMaybeError, withPlaceholder, withRightChild)
+module Ui.Input exposing (new, view, withAdditionalWrapperStyles, withAttributes, withAutocomplete, withBorderRadius, withHint, withInputType, withIsDisabled, withIsRequired, withLeftChild, withMaxLength, withMaybeError, withOnKeyDown, withPlaceholder, withRightChild)
 
 import Css
 import Css.Global
@@ -6,31 +6,37 @@ import Html.Styled as Html exposing (Attribute, Html)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Util.Accessibility as AccessibilityUtil
+import Util.KeyPress as KeyPressUtil
+
+
+baseId : String
+baseId =
+    "avd-input-"
 
 
 inputId : String -> String
 inputId id =
-    "avd-input-" ++ id
+    baseId ++ id
 
 
 labelId : String -> String
 labelId id =
-    "avd-input-" ++ id ++ "-label"
+    baseId ++ id ++ "-label"
 
 
 inputWrapperId : String -> String
 inputWrapperId id =
-    "avd-input-" ++ id ++ "-wrapper"
+    baseId ++ id ++ "-wrapper"
 
 
 errorId : String -> String
 errorId id =
-    "avd-input-" ++ id ++ "-error"
+    baseId ++ id ++ "-error"
 
 
 hintId : String -> String
 hintId id =
-    "avd-input-" ++ id ++ "-hint"
+    baseId ++ id ++ "-hint"
 
 
 type Input msg
@@ -52,6 +58,7 @@ type Input msg
         , autocomplete : Maybe String
         , additionalWrapperStyles : List Css.Style
         , maybeError : Maybe String
+        , onKeyDown : List ( KeyPressUtil.KeyboardKey, msg )
         }
 
 
@@ -82,6 +89,7 @@ new id { value, msg, label } =
         , autocomplete = Nothing
         , additionalWrapperStyles = []
         , maybeError = Nothing
+        , onKeyDown = []
         }
 
 
@@ -105,9 +113,9 @@ withRightChild rightChild (Settings model) =
     Settings { model | rightChild = Just rightChild }
 
 
-withIsRequired : Input msg -> Input msg
-withIsRequired (Settings model) =
-    Settings { model | isRequired = True }
+withIsRequired : Bool -> Input msg -> Input msg
+withIsRequired isRequired (Settings model) =
+    Settings { model | isRequired = isRequired }
 
 
 withHint : String -> Input msg -> Input msg
@@ -133,6 +141,26 @@ withIsDisabled isDisabled (Settings model) =
 withBorderRadius : Float -> Input msg -> Input msg
 withBorderRadius borderRadius (Settings model) =
     Settings { model | borderRadius = borderRadius }
+
+
+withMaxLength : Int -> Input msg -> Input msg
+withMaxLength maxLength (Settings model) =
+    Settings { model | maxLength = maxLength }
+
+
+withAutocomplete : String -> Input msg -> Input msg
+withAutocomplete autocomplete (Settings model) =
+    Settings { model | autocomplete = Just autocomplete }
+
+
+withAttributes : List (Attribute msg) -> Input msg -> Input msg
+withAttributes attributes (Settings model) =
+    Settings { model | attributes = attributes }
+
+
+withOnKeyDown : List ( KeyPressUtil.KeyboardKey, msg ) -> Input msg -> Input msg
+withOnKeyDown onKeyDown (Settings model) =
+    Settings { model | onKeyDown = onKeyDown }
 
 
 view : Input msg -> Html msg
@@ -172,13 +200,13 @@ view ((Settings { leftChild, rightChild, borderRadius, id, isDisabled, hintText,
                         , Css.alignItems Css.center
                         ]
                     ]
-                    [ childView leftChild
+                    [ childView leftChild isDisabled
                     , labelWithInputView model
                         [ Css.borderStyle Css.none
                         , Css.pseudoClass "focus-visible" [ Css.outline Css.none, defaultPlaceholderColor ]
                         , Css.width (Css.pct 100)
                         ]
-                    , childView rightChild
+                    , childView rightChild isDisabled
                     ]
 
         isValid =
@@ -204,7 +232,7 @@ view ((Settings { leftChild, rightChild, borderRadius, id, isDisabled, hintText,
 
 
 inputView : Input msg -> List Css.Style -> Html msg
-inputView (Settings { id, isDisabled, value, msg, borderRadius, isRequired, inputType, placeholder, maxLength, autocomplete, maybeError }) variantBasedStyles =
+inputView (Settings { id, isDisabled, value, msg, borderRadius, isRequired, inputType, placeholder, maxLength, autocomplete, maybeError, attributes, onKeyDown }) variantBasedStyles =
     let
         autocompleteAttribute =
             autocomplete
@@ -212,38 +240,52 @@ inputView (Settings { id, isDisabled, value, msg, borderRadius, isRequired, inpu
                 |> Maybe.withDefault (Attributes.attribute "autocomplete" "off")
     in
     Html.input
-        [ Attributes.css
+        ([ Attributes.css
             ([ baseInputStyle borderRadius
-             , disabledStyle isDisabled
+             , if isDisabled then
+                Css.cursor Css.notAllowed
+
+               else
+                Css.batch []
              ]
                 ++ variantBasedStyles
             )
-        , Attributes.id (inputId id)
-        , Attributes.disabled isDisabled
-        , Attributes.required isRequired
-        , Attributes.type_ inputType
-        , Attributes.value value
-        , Attributes.placeholder <| Maybe.withDefault "" placeholder
-        , Events.onInput msg
-        , Attributes.spellcheck False
-        , Attributes.attribute "autocorrect" "off"
-        , autocompleteAttribute
-        , Attributes.maxlength maxLength
-        , AccessibilityUtil.ariaInvalid (maybeError /= Nothing)
-        , AccessibilityUtil.ariaDescribedByList [ errorId id, hintId id ]
-        ]
+         , Attributes.id (inputId id)
+         , Attributes.disabled isDisabled
+         , Attributes.required isRequired
+         , Attributes.type_ inputType
+         , Attributes.value value
+         , Attributes.placeholder <| Maybe.withDefault "" placeholder
+         , Events.onInput msg
+         , Attributes.spellcheck False
+         , Attributes.attribute "autocorrect" "off"
+         , KeyPressUtil.onKeyDown onKeyDown
+         , autocompleteAttribute
+         , Attributes.maxlength maxLength
+         , AccessibilityUtil.ariaInvalid (maybeError /= Nothing)
+         , AccessibilityUtil.ariaDescribedByList [ errorId id, hintId id ]
+         ]
+            ++ attributes
+        )
         []
 
 
-childView : Maybe (Html msg) -> Html msg
-childView child =
+childView : Maybe (Html msg) -> Bool -> Html msg
+childView child isDisabled =
     case child of
         Just child_ ->
             Html.div
                 [ Attributes.css
                     [ Css.displayFlex
                     , Css.Global.children
-                        [ Css.Global.svg [ Css.height (Css.px 24) ]
+                        [ Css.Global.svg
+                            [ Css.height (Css.px 24)
+                            , if isDisabled then
+                                Css.color (Css.hex "#424242")
+
+                              else
+                                Css.color (Css.hex "#000000")
+                            ]
                         ]
                     ]
                 ]
@@ -373,6 +415,7 @@ baseInputStyle borderRadius =
         , inputBorderStyle borderRadius
         , Css.fontFamily Css.inherit
         , Css.fontSize (Css.px 16)
+        , Css.fontWeight (Css.int 500)
         , Css.width (Css.pct 100)
         , Css.pseudoElement "placeholder" [ Css.color Css.transparent ]
         ]
@@ -382,12 +425,8 @@ disabledStyle : Bool -> Css.Style
 disabledStyle isDisabled =
     if isDisabled then
         Css.batch
-            [ Css.backgroundColor (Css.hex "#EEE")
-            , Css.cursor Css.notAllowed
-
-            -- TODO: Check if this is alright
-            , Css.color (Css.hex "#767676")
-            , Css.borderColor (Css.hex "#767676")
+            [ Css.cursor Css.notAllowed
+            , Css.opacity (Css.num 0.54)
             ]
 
     else
