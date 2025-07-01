@@ -39,8 +39,8 @@ onSelectCallback =
 
 
 init : String -> Model a
-init id =
-    Model.init id
+init =
+    Model.init
 
 
 setSelectedOption : a -> Model a -> Model a
@@ -71,9 +71,11 @@ type Select a msg
 new : { label : String, selectModel : Model a, optionToString : a -> String } -> Select a msg
 new { selectModel, label, optionToString } =
     let
+        -- TODO: Should be part of Theme
         defaultBorderRadius =
             8
 
+        -- TODO: In theme comment it should be default input height + some small number to offset
         defaultTopPx =
             58
     in
@@ -197,10 +199,23 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
                 let
                     labelStyles =
                         if Model.getSelectedOption selectModel == Nothing then
-                            [ Css.fontSize (Css.px 16), Css.color (Css.hex "#454545"), Css.position Css.absolute, Css.top (Css.px 22), Css.left (Css.px 16), Css.lineHeight (Css.px 12) ]
+                            [ Css.fontSize (Css.px 16)
+                            , Css.color (Css.hex "#454545")
+                            , Css.position Css.absolute
+                            , Css.top (Css.px 22)
+                            , Css.left (Css.px 16)
+                            , Css.lineHeight (Css.px 12)
+                            ]
 
                         else
-                            [ Css.fontSize (Css.px 14), Css.position Css.absolute, Css.top (Css.px -9), Css.left (Css.px 10), Css.lineHeight (Css.px 18), Css.padding2 (Css.px 0) (Css.px 6), Css.backgroundColor (Css.hex "#FFFFFF") ]
+                            [ Css.fontSize (Css.px 14)
+                            , Css.position Css.absolute
+                            , Css.top (Css.px -9)
+                            , Css.left (Css.px 10)
+                            , Css.lineHeight (Css.px 18)
+                            , Css.padding2 (Css.px 0) (Css.px 6)
+                            , Css.backgroundColor (Css.hex "#FFFFFF")
+                            ]
                 in
                 Html.span [ Attributes.css labelStyles, Attributes.id (Model.getLabelId selectModel) ] [ Html.text label, AccessibilityUtil.requiredAsterisk isRequired ]
 
@@ -388,12 +403,8 @@ disabledStyle : Bool -> Css.Style
 disabledStyle isDisabled =
     if isDisabled then
         Css.batch
-            [ Css.backgroundColor (Css.hex "#EEE")
-            , Css.cursor Css.notAllowed
-
-            -- TODO: Check if this is alright
-            , Css.color (Css.hex "#767676")
-            , Css.borderColor (Css.hex "#767676")
+            [ Css.cursor Css.notAllowed
+            , Css.opacity (Css.num 0.54)
             ]
 
     else

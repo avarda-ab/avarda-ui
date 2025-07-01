@@ -270,7 +270,7 @@ view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, may
                 |> Select.withAdditionalWrapperStyles [ Css.borderStyle Css.none, Css.padding Css.zero ]
                 |> Select.withContainerPosition Css.static
                 |> Select.withCustomOptionViewFn optionView
-                |> Select.withCustomSelectedOptionViewFn (selectedOptionView selectModel isDisabled)
+                |> Select.withCustomSelectedOptionViewFn (selectedOptionView selectModel)
                 |> Select.setOptions countryCodeList
                 |> withMaybeBuilder Select.withMenuMaxHeight maybeMaxHeight
                 |> Select.view HandleSelect
@@ -293,24 +293,17 @@ view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, may
         |> Html.map wrapMsg
 
 
-selectedOptionView : Select.Model CountryCode -> Bool -> CountryCode -> Html msg
-selectedOptionView selectModel isDisabled countryCode =
+selectedOptionView : Select.Model CountryCode -> CountryCode -> Html msg
+selectedOptionView selectModel countryCode =
     let
         dialingCode =
             Data.countryCodeToDialingCode countryCode
 
         flag =
             countryCodeToIcon countryCode
-
-        disabledStyle =
-            if isDisabled then
-                Css.batch [ Css.opacity (Css.num 0.5) ]
-
-            else
-                Css.batch []
     in
     Html.div [ Attributes.css [ Css.displayFlex, Css.alignItems Css.center, Css.property "gap" "8px" ] ]
-        [ Html.div [ Attributes.css [ Css.displayFlex, Css.alignItems Css.center, disabledStyle ] ]
+        [ Html.div [ Attributes.css [ Css.displayFlex, Css.alignItems Css.center ] ]
             [ maybeFlagView flag
             , if Ui.SelectInternal.Model.getIsOpen selectModel then
                 Icon.arrowUp
