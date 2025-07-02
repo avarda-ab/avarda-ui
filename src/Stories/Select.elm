@@ -51,8 +51,8 @@ type Option
 
 
 optionToString : Option -> String
-optionToString country =
-    case country of
+optionToString option =
+    case option of
         Option1 ->
             "option1"
 

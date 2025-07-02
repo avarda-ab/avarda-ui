@@ -2,7 +2,6 @@ import { createElmStory } from "../../.storybook/util";
 import { Elm } from "./Input.elm";
 
 export const Input = (controls) => {
-  console.log(controls);
   return createElmStory(Elm.Stories.Input, controls);
 };
 
