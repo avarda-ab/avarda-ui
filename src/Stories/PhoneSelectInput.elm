@@ -77,18 +77,10 @@ update model msg =
             in
             ( { model | phoneSelectInputModel = updatedSelectModel }, selectCmd )
 
-        OnSelect string ->
-            let
-                _ =
-                    Debug.log "OnSelect in parent" string
-            in
+        OnSelect _ ->
             ( model, Cmd.none )
 
-        OnInput string ->
-            let
-                _ =
-                    Debug.log "OnInput in parent" string
-            in
+        OnInput _ ->
             ( model, Cmd.none )
 
         NoOp ->

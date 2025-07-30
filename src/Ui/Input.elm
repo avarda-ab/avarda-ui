@@ -205,6 +205,7 @@ view ((Settings { leftChild, rightChild, borderRadius, id, isDisabled, hintText,
                         [ Css.borderStyle Css.none
                         , Css.pseudoClass "focus-visible" [ Css.outline Css.none, defaultPlaceholderColor ]
                         , Css.width (Css.pct 100)
+                        , Css.height (Css.px 54)
                         ]
                     , childView rightChild isDisabled
                     ]
@@ -296,25 +297,30 @@ childView child isDisabled =
 
 
 labelWithInputView : Input msg -> List Css.Style -> Html msg
-labelWithInputView ((Settings { value, isRequired, label, leftChild, id }) as model) inputStyles =
+labelWithInputView ((Settings { value, isRequired, label, leftChild, rightChild, id }) as model) inputStyles =
     let
         notFocusedLabelStyles =
             if String.isEmpty value then
                 let
-                    ( topPx, leftPx ) =
-                        if leftChild /= Nothing then
-                            ( 5, 0 )
+                    leftPx =
+                        if leftChild /= Nothing || rightChild /= Nothing then
+                            0
 
                         else
-                            ( 22, 16 )
+                            16
                 in
                 [ Css.fontSize (Css.px 16)
                 , Css.color (Css.hex "#454545")
                 , Css.position Css.absolute
-                , Css.top (Css.px topPx)
+                , Css.top (Css.px 21)
                 , Css.left (Css.px leftPx)
                 , Css.lineHeight (Css.px 12)
                 , Css.padding Css.zero
+                , Css.whiteSpace Css.noWrap
+                , Css.width (Css.pct 100)
+                , Css.textOverflow Css.ellipsis
+                , Css.property "overflow-x" "clip"
+                , Css.pointerEvents Css.none
                 ]
 
             else
@@ -329,6 +335,7 @@ labelWithInputView ((Settings { value, isRequired, label, leftChild, id }) as mo
             , Css.padding2 (Css.px 0) (Css.px 6)
             , Css.backgroundColor (Css.hex "#FFFFFF")
             , Css.color (Css.hex "#000000")
+            , Css.width Css.unset
             ]
     in
     Html.div
@@ -364,7 +371,7 @@ labelWithInputView ((Settings { value, isRequired, label, leftChild, id }) as mo
             , Attributes.for (inputId id)
             , Attributes.css notFocusedLabelStyles
             ]
-            [ Html.text label, AccessibilityUtil.requiredAsterisk isRequired ]
+            [ AccessibilityUtil.requiredAsterisk isRequired, Html.text label ]
         ]
 
 

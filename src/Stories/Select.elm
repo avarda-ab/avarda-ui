@@ -89,11 +89,7 @@ update model msg =
             in
             ( { model | selectModel = updatedSelectModel }, selectCmd )
 
-        OnSelect string ->
-            let
-                _ =
-                    Debug.log "OnSelect in parent" string
-            in
+        OnSelect _ ->
             ( model, Cmd.none )
 
         NoOp ->
@@ -106,10 +102,7 @@ main =
         { init =
             \controls ->
                 ( { controls = decodeControls controls controlsDecoder defaultControls
-                  , selectModel =
-                        Ui.Select.init "test-options"
-
-                  -- |> Ui.Select.setSelectedOption Option1
+                  , selectModel = Ui.Select.init "test-options"
                   }
                 , Cmd.none
                 )

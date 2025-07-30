@@ -1,4 +1,4 @@
-module Ui.SelectNative exposing (new, setOptionGroups, setOptions, view, withAriaLabel, withBorderRadius, withIsDisabled, withIsRequired, withMaybeError, withOptionToLabel)
+module Ui.SelectNative exposing (new, setOptionGroups, setOptions, view, withAriaLabel, withBorderRadius, withCustomOptionSorting, withIsDisabled, withIsRequired, withMaybeError, withOptionToLabel)
 
 import Css
 import Html.Styled as Html exposing (Html)
@@ -33,11 +33,12 @@ errorId id =
 type Select a msg
     = Settings
         { id : String
-        , onChange : String -> msg
+        , onChange : a -> msg
         , selectedOption : Maybe a
         , placeholder : String
         , optionGroupList : List (List a)
         , optionToStringValue : a -> String
+        , stringValueToOption : String -> a
         , maybeOptionToLabel : Maybe (a -> String)
         , maybeError : Maybe String
         , isRequired : Bool
@@ -48,8 +49,18 @@ type Select a msg
         }
 
 
-new : String -> { label : String, optionToStringValue : a -> String, onChange : String -> msg, placeholder : String, selectedOption : Maybe a } -> Select a msg
-new id { label, optionToStringValue, onChange, selectedOption, placeholder } =
+new :
+    String
+    ->
+        { label : String
+        , optionToStringValue : a -> String
+        , stringValueToOption : String -> a
+        , onChange : a -> msg
+        , placeholder : String
+        , selectedOption : Maybe a
+        }
+    -> Select a msg
+new id { label, optionToStringValue, onChange, selectedOption, placeholder, stringValueToOption } =
     let
         -- TODO: Should be part of Theme
         defaultBorderRadius =
@@ -68,6 +79,7 @@ new id { label, optionToStringValue, onChange, selectedOption, placeholder } =
         , borderRadius = defaultBorderRadius
         , ariaLabel = Nothing
         , optionToStringValue = optionToStringValue
+        , stringValueToOption = stringValueToOption
         , maybeOptionToLabel = Nothing
         }
 
@@ -93,8 +105,18 @@ withBorderRadius borderRadius (Settings model) =
 
 
 withAriaLabel : String -> Select a msg -> Select a msg
-withAriaLabel id (Settings model) =
-    Settings { model | ariaLabel = Just id }
+withAriaLabel ariaLabel (Settings model) =
+    Settings { model | ariaLabel = Just ariaLabel }
+
+
+withOptionToLabel : (a -> String) -> Select a msg -> Select a msg
+withOptionToLabel optionToLabel (Settings model) =
+    Settings { model | maybeOptionToLabel = Just optionToLabel }
+
+
+withCustomOptionSorting : (List a -> List a) -> Select a msg -> Select a msg
+withCustomOptionSorting sortFn (Settings model) =
+    Settings { model | optionGroupList = model.optionGroupList |> List.map (List.Extra.unique >> sortFn) }
 
 
 setOptions : List a -> Select a msg -> Select a msg
@@ -107,34 +129,26 @@ setOptionGroups optionGroupList (Settings ({ optionToStringValue } as model)) =
     Settings { model | optionGroupList = optionGroupList |> List.map (List.Extra.unique >> List.sortBy optionToStringValue) }
 
 
-withOptionToLabel : (a -> String) -> Select a msg -> Select a msg
-withOptionToLabel optionToLabel (Settings model) =
-    Settings { model | maybeOptionToLabel = Just optionToLabel }
-
-
 view : Select a msg -> Html msg
-view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, maybeError, onChange }) as model) =
+view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, maybeError, onChange, stringValueToOption }) as model) =
     let
         isInvalid =
             maybeError /= Nothing
 
-        maybeLabelView =
-            if ariaLabel == Nothing then
-                let
-                    labelStyles =
-                        [ Css.fontSize (Css.px 14)
-                        , Css.position Css.absolute
-                        , Css.top (Css.px -9)
-                        , Css.left (Css.px 10)
-                        , Css.lineHeight (Css.px 18)
-                        , Css.padding2 (Css.px 0) (Css.px 6)
-                        , Css.backgroundColor (Css.hex "#FFFFFF")
-                        ]
-                in
-                Html.span [ Attributes.css labelStyles, Attributes.id <| labelId id ] [ Html.text label, AccessibilityUtil.requiredAsterisk isRequired ]
-
-            else
-                Html.text ""
+        labelView =
+            Html.span
+                [ Attributes.css
+                    [ Css.fontSize (Css.px 14)
+                    , Css.position Css.absolute
+                    , Css.top (Css.px -9)
+                    , Css.left (Css.px 10)
+                    , Css.lineHeight (Css.px 18)
+                    , Css.padding2 (Css.px 0) (Css.px 6)
+                    , Css.backgroundColor (Css.hex "#FFFFFF")
+                    ]
+                , Attributes.id <| labelId id
+                ]
+                [ AccessibilityUtil.requiredAsterisk isRequired, Html.text label ]
 
         ariaLabelAttribute =
             ariaLabel
@@ -148,6 +162,7 @@ view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, ma
         [ Attributes.css
             [ Css.displayFlex
             , Css.flexDirection Css.column
+            , Css.width (Css.pct 100)
             , Css.fontSize (Css.px 16)
             , Css.lineHeight (Css.px 12)
             , Css.property "gap" "4px"
@@ -155,10 +170,10 @@ view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, ma
             , disabledStyle isDisabled
             ]
         ]
-        [ maybeLabelView
+        [ labelView
         , Html.select
             [ Attributes.id <| selectId id
-            , onChangeEvent onChange
+            , onChangeEvent (onChange << stringValueToOption)
             , Attributes.css
                 [ Css.displayFlex
                 , Css.padding2 (Css.px 12) (Css.px 16)
@@ -171,6 +186,7 @@ view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, ma
                 , Css.disabled [ Css.opacity Css.unset, Css.cursor Css.notAllowed ]
                 , Css.property "appearance" "none"
                 , Css.property "background" "none"
+                , Css.color (Css.hex "#000")
                 ]
             , Attributes.required isRequired
             , Attributes.disabled isDisabled
@@ -184,6 +200,7 @@ view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, ma
                 [ Css.position Css.absolute
                 , Css.right <| Css.px 16
                 , Css.top <| Css.px 15
+                , Css.pointerEvents Css.none
                 ]
             ]
             [ Icon.arrowDown ]

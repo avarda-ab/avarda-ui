@@ -1,4 +1,6 @@
-# Elm Design System POC
+# Elm Design System
+
+This is our Elm design system repo including both the elm code and a storybook.
 
 ## Requirements
 

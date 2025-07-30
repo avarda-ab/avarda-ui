@@ -302,7 +302,7 @@ selectedOptionView selectModel countryCode =
         flag =
             countryCodeToIcon countryCode
     in
-    Html.div [ Attributes.css [ Css.displayFlex, Css.alignItems Css.center, Css.property "gap" "8px" ] ]
+    Html.div [ Attributes.css [ Css.displayFlex, Css.alignItems Css.center, Css.property "gap" "4px" ] ]
         [ Html.div [ Attributes.css [ Css.displayFlex, Css.alignItems Css.center ] ]
             [ maybeFlagView flag
             , if Ui.SelectInternal.Model.getIsOpen selectModel then

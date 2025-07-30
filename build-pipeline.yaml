@@ -1,0 +1,36 @@
+name: $(Date:yyyyMMdd)$(Rev:.r)
+
+trigger:
+  - master
+
+pool:
+  name: 'avdonl-build'
+
+jobs:
+  - job: Build
+    steps:
+      - task: NodeTool@0
+        displayName: 'Use Node 22.15.x'
+        inputs:
+          versionSpec: 22.15.x
+      - script: |
+          corepack enable
+          pnpm install
+        displayName: 'pnpm install'
+
+      - script: pnpm build-storybook
+        displayName: 'pnpm build-storybook'
+
+      - task: ArchiveFiles@2
+        displayName: 'Archive files'
+        inputs:
+          rootFolderOrFile: '$(Build.SourcesDirectory)/storybook-static'
+          includeRootFolder: false
+          archiveType: 'zip'
+          archiveFile: '$(Build.ArtifactStagingDirectory)/frontend.zip'
+          replaceExistingArchive: true
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifact'
+        inputs:
+          ArtifactName: 'frontend.zip'

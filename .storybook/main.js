@@ -6,12 +6,18 @@ const config = {
   addons: [
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
-    "@storybook/addon-a11y"
+    "@storybook/addon-a11y",
   ],
   framework: {
     name: "@storybook/html-vite",
     options: {},
   },
   staticDirs: ["../public"],
+  async viteFinal(config, { configType }) {
+    if (configType === "PRODUCTION") {
+      return { ...config, base: "./" };
+    }
+    return config;
+  },
 };
 export default config;

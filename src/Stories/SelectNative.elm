@@ -112,15 +112,15 @@ stringValueToOption option =
 
 
 type Msg
-    = SelectedOption String
+    = SelectedOption Option
     | NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
     case msg of
-        SelectedOption value ->
-            ( { model | selectedOption = stringValueToOption value }, Cmd.none )
+        SelectedOption option ->
+            ( { model | selectedOption = option }, Cmd.none )
 
         NoOp ->
             ( model, Cmd.none )
@@ -144,7 +144,7 @@ main =
                         else
                             Just selectedOption
                 in
-                Ui.SelectNative.new "test-selectnative" { onChange = SelectedOption, optionToStringValue = optionToStringValue, label = label, placeholder = placeholderOption, selectedOption = selectedOption_ }
+                Ui.SelectNative.new "test-selectnative" { onChange = SelectedOption, optionToStringValue = optionToStringValue, stringValueToOption = stringValueToOption, label = label, placeholder = placeholderOption, selectedOption = selectedOption_ }
                     |> Ui.SelectNative.setOptions [ Option1, Option2, Option3 ]
                     |> Ui.SelectNative.withMaybeError error
                     |> Ui.SelectNative.withIsDisabled isDisabled

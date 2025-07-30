@@ -217,7 +217,7 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
                             , Css.backgroundColor (Css.hex "#FFFFFF")
                             ]
                 in
-                Html.span [ Attributes.css labelStyles, Attributes.id (Model.getLabelId selectModel) ] [ Html.text label, AccessibilityUtil.requiredAsterisk isRequired ]
+                Html.span [ Attributes.css labelStyles, Attributes.id (Model.getLabelId selectModel) ] [ AccessibilityUtil.requiredAsterisk isRequired, Html.text label ]
 
             else
                 Html.text ""
@@ -295,7 +295,7 @@ defaultSelectedOptionView selectModel maybeOption =
                 Nothing ->
                     ( Html.text "", Css.justifyContent Css.flexEnd )
     in
-    Html.div [ Attributes.css [ Css.displayFlex, Css.alignItems Css.center, Css.width (Css.pct 100), justifyContentStyle ] ]
+    Html.div [ Attributes.css [ Css.displayFlex, Css.alignItems Css.center, Css.width (Css.pct 100), justifyContentStyle, Css.color (Css.hex "#000") ] ]
         [ maybeOptionView
         , if Model.getIsOpen selectModel then
             Icon.arrowUp

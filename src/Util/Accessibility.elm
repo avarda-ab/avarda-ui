@@ -99,7 +99,7 @@ requiredAsterisk isRequired =
                 [ Css.color (Css.hex "#BB0E15") ]
             , ariaHidden
             ]
-            [ Html.text "*\u{00A0}" ]
+            [ Html.text "*\u{200A}" ]
 
     else
         Html.text ""

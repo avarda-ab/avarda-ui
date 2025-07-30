@@ -1,0 +1,35 @@
+import { Meta } from "@storybook/blocks";
+
+import FigmaPlugin from "./assets/figma-plugin.png";
+
+<Meta title="Introduction" />
+
+# Introduction
+
+This is a storybook for our Elm design system. You can find all the
+components which were already implemented in the design system itself under the
+**Stories** tab in the left menu. You can use this tool to explore the components or tweak controls to see how each component looks or behaves in specific scenarios. You can also check if the components meets the accessibility standards thanks to the built-in **Axe a11y** addon.
+
+Currently, the work on the design system is still
+ongoing. We don't have all the components implemented yet and we are in a process of trying using already existing components in some of our apps to see if they are really suitable for our use-cases. The main goal in the future is to have these design system
+components used in all of our Elm apps, leveraging [elm
+packages](https://package.elm-lang.org/).
+
+<h2 style={{ border: "none" }}> Might be cool to look into</h2>
+
+<div style={{ width: "50%" }}>
+  <img src={FigmaPlugin} alt="Windows showing the Storybook plugin in Figma" />
+  <h3 style={{ marginTop: 10 }}>Figma Plugin</h3>
+  <p>
+    Embed your stories into Figma to cross-reference the design and live
+    implementation in one place.
+  </p>
+  <a
+    href="https://storybook.js.org/docs/sharing/design-integrations/?renderer=html#embed-storybook-in-figma-with-the-plugin"
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{ textDecoration: "underline" }}
+  >
+    Learn more
+  </a>
+</div>
