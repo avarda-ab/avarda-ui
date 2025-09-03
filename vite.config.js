@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import plugin from "vite-plugin-elm";
 
 export default defineConfig(({ mode }) => {
-  const [debug, optimize] = mode === "dev" ? [true, false] : [false, true];
+  const [debug, optimize] = mode === "dev" ? [true, false] : [true, false];
   return {
     plugins: [
       plugin({

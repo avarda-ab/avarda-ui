@@ -1,8 +1,8 @@
-module Ui.Select exposing (Model, Msg, init, new, onSelectCallback, setOptions, setSelectedOption, update, updateWithCallbacks, view, withAdditionalWrapperStyles, withAriaLabel, withBorderRadius, withContainerPosition, withCustomOptionViewFn, withCustomSelectedOptionViewFn, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withTopPx)
+module Ui.Select exposing (Model, Msg, init, new, onSelectCallback, scrollOptionIntoView, setOptions, setSelectedOption, update, updateWithCallbacks, view, withAdditionalWrapperStyles, withAriaLabel, withBorderRadius, withContainerPosition, withCustomOptionViewFn, withCustomSelectedOptionViewFn, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withTopPx)
 
 import Css
 import Css.Global
-import Html.Styled as Html exposing (Attribute, Html)
+import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Json.Decode as Decode
@@ -11,6 +11,7 @@ import Ui.SelectInternal.Model as Model exposing (Model)
 import Ui.SelectInternal.Msg as Msg exposing (Msg(..))
 import Ui.SelectInternal.Update as Update
 import Util.Accessibility as AccessibilityUtil
+import Util.Html as HtmlUtil
 import Util.Icon as Icon
 import Util.KeyPress as KeyPressUtil
 
@@ -35,7 +36,12 @@ update =
 
 onSelectCallback : (a -> msg) -> Update.Callback a msg
 onSelectCallback =
-    Update.onSelectCallback
+    Update.OnSelect
+
+
+scrollOptionIntoView : Update.ScrollOptionIntoViewCmd msg -> Update.Callback a msg
+scrollOptionIntoView =
+    Update.ScrollOptionIntoView
 
 
 init : String -> Model a
@@ -165,7 +171,7 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
             maybeError /= Nothing
 
         maybeAriaActiveDescendantAttribute =
-            attributeMaybe (\index -> AccessibilityUtil.ariaActiveDescendant (Model.getListboxOptionId selectModel index)) (Model.getMaybeHighlightedIndex selectModel)
+            HtmlUtil.maybeAttribute (\index -> AccessibilityUtil.ariaActiveDescendant (Model.getListboxOptionId selectModel index)) (Model.getMaybeHighlightedIndex selectModel)
 
         attributesBasedOnIsDisabled =
             if isDisabled then
@@ -217,7 +223,7 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
                             , Css.backgroundColor (Css.hex "#FFFFFF")
                             ]
                 in
-                Html.span [ Attributes.css labelStyles, Attributes.id (Model.getLabelId selectModel) ] [ AccessibilityUtil.requiredAsterisk isRequired, Html.text label ]
+                Html.span [ Attributes.css labelStyles, Attributes.id (Model.getLabelId selectModel) ] [ Html.text label, AccessibilityUtil.requiredAsterisk isRequired ]
 
             else
                 Html.text ""
@@ -425,11 +431,6 @@ invalidStyle isInvalid =
 
 
 -- Helpers
-
-
-attributeMaybe : (a -> Attribute msg) -> Maybe a -> Attribute msg
-attributeMaybe fn =
-    Maybe.map fn >> Maybe.withDefault (Attributes.classList [])
 
 
 preventDefaultOn : String -> msg -> Html.Attribute msg

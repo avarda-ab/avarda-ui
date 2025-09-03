@@ -1,4 +1,4 @@
-module Ui.PhoneSelectInput exposing (Model, Msg, init, new, onInputCallback, onInputTabKeyDownCallback, onSelectCallback, setOptions, setPhoneInputValue, setSelectedOption, update, updateWithCallbacks, view, withBorderRadius, withHint, withInputMaxLength, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight)
+module Ui.PhoneSelectInput exposing (Model, Msg, init, new, onInputCallback, onInputTabKeyDownCallback, onSelectCallback, scrollOptionIntoView, setOptions, setPhoneInputValue, setSelectedOption, update, updateWithCallbacks, view, withBorderRadius, withHint, withInputMaxLength, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight)
 
 import Css
 import Html.Styled as Html exposing (Html)
@@ -18,12 +18,14 @@ type Callback msg
     = OnSelect (CountryCode -> msg)
     | OnInput (String -> msg)
     | OnInputTabKeyDown msg
+    | ScrollOptionIntoView (ScrollOptionIntoViewCmd msg)
 
 
 type alias Callbacks msg =
     { onSelect : Maybe (CountryCode -> msg)
     , onInput : Maybe (String -> msg)
     , onInputTabKeyDown : Maybe msg
+    , scrollOptionIntoViewCmd : Maybe (ScrollOptionIntoViewCmd msg)
     }
 
 
@@ -42,9 +44,22 @@ onInputTabKeyDownCallback =
     OnInputTabKeyDown
 
 
+scrollOptionIntoView : ScrollOptionIntoViewCmd msg -> Callback msg
+scrollOptionIntoView =
+    ScrollOptionIntoView
+
+
 defaultCallbacks : Callbacks msg
 defaultCallbacks =
-    { onSelect = Nothing, onInput = Nothing, onInputTabKeyDown = Nothing }
+    { onSelect = Nothing
+    , onInput = Nothing
+    , onInputTabKeyDown = Nothing
+    , scrollOptionIntoViewCmd = Nothing
+    }
+
+
+type alias ScrollOptionIntoViewCmd msg =
+    String -> Cmd msg
 
 
 callbacksFromList : List (Callback msg) -> Callbacks msg
@@ -60,6 +75,9 @@ callbacksFromList =
 
                 OnInputTabKeyDown msg ->
                     { opts | onInputTabKeyDown = Just msg }
+
+                ScrollOptionIntoView scrollOptionIntoViewCmd ->
+                    { opts | scrollOptionIntoViewCmd = Just scrollOptionIntoViewCmd }
         )
         defaultCallbacks
 
@@ -82,17 +100,25 @@ updateWithCallbacks callbackList =
 
 
 updateRaw : Callbacks msg -> (Msg -> msg) -> Msg -> Model -> ( Model, Cmd msg )
-updateRaw { onInput, onSelect, onInputTabKeyDown } wrapMsg msg ((ModelInternal ({ selectModel } as modelInternal)) as model) =
+updateRaw { onInput, onSelect, onInputTabKeyDown, scrollOptionIntoViewCmd } wrapMsg msg ((ModelInternal ({ selectModel } as modelInternal)) as model) =
     case msg of
         HandleSelect subMsg ->
             let
+                maybeScrollOptionIntoViewCmd =
+                    case scrollOptionIntoViewCmd of
+                        Just scrollOptionIntoViewCmd_ ->
+                            [ Select.scrollOptionIntoView scrollOptionIntoViewCmd_ ]
+
+                        Nothing ->
+                            []
+
                 ( updatedSelectModel, selectCmd ) =
-                    Select.updateWithCallbacks [ Select.onSelectCallback SelectedCountryCode ]
-                        HandleSelect
+                    Select.updateWithCallbacks (Select.onSelectCallback (SelectedCountryCode >> wrapMsg) :: maybeScrollOptionIntoViewCmd)
+                        (HandleSelect >> wrapMsg)
                         subMsg
                         selectModel
             in
-            ( ModelInternal { modelInternal | selectModel = updatedSelectModel }, selectCmd |> Cmd.map wrapMsg )
+            ( ModelInternal { modelInternal | selectModel = updatedSelectModel }, selectCmd )
 
         SelectedCountryCode countryCode ->
             ( model, maybeTriggerParentMsg onSelect countryCode )

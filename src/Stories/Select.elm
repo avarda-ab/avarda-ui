@@ -20,7 +20,7 @@ type alias Controls =
 
 
 
--- NOTE: Currently always overwritten by Button.stories.js (args property) unless decoder fails
+-- NOTE: Currently always overwritten by Select.stories.js (args property) unless decoder fails
 
 
 defaultControls : Controls

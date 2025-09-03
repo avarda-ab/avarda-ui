@@ -1,4 +1,4 @@
-module Ui.SelectInternal.Update exposing (Callback, Callbacks, onSelectCallback, update, updateWithCallbacks)
+module Ui.SelectInternal.Update exposing (Callback(..), Callbacks, ScrollOptionIntoViewCmd, update, updateWithCallbacks)
 
 import Browser.Dom as Dom
 import List.Extra
@@ -9,21 +9,22 @@ import Ui.SelectInternal.Msg exposing (Msg(..))
 
 type Callback a msg
     = OnSelect (a -> msg)
+    | ScrollOptionIntoView (ScrollOptionIntoViewCmd msg)
 
 
 type alias Callbacks a msg =
     { onSelect : Maybe (a -> msg)
+    , scrollOptionIntoViewCmd : Maybe (ScrollOptionIntoViewCmd msg)
     }
 
 
-onSelectCallback : (a -> msg) -> Callback a msg
-onSelectCallback =
-    OnSelect
+type alias ScrollOptionIntoViewCmd msg =
+    String -> Cmd msg
 
 
 defaultCallbacks : Callbacks a msg
 defaultCallbacks =
-    { onSelect = Nothing }
+    { onSelect = Nothing, scrollOptionIntoViewCmd = Nothing }
 
 
 callbacksFromList : List (Callback a msg) -> Callbacks a msg
@@ -33,6 +34,9 @@ callbacksFromList =
             case opt of
                 OnSelect msg ->
                     { opts | onSelect = Just msg }
+
+                ScrollOptionIntoView scrollOptionIntoViewCmd ->
+                    { opts | scrollOptionIntoViewCmd = Just scrollOptionIntoViewCmd }
         )
         defaultCallbacks
 
@@ -48,7 +52,7 @@ updateWithCallbacks callbackList =
 
 
 updateRaw : Callbacks a msg -> (Msg a -> msg) -> Msg a -> Model a -> ( Model a, Cmd msg )
-updateRaw { onSelect } wrapMsg msg model =
+updateRaw { onSelect, scrollOptionIntoViewCmd } wrapMsg msg model =
     let
         isSelectOpened =
             Model.getIsOpen model
@@ -57,13 +61,13 @@ updateRaw { onSelect } wrapMsg msg model =
         HandleEnterOrSpace optionList ->
             if isSelectOpened then
                 ( model, Cmd.none )
-                    |> andThen (selectCountry onSelect (getHighlightedCountry model optionList))
+                    |> andThen (selectOption onSelect (getHighlightedOption model optionList))
                     |> andThen closeSelect
 
             else
                 ( model, Cmd.none )
                     |> andThen openSelect
-                    |> andThen (\updatedModel -> moveHighlight wrapMsg (Model.getSelectedOption updatedModel |> Maybe.andThen (\selectedOption -> optionList |> List.Extra.findIndex (\option -> option == selectedOption))) updatedModel)
+                    |> andThen (\updatedModel -> moveHighlight wrapMsg scrollOptionIntoViewCmd (Model.getSelectedOption updatedModel |> Maybe.andThen (\selectedOption -> optionList |> List.Extra.findIndex (\option -> option == selectedOption))) updatedModel)
 
         Close ->
             ( model, Cmd.none )
@@ -77,38 +81,37 @@ updateRaw { onSelect } wrapMsg msg model =
             else
                 ( model, Cmd.none )
                     |> andThen openSelect
-                    |> andThen (scrollToSelectedCountry wrapMsg optionList)
-                    |> andThen (\updatedModel -> moveHighlight wrapMsg (Model.getSelectedOption updatedModel |> Maybe.andThen (\selectedOption -> optionList |> List.Extra.findIndex (\option -> option == selectedOption))) updatedModel)
+                    |> andThen (\updatedModel -> moveHighlight wrapMsg scrollOptionIntoViewCmd (Model.getSelectedOption updatedModel |> Maybe.andThen (\selectedOption -> optionList |> List.Extra.findIndex (\option -> option == selectedOption))) updatedModel)
 
         Select option ->
             ( model, Cmd.none )
-                |> andThen (selectCountry onSelect (Just option))
+                |> andThen (selectOption onSelect (Just option))
                 |> andThen closeSelect
 
         HandleArrowDown optionList ->
             if isSelectOpened then
                 ( model, Cmd.none )
-                    |> andThen (moveHighlight wrapMsg (Just (Basics.min (List.length optionList - 1) (Maybe.withDefault -1 (Model.getMaybeHighlightedIndex model) + 1))))
+                    |> andThen (moveHighlight wrapMsg scrollOptionIntoViewCmd (Just (Basics.min (List.length optionList - 1) (Maybe.withDefault -1 (Model.getMaybeHighlightedIndex model) + 1))))
 
             else
                 ( model, Cmd.none )
                     |> andThen openSelect
-                    |> andThen (\updatedModel -> moveHighlight wrapMsg (Model.getSelectedOption updatedModel |> Maybe.andThen (\selectedOption -> optionList |> List.Extra.findIndex (\option -> option == selectedOption))) updatedModel)
+                    |> andThen (\updatedModel -> moveHighlight wrapMsg scrollOptionIntoViewCmd (Model.getSelectedOption updatedModel |> Maybe.andThen (\selectedOption -> optionList |> List.Extra.findIndex (\option -> option == selectedOption))) updatedModel)
 
         HandleArrowUp ->
             if isSelectOpened then
                 ( model, Cmd.none )
-                    |> andThen (moveHighlight wrapMsg (Just (Basics.max 0 (Maybe.withDefault 0 (Model.getMaybeHighlightedIndex model) - 1))))
+                    |> andThen (moveHighlight wrapMsg scrollOptionIntoViewCmd (Just (Basics.max 0 (Maybe.withDefault 0 (Model.getMaybeHighlightedIndex model) - 1))))
 
             else
                 ( model, Cmd.none )
                     |> andThen openSelect
-                    |> andThen (moveHighlight wrapMsg (Just 0))
+                    |> andThen (moveHighlight wrapMsg scrollOptionIntoViewCmd (Just 0))
 
         HandleOnBlur optionList ->
             if isSelectOpened then
                 ( model, Cmd.none )
-                    |> andThen (selectCountry onSelect (getHighlightedCountry model optionList))
+                    |> andThen (selectOption onSelect (getHighlightedOption model optionList))
                     |> andThen closeSelect
 
             else
@@ -138,11 +141,11 @@ openSelect model =
     ( Model.openSelect model, Cmd.none )
 
 
-selectCountry : Maybe (a -> msg) -> Maybe a -> Model a -> ( Model a, Cmd msg )
-selectCountry onSelect maybeCountry model =
+selectOption : Maybe (a -> msg) -> Maybe a -> Model a -> ( Model a, Cmd msg )
+selectOption onSelect maybeOption model =
     let
         ( updatedModel, cmd ) =
-            case maybeCountry of
+            case maybeOption of
                 Just option ->
                     ( Model.setSelectedOption option model
                     , maybeTriggerParentMsg onSelect option
@@ -154,22 +157,24 @@ selectCountry onSelect maybeCountry model =
     ( updatedModel, cmd )
 
 
-moveHighlight : (Msg a -> msg) -> Maybe Int -> Model a -> ( Model a, Cmd msg )
-moveHighlight wrapMsg maybeIndex model =
-    ( Model.moveHighlight maybeIndex model, getElementsAndScrollMenu wrapMsg model maybeIndex )
-
-
-scrollToSelectedCountry : (Msg a -> msg) -> List a -> Model a -> ( Model a, Cmd msg )
-scrollToSelectedCountry wrapMsg optionList model =
+moveHighlight : (Msg a -> msg) -> Maybe (ScrollOptionIntoViewCmd msg) -> Maybe Int -> Model a -> ( Model a, Cmd msg )
+moveHighlight wrapMsg maybeScrollOptionIntoViewCmd maybeIndex model =
     let
-        selectedOptionIndex =
-            Model.getSelectedOption model |> Maybe.andThen (\selectedOption -> optionList |> List.Extra.findIndex (\option -> option == selectedOption))
+        scrollOptionIntoViewCmd =
+            case maybeScrollOptionIntoViewCmd of
+                Just scrollOptionntoViewCmd_ ->
+                    maybeIndex
+                        |> Maybe.map (Model.getListboxOptionId model >> scrollOptionntoViewCmd_)
+                        |> Maybe.withDefault Cmd.none
+
+                Nothing ->
+                    getElementsAndScrollMenu wrapMsg model maybeIndex
     in
-    ( model, getElementsAndScrollMenu wrapMsg model selectedOptionIndex )
+    ( Model.moveHighlight maybeIndex model, scrollOptionIntoViewCmd )
 
 
-getHighlightedCountry : Model a -> List a -> Maybe a
-getHighlightedCountry model optionList =
+getHighlightedOption : Model a -> List a -> Maybe a
+getHighlightedOption model optionList =
     Model.getMaybeHighlightedIndex model |> Maybe.andThen (\index -> optionList |> List.Extra.getAt index)
 
 

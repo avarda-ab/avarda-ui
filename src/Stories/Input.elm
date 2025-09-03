@@ -25,7 +25,7 @@ type alias Controls =
 
 
 
--- NOTE: Currently always overwritten by Button.stories.js (args property) unless decoder fails
+-- NOTE: Currently always overwritten by In.stories.js (args property) unless decoder fails
 
 
 defaultControls : Controls
@@ -42,8 +42,8 @@ defaultControls =
     }
 
 
-decoder : Decode.Decoder Controls
-decoder =
+controlsDecoder : Decode.Decoder Controls
+controlsDecoder =
     Decode.succeed Controls
         |> decodeStringControl "label"
         |> decodeMaybeStringControl "placeholder"
@@ -78,7 +78,7 @@ update msg model =
 main : Program ControlsFlags Model Msg
 main =
     Browser.element
-        { init = \controls -> ( { controls = decodeControls controls decoder defaultControls, value = "" }, Cmd.none )
+        { init = \controls -> ( { controls = decodeControls controls controlsDecoder defaultControls, value = "" }, Cmd.none )
         , update = \msg model -> update msg model
         , view =
             \{ value, controls } ->

@@ -148,7 +148,7 @@ view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, ma
                     ]
                 , Attributes.id <| labelId id
                 ]
-                [ AccessibilityUtil.requiredAsterisk isRequired, Html.text label ]
+                [ Html.text label, AccessibilityUtil.requiredAsterisk isRequired ]
 
         ariaLabelAttribute =
             ariaLabel

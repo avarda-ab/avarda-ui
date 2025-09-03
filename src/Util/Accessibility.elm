@@ -1,5 +1,6 @@
 module Util.Accessibility exposing
     ( ariaActiveDescendant
+    , ariaAutocompleteList
     , ariaControls
     , ariaDescribedBy
     , ariaDescribedByList
@@ -91,15 +92,20 @@ ariaDescribedByList =
     String.join " " >> Attributes.attribute "aria-describedby"
 
 
+ariaAutocompleteList : Attribute a
+ariaAutocompleteList =
+    Attributes.attribute "aria-autocomplete" "list"
+
+
 requiredAsterisk : Bool -> Html msg
 requiredAsterisk isRequired =
     if isRequired then
         Html.span
             [ Attributes.css
-                [ Css.color (Css.hex "#BB0E15") ]
+                [ Css.color (Css.hex "#000000") ]
             , ariaHidden
             ]
-            [ Html.text "*\u{200A}" ]
+            [ Html.text "\u{200A}*" ]
 
     else
         Html.text ""

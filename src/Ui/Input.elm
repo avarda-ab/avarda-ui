@@ -1,4 +1,4 @@
-module Ui.Input exposing (new, view, withAdditionalWrapperStyles, withAttributes, withAutocomplete, withBorderRadius, withHint, withInputType, withIsDisabled, withIsRequired, withLeftChild, withMaxLength, withMaybeError, withOnKeyDown, withPlaceholder, withRightChild)
+module Ui.Input exposing (inputWrapperId, new, view, withAdditionalWrapperStyles, withAttributes, withAutocomplete, withBorderRadius, withHint, withInputType, withIsDisabled, withIsRequired, withLeftChild, withMaxLength, withMaybeError, withOnKeyDown, withPlaceholder, withRightChild)
 
 import Css
 import Css.Global
@@ -14,29 +14,38 @@ baseId =
     "avd-input-"
 
 
+prependBaseId : String -> String
+prependBaseId id =
+    if String.contains "avd-suggestion_input-" id then
+        id
+
+    else
+        baseId ++ id
+
+
 inputId : String -> String
 inputId id =
-    baseId ++ id
+    prependBaseId id
 
 
 labelId : String -> String
 labelId id =
-    baseId ++ id ++ "-label"
+    inputId id ++ "-label"
 
 
 inputWrapperId : String -> String
 inputWrapperId id =
-    baseId ++ id ++ "-wrapper"
+    inputId id ++ "-wrapper"
 
 
 errorId : String -> String
 errorId id =
-    baseId ++ id ++ "-error"
+    inputId id ++ "-error"
 
 
 hintId : String -> String
 hintId id =
-    baseId ++ id ++ "-hint"
+    inputId id ++ "-hint"
 
 
 type Input msg
@@ -187,8 +196,7 @@ view ((Settings { leftChild, rightChild, borderRadius, id, isDisabled, hintText,
 
             else
                 Html.div
-                    [ Attributes.id (inputWrapperId id)
-                    , Attributes.css
+                    [ Attributes.css
                         [ Css.displayFlex
                         , Css.height (Css.px 54)
                         , Css.pseudoClass "focus-within" [ defaultFocusOutline, invalidStyle_ ]
@@ -214,7 +222,8 @@ view ((Settings { leftChild, rightChild, borderRadius, id, isDisabled, hintText,
             maybeError == Nothing
     in
     Html.div
-        [ Attributes.css
+        [ Attributes.id (inputWrapperId id)
+        , Attributes.css
             ([ Css.displayFlex
              , Css.flexDirection Css.column
              , Css.property "gap" "4px"
@@ -371,7 +380,7 @@ labelWithInputView ((Settings { value, isRequired, label, leftChild, rightChild,
             , Attributes.for (inputId id)
             , Attributes.css notFocusedLabelStyles
             ]
-            [ AccessibilityUtil.requiredAsterisk isRequired, Html.text label ]
+            [ Html.text label, AccessibilityUtil.requiredAsterisk isRequired ]
         ]
 
 
