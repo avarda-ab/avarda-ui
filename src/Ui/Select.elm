@@ -211,6 +211,7 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
                             , Css.top (Css.px 22)
                             , Css.left (Css.px 16)
                             , Css.lineHeight (Css.px 12)
+                            , Css.pointerEvents Css.none
                             ]
 
                         else

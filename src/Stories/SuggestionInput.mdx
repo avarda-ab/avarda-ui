@@ -1,3 +1,17 @@
-Don't confuse this component with **Search input**, this component only displays suggestions received from an application that uses this component. It should replace our current "autocomplete" inputs solution in Checkout that works exactly like this.
+This component allows you to get autocomplete suggestions either from hardcoded suggestions set by application's FE or remote suggestions obtained from application's BE.
 
-User enters something into an input -> app calls BE with the query -> app updates this component with received suggestions to be shown
+To use it with the hardcoded list of suggestions, just set the `suggestionList` after init:
+
+```js
+SuggestionInput.init "test-suggestion-input"
+    |> SuggestionInput.setSuggestions suggestionList
+```
+
+If you wish to use it with remote suggestions, add a `remoteSuggestions` update option in your update function.
+
+The type of `requestCmd` must be `String -> (RemoteData.WebData (List a) -> msg) -> Cmd msg`, where `String` is the request's query.
+
+```js
+SuggestionInput.updateWith
+    [ SuggestionInput.remoteSuggestions { requestCmd = fetchSuggestions, requestMinInputLength = 3 } ]
+```

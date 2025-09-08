@@ -147,7 +147,9 @@ main =
         { init =
             \controls ->
                 ( { controls = decodeControls controls controlsDecoder defaultControls
-                  , suggestionInputModel = Ui.SuggestionInput.init "test-suggestions" |> Ui.SuggestionInput.setSuggestions suggestions
+                  , suggestionInputModel =
+                        Ui.SuggestionInput.init "test-suggestions"
+                            |> Ui.SuggestionInput.setSuggestions suggestions
                   }
                 , Cmd.none
                 )
