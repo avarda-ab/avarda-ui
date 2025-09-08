@@ -1,4 +1,4 @@
-module Ui.SelectNative exposing (new, setOptionGroups, setOptions, view, withAriaLabel, withBorderRadius, withCustomOptionSorting, withIsDisabled, withIsRequired, withMaybeError, withOptionToLabel)
+module Ui.SelectNative exposing (new, setBasicOptions, setOptionGroups, view, withAriaLabel, withBorderRadius, withCustomOptionSorting, withIsDisabled, withIsRequired, withMaybeError, withOptionToLabel)
 
 import Css
 import Html.Styled as Html exposing (Html)
@@ -36,7 +36,7 @@ type Select a msg
         , onChange : a -> msg
         , selectedOption : Maybe a
         , placeholder : String
-        , optionGroupList : List (List a)
+        , options : OptionType a
         , optionToStringValue : a -> String
         , stringValueToOption : String -> a
         , maybeOptionToLabel : Maybe (a -> String)
@@ -47,6 +47,11 @@ type Select a msg
         , borderRadius : Float
         , ariaLabel : Maybe String
         }
+
+
+type OptionType a
+    = BasicOptionList (List a)
+    | OptionGroupList (List (List a))
 
 
 new :
@@ -74,7 +79,7 @@ new id { label, optionToStringValue, onChange, selectedOption, placeholder, stri
         , maybeError = Nothing
         , isRequired = False
         , isDisabled = False
-        , optionGroupList = []
+        , options = BasicOptionList []
         , label = label
         , borderRadius = defaultBorderRadius
         , ariaLabel = Nothing
@@ -116,17 +121,26 @@ withOptionToLabel optionToLabel (Settings model) =
 
 withCustomOptionSorting : (List a -> List a) -> Select a msg -> Select a msg
 withCustomOptionSorting sortFn (Settings model) =
-    Settings { model | optionGroupList = model.optionGroupList |> List.map (List.Extra.unique >> sortFn) }
+    Settings
+        { model
+            | options =
+                case model.options of
+                    BasicOptionList basicOptionList ->
+                        List.Extra.unique basicOptionList |> sortFn |> BasicOptionList
+
+                    OptionGroupList optionGroupList ->
+                        List.map (List.Extra.unique >> sortFn) optionGroupList |> OptionGroupList
+        }
 
 
-setOptions : List a -> Select a msg -> Select a msg
-setOptions optionList (Settings ({ optionToStringValue } as model)) =
-    Settings { model | optionGroupList = [ optionList |> List.Extra.unique |> List.sortBy optionToStringValue ] }
+setBasicOptions : List a -> Select a msg -> Select a msg
+setBasicOptions optionList (Settings ({ optionToStringValue } as model)) =
+    Settings { model | options = optionList |> List.Extra.unique |> List.sortBy optionToStringValue |> BasicOptionList }
 
 
 setOptionGroups : List (List a) -> Select a msg -> Select a msg
 setOptionGroups optionGroupList (Settings ({ optionToStringValue } as model)) =
-    Settings { model | optionGroupList = optionGroupList |> List.map (List.Extra.unique >> List.sortBy optionToStringValue) }
+    Settings { model | options = optionGroupList |> List.map (List.Extra.unique >> List.sortBy optionToStringValue) |> OptionGroupList }
 
 
 view : Select a msg -> Html msg
@@ -223,7 +237,7 @@ errorView maybeError id =
 
 
 optionGroupListView : Select a msg -> List (Html msg)
-optionGroupListView (Settings { optionGroupList, placeholder, selectedOption, optionToStringValue, maybeOptionToLabel }) =
+optionGroupListView (Settings { options, placeholder, selectedOption, optionToStringValue, maybeOptionToLabel }) =
     let
         placeholderOption =
             Html.option
@@ -249,7 +263,12 @@ optionGroupListView (Settings { optionGroupList, placeholder, selectedOption, op
                 >> Html.optgroup []
 
         optgroups =
-            List.map optgroupView optionGroupList
+            case options of
+                BasicOptionList optionList ->
+                    List.map optionView optionList
+
+                OptionGroupList optionGroupList ->
+                    List.map optgroupView optionGroupList
     in
     placeholderOption :: optgroups
 

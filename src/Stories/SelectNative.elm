@@ -145,7 +145,7 @@ main =
                             Just selectedOption
                 in
                 Ui.SelectNative.new "test-selectnative" { onChange = SelectedOption, optionToStringValue = optionToStringValue, stringValueToOption = stringValueToOption, label = label, placeholder = placeholderOption, selectedOption = selectedOption_ }
-                    |> Ui.SelectNative.setOptions [ Option1, Option2, Option3 ]
+                    |> Ui.SelectNative.setBasicOptions [ Option1, Option2, Option3 ]
                     |> Ui.SelectNative.withMaybeError error
                     |> Ui.SelectNative.withIsDisabled isDisabled
                     |> Ui.SelectNative.withIsRequired isRequired
