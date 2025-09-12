@@ -1,11 +1,11 @@
 module Stories.SelectNative exposing (main)
 
+import AvardaUi.SelectNative
 import Browser
 import Css
 import Html.Styled as Html
 import Html.Styled.Attributes as Attributes
 import Json.Decode as Decode
-import Ui.SelectNative
 import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeStringControl, decodeStringControl)
 
 
@@ -144,13 +144,13 @@ main =
                         else
                             Just selectedOption
                 in
-                Ui.SelectNative.new "test-selectnative" { onChange = SelectedOption, optionToStringValue = optionToStringValue, stringValueToOption = stringValueToOption, label = label, placeholder = placeholderOption, selectedOption = selectedOption_ }
-                    |> Ui.SelectNative.setBasicOptions [ Option1, Option2, Option3 ]
-                    |> Ui.SelectNative.withMaybeError error
-                    |> Ui.SelectNative.withIsDisabled isDisabled
-                    |> Ui.SelectNative.withIsRequired isRequired
-                    |> Ui.SelectNative.withOptionToLabel (optionToLabel placeholderOption)
-                    |> Ui.SelectNative.view
+                AvardaUi.SelectNative.new "test-selectnative" { onChange = SelectedOption, optionToStringValue = optionToStringValue, stringValueToOption = stringValueToOption, label = label, placeholder = placeholderOption, selectedOption = selectedOption_ }
+                    |> AvardaUi.SelectNative.setBasicOptions [ Option1, Option2, Option3 ]
+                    |> AvardaUi.SelectNative.withMaybeError error
+                    |> AvardaUi.SelectNative.withIsDisabled isDisabled
+                    |> AvardaUi.SelectNative.withIsRequired isRequired
+                    |> AvardaUi.SelectNative.withOptionToLabel (optionToLabel placeholderOption)
+                    |> AvardaUi.SelectNative.view
                     |> List.singleton
                     |> Html.div [ Attributes.css [ Css.maxWidth (Css.px 300) ] ]
                     |> Html.toUnstyled

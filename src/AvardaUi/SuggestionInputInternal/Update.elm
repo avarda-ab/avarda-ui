@@ -1,12 +1,12 @@
-module Ui.SuggestionInputInternal.Update exposing (RemoteSuggestionsPayload, ScrollSuggestionIntoViewCmd, UpdateOption(..), UpdateOptions, update, updateWith)
+module AvardaUi.SuggestionInputInternal.Update exposing (RemoteSuggestionsPayload, ScrollSuggestionIntoViewCmd, UpdateOption(..), UpdateOptions, update, updateWith)
 
+import AvardaUi.SuggestionInputInternal.Model as Model exposing (Model)
+import AvardaUi.SuggestionInputInternal.Msg exposing (Msg(..))
 import Browser.Dom as Dom
 import List.Extra
 import Process
 import RemoteData
 import Task
-import Ui.SuggestionInputInternal.Model as Model exposing (Model)
-import Ui.SuggestionInputInternal.Msg exposing (Msg(..))
 
 
 type UpdateOption a msg

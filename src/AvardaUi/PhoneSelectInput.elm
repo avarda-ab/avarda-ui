@@ -1,14 +1,14 @@
-module Ui.PhoneSelectInput exposing (Model, Msg, init, new, onInputCallback, onInputTabKeyDownCallback, onSelectCallback, scrollOptionIntoView, setOptions, setPhoneInputValue, setSelectedOption, update, updateWithCallbacks, view, withBorderRadius, withHint, withInputMaxLength, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight)
+module AvardaUi.PhoneSelectInput exposing (Model, Msg, init, new, onInputCallback, onInputTabKeyDownCallback, onSelectCallback, scrollOptionIntoView, setOptions, setPhoneInputValue, setSelectedOption, update, updateWithCallbacks, view, withBorderRadius, withHint, withInputMaxLength, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight)
 
+import AvardaUi.Input as Input
+import AvardaUi.Select as Select
+import AvardaUi.SelectInternal.Model
 import Css
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attributes
 import List.Extra
 import Shared.Data as Data exposing (CountryCode(..))
 import Task
-import Ui.Input as Input
-import Ui.Select as Select
-import Ui.SelectInternal.Model
 import Util.Components exposing (withMaybeBuilder)
 import Util.Icon as Icon
 import Util.KeyPress as KeyPressUtil
@@ -331,7 +331,7 @@ selectedOptionView selectModel countryCode =
     Html.div [ Attributes.css [ Css.displayFlex, Css.alignItems Css.center, Css.property "gap" "4px" ] ]
         [ Html.div [ Attributes.css [ Css.displayFlex, Css.alignItems Css.center ] ]
             [ maybeFlagView flag
-            , if Ui.SelectInternal.Model.getIsOpen selectModel then
+            , if AvardaUi.SelectInternal.Model.getIsOpen selectModel then
                 Icon.arrowUp
 
               else

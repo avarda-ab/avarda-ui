@@ -1,15 +1,15 @@
-module Ui.SuggestionInput exposing (Model, Msg, getSelectedSuggestion, init, new, onInput, onSelect, reinit, remoteSuggestions, scrollSuggestionIntoViewCmd, setInputValue, setSuggestions, update, updateWith, view, withAriaLabel, withAutocomplete, withBorderRadius, withCustomSuggestionViewFn, withHint, withIsDisabled, withIsRequired, withLeftChild, withMaybeError, withMenuMaxHeight, withPlaceholder, withRightChild, withSelectedSuggestionAdditionalStyles, withTopPx)
+module AvardaUi.SuggestionInput exposing (Model, Msg, getSelectedSuggestion, init, new, onInput, onSelect, reinit, remoteSuggestions, scrollSuggestionIntoViewCmd, setInputValue, setSuggestions, update, updateWith, view, withAriaLabel, withAutocomplete, withBorderRadius, withCustomSuggestionViewFn, withHint, withIsDisabled, withIsRequired, withLeftChild, withMaybeError, withMenuMaxHeight, withPlaceholder, withRightChild, withSelectedSuggestionAdditionalStyles, withTopPx)
 
+import AvardaUi.Input as Input
+import AvardaUi.SuggestionInputInternal.Model as Model exposing (Model)
+import AvardaUi.SuggestionInputInternal.Msg as Msg exposing (Msg(..))
+import AvardaUi.SuggestionInputInternal.Update as Update
 import Css
 import Css.Global
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Json.Decode as Decode
-import Ui.Input as Input
-import Ui.SuggestionInputInternal.Model as Model exposing (Model)
-import Ui.SuggestionInputInternal.Msg as Msg exposing (Msg(..))
-import Ui.SuggestionInputInternal.Update as Update
 import Util.Accessibility as AccessibilityUtil
 import Util.Components exposing (withMaybeBuilder)
 import Util.Html as HtmlUtil

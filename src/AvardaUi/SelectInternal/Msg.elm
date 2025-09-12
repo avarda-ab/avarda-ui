@@ -1,4 +1,4 @@
-module Ui.SelectInternal.Msg exposing (Msg(..))
+module AvardaUi.SelectInternal.Msg exposing (Msg(..))
 
 
 type Msg a

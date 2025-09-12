@@ -1,11 +1,11 @@
 module Stories.Input exposing (main)
 
+import AvardaUi.Input
 import Browser
 import Css
 import Html.Styled as Html
 import Html.Styled.Attributes as Attributes
 import Json.Decode as Decode
-import Ui.Input
 import Util.Components exposing (withConditionalBuilder, withMaybeBuilder)
 import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeIntControl, decodeMaybeStringControl, decodeStringControl)
 import Util.Icon exposing (mockIconView)
@@ -86,16 +86,16 @@ main =
                     { isDisabled, isRequired, error, hint, label, placeholder, showIconLeft, showIconRight, maxLength } =
                         controls
                 in
-                Ui.Input.new "test-input" { value = value, msg = InsertedValue, label = label }
-                    |> Ui.Input.withMaybeError error
-                    |> Ui.Input.withIsDisabled isDisabled
-                    |> withConditionalBuilder (Ui.Input.withLeftChild mockIconView) showIconLeft
-                    |> withConditionalBuilder (Ui.Input.withRightChild mockIconView) showIconRight
-                    |> Ui.Input.withIsRequired isRequired
-                    |> withMaybeBuilder Ui.Input.withPlaceholder placeholder
-                    |> withMaybeBuilder Ui.Input.withHint hint
-                    |> withMaybeBuilder Ui.Input.withMaxLength maxLength
-                    |> Ui.Input.view
+                AvardaUi.Input.new "test-input" { value = value, msg = InsertedValue, label = label }
+                    |> AvardaUi.Input.withMaybeError error
+                    |> AvardaUi.Input.withIsDisabled isDisabled
+                    |> withConditionalBuilder (AvardaUi.Input.withLeftChild mockIconView) showIconLeft
+                    |> withConditionalBuilder (AvardaUi.Input.withRightChild mockIconView) showIconRight
+                    |> AvardaUi.Input.withIsRequired isRequired
+                    |> withMaybeBuilder AvardaUi.Input.withPlaceholder placeholder
+                    |> withMaybeBuilder AvardaUi.Input.withHint hint
+                    |> withMaybeBuilder AvardaUi.Input.withMaxLength maxLength
+                    |> AvardaUi.Input.view
                     |> List.singleton
                     |> Html.div [ Attributes.css [ Css.maxWidth (Css.px 300) ] ]
                     |> Html.toUnstyled

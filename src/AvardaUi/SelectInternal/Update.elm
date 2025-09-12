@@ -1,10 +1,10 @@
-module Ui.SelectInternal.Update exposing (Callback(..), Callbacks, ScrollOptionIntoViewCmd, update, updateWithCallbacks)
+module AvardaUi.SelectInternal.Update exposing (Callback(..), Callbacks, ScrollOptionIntoViewCmd, update, updateWithCallbacks)
 
+import AvardaUi.SelectInternal.Model as Model exposing (Model)
+import AvardaUi.SelectInternal.Msg exposing (Msg(..))
 import Browser.Dom as Dom
 import List.Extra
 import Task
-import Ui.SelectInternal.Model as Model exposing (Model)
-import Ui.SelectInternal.Msg exposing (Msg(..))
 
 
 type Callback a msg

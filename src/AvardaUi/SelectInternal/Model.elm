@@ -1,4 +1,4 @@
-module Ui.SelectInternal.Model exposing (Model, closeSelect, getComboboxId, getErrorId, getIsOpen, getLabelId, getListboxId, getListboxOptionId, getMaybeHighlightedIndex, getSelectedOption, init, moveHighlight, openSelect, setSelectedOption)
+module AvardaUi.SelectInternal.Model exposing (Model, closeSelect, getComboboxId, getErrorId, getIsOpen, getLabelId, getListboxId, getListboxOptionId, getMaybeHighlightedIndex, getSelectedOption, init, moveHighlight, openSelect, setSelectedOption)
 
 
 type Model a

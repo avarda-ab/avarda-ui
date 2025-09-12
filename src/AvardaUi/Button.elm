@@ -1,4 +1,4 @@
-module Ui.Button exposing (newPrimary, newSecondary, newTertiary, view, withBaseStyles, withHoverStyles, withIsDisabled, withLeftChild, withMsgTypeLink, withMsgTypeOnClick, withMsgTypeSubmit, withRightChild, withSizeSmall, withSizeXSmall)
+module AvardaUi.Button exposing (newPrimary, newSecondary, newTertiary, view, withBaseStyles, withHoverStyles, withIsDisabled, withLeftChild, withMsgTypeLink, withMsgTypeOnClick, withMsgTypeSubmit, withRightChild, withSizeSmall, withSizeXSmall)
 
 import Css
 import Css.Global

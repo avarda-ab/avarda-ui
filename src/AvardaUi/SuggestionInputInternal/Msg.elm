@@ -1,4 +1,4 @@
-module Ui.SuggestionInputInternal.Msg exposing (Msg(..))
+module AvardaUi.SuggestionInputInternal.Msg exposing (Msg(..))
 
 import RemoteData
 

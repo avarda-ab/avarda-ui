@@ -1,12 +1,12 @@
 module Stories.PhoneSelectInput exposing (main)
 
+import AvardaUi.PhoneSelectInput
 import Browser
 import Css
 import Html.Styled as Html
 import Html.Styled.Attributes as Attributes
 import Json.Decode as Decode
 import Shared.Data exposing (CountryCode(..))
-import Ui.PhoneSelectInput
 import Util.Components exposing (withMaybeBuilder)
 import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeIntControl, decodeMaybeStringControl, decodeStringControl)
 
@@ -51,14 +51,14 @@ controlsDecoder =
 
 
 type Msg
-    = HandlePhoneSelectInput Ui.PhoneSelectInput.Msg
+    = HandlePhoneSelectInput AvardaUi.PhoneSelectInput.Msg
     | OnSelect CountryCode
     | OnInput String
     | NoOp
 
 
 type alias Model =
-    ControlsModelExtended Controls { phoneSelectInputModel : Ui.PhoneSelectInput.Model }
+    ControlsModelExtended Controls { phoneSelectInputModel : AvardaUi.PhoneSelectInput.Model }
 
 
 update : Model -> Msg -> ( Model, Cmd Msg )
@@ -67,9 +67,9 @@ update model msg =
         HandlePhoneSelectInput selectMsg ->
             let
                 ( updatedSelectModel, selectCmd ) =
-                    Ui.PhoneSelectInput.updateWithCallbacks
-                        [ Ui.PhoneSelectInput.onSelectCallback OnSelect
-                        , Ui.PhoneSelectInput.onInputCallback OnInput
+                    AvardaUi.PhoneSelectInput.updateWithCallbacks
+                        [ AvardaUi.PhoneSelectInput.onSelectCallback OnSelect
+                        , AvardaUi.PhoneSelectInput.onInputCallback OnInput
                         ]
                         HandlePhoneSelectInput
                         selectMsg
@@ -93,8 +93,8 @@ main =
         { init =
             \controls ->
                 ( { phoneSelectInputModel =
-                        Ui.PhoneSelectInput.init "dialing-code"
-                            |> Ui.PhoneSelectInput.setSelectedOption SE
+                        AvardaUi.PhoneSelectInput.init "dialing-code"
+                            |> AvardaUi.PhoneSelectInput.setSelectedOption SE
                   , controls = decodeControls controls controlsDecoder defaultControls
                   }
                 , Cmd.none
@@ -107,15 +107,15 @@ main =
                         controls
                 in
                 Html.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.maxWidth (Css.px 300) ] ]
-                    [ Ui.PhoneSelectInput.new { inputLabel = label, selectAriaLabel = "Dialing code", phoneSelectInputModel = phoneSelectInputModel }
-                        |> Ui.PhoneSelectInput.setOptions [ SE, CZ, FI, SE, NO, DK ]
-                        |> Ui.PhoneSelectInput.withIsDisabled isDisabled
-                        |> Ui.PhoneSelectInput.withMaybeError error
-                        |> Ui.PhoneSelectInput.withIsRequired isRequired
-                        |> withMaybeBuilder Ui.PhoneSelectInput.withMenuMaxHeight maxHeight
-                        |> withMaybeBuilder Ui.PhoneSelectInput.withInputPlaceholder placeholder
-                        |> withMaybeBuilder Ui.PhoneSelectInput.withHint hint
-                        |> Ui.PhoneSelectInput.view HandlePhoneSelectInput
+                    [ AvardaUi.PhoneSelectInput.new { inputLabel = label, selectAriaLabel = "Dialing code", phoneSelectInputModel = phoneSelectInputModel }
+                        |> AvardaUi.PhoneSelectInput.setOptions [ SE, CZ, FI, SE, NO, DK ]
+                        |> AvardaUi.PhoneSelectInput.withIsDisabled isDisabled
+                        |> AvardaUi.PhoneSelectInput.withMaybeError error
+                        |> AvardaUi.PhoneSelectInput.withIsRequired isRequired
+                        |> withMaybeBuilder AvardaUi.PhoneSelectInput.withMenuMaxHeight maxHeight
+                        |> withMaybeBuilder AvardaUi.PhoneSelectInput.withInputPlaceholder placeholder
+                        |> withMaybeBuilder AvardaUi.PhoneSelectInput.withHint hint
+                        |> AvardaUi.PhoneSelectInput.view HandlePhoneSelectInput
                     ]
                     |> Html.toUnstyled
         , subscriptions = \_ -> Sub.none

@@ -1,5 +1,8 @@
-module Ui.Select exposing (Model, Msg, init, new, onSelectCallback, scrollOptionIntoView, setOptions, setSelectedOption, update, updateWithCallbacks, view, withAdditionalWrapperStyles, withAriaLabel, withBorderRadius, withContainerPosition, withCustomOptionViewFn, withCustomSelectedOptionViewFn, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withTopPx)
+module AvardaUi.Select exposing (Model, Msg, init, new, onSelectCallback, scrollOptionIntoView, setOptions, setSelectedOption, update, updateWithCallbacks, view, withAdditionalWrapperStyles, withAriaLabel, withBorderRadius, withContainerPosition, withCustomOptionViewFn, withCustomSelectedOptionViewFn, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withTopPx)
 
+import AvardaUi.SelectInternal.Model as Model exposing (Model)
+import AvardaUi.SelectInternal.Msg as Msg exposing (Msg(..))
+import AvardaUi.SelectInternal.Update as Update
 import Css
 import Css.Global
 import Html.Styled as Html exposing (Html)
@@ -7,9 +10,6 @@ import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Json.Decode as Decode
 import List.Extra
-import Ui.SelectInternal.Model as Model exposing (Model)
-import Ui.SelectInternal.Msg as Msg exposing (Msg(..))
-import Ui.SelectInternal.Update as Update
 import Util.Accessibility as AccessibilityUtil
 import Util.Html as HtmlUtil
 import Util.Icon as Icon

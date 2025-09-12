@@ -1,4 +1,4 @@
-module Ui.SelectNative exposing (new, setBasicOptions, setOptionGroups, view, withAriaLabel, withBorderRadius, withCustomOptionSorting, withIsDisabled, withIsRequired, withMaybeError, withOptionToLabel)
+module AvardaUi.SelectNative exposing (new, setBasicOptions, setOptionGroups, view, withAriaLabel, withBorderRadius, withCustomOptionSorting, withIsDisabled, withIsRequired, withMaybeError, withOptionToLabel)
 
 import Css
 import Html.Styled as Html exposing (Html)

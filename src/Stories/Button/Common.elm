@@ -1,8 +1,8 @@
 module Stories.Button.Common exposing (Controls, Variant(..), decoder, defaultControls, view)
 
+import AvardaUi.Button
 import Html.Styled as Html exposing (Html)
 import Json.Decode as Decode
-import Ui.Button
 import Util.Components exposing (withConditionalBuilder)
 import Util.Controls exposing (decodeBoolControl, decodeStringControl)
 import Util.Icon exposing (mockIconView)
@@ -53,29 +53,29 @@ view variant { label, isDisabled, showIconLeft, showIconRight, size } =
         newButton =
             case variant of
                 Primary ->
-                    Ui.Button.newPrimary { label = label }
+                    AvardaUi.Button.newPrimary { label = label }
 
                 Secondary ->
-                    Ui.Button.newSecondary { label = label }
+                    AvardaUi.Button.newSecondary { label = label }
 
                 Tertiary ->
-                    Ui.Button.newTertiary { label = label }
+                    AvardaUi.Button.newTertiary { label = label }
 
         sizeBuilder =
             case size of
                 "small" ->
-                    Ui.Button.withSizeSmall
+                    AvardaUi.Button.withSizeSmall
 
                 "xsmall" ->
-                    Ui.Button.withSizeXSmall
+                    AvardaUi.Button.withSizeXSmall
 
                 _ ->
                     identity
     in
     newButton
-        |> Ui.Button.withIsDisabled isDisabled
-        |> withConditionalBuilder (Ui.Button.withLeftChild mockIconView) showIconLeft
-        |> withConditionalBuilder (Ui.Button.withRightChild mockIconView) showIconRight
+        |> AvardaUi.Button.withIsDisabled isDisabled
+        |> withConditionalBuilder (AvardaUi.Button.withLeftChild mockIconView) showIconLeft
+        |> withConditionalBuilder (AvardaUi.Button.withRightChild mockIconView) showIconRight
         |> sizeBuilder
-        |> Ui.Button.withMsgTypeSubmit
-        |> Ui.Button.view
+        |> AvardaUi.Button.withMsgTypeSubmit
+        |> AvardaUi.Button.view

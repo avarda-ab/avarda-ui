@@ -1,11 +1,11 @@
 module Stories.SuggestionInput exposing (main)
 
+import AvardaUi.SuggestionInput
 import Browser
 import Css
 import Html.Styled as Html
 import Html.Styled.Attributes as Attributes
 import Json.Decode as Decode
-import Ui.SuggestionInput
 import Util.Components exposing (withConditionalBuilder, withMaybeBuilder)
 import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeIntControl, decodeMaybeStringControl, decodeStringControl)
 import Util.Icon exposing (mockIconView)
@@ -105,14 +105,14 @@ suggestions =
 
 
 type Msg
-    = HandleSelect (Ui.SuggestionInput.Msg Suggestion)
+    = HandleSelect (AvardaUi.SuggestionInput.Msg Suggestion)
     | OnSelect Suggestion
     | InsertedValue String
     | NoOp
 
 
 type alias Model =
-    ControlsModelExtended Controls { suggestionInputModel : Ui.SuggestionInput.Model Suggestion }
+    ControlsModelExtended Controls { suggestionInputModel : AvardaUi.SuggestionInput.Model Suggestion }
 
 
 update : Model -> Msg -> ( Model, Cmd Msg )
@@ -121,9 +121,9 @@ update model msg =
         HandleSelect selectMsg ->
             let
                 ( updatedSuggestionInputModel, selectCmd ) =
-                    Ui.SuggestionInput.updateWith
-                        [ Ui.SuggestionInput.onInput InsertedValue
-                        , Ui.SuggestionInput.onSelect OnSelect
+                    AvardaUi.SuggestionInput.updateWith
+                        [ AvardaUi.SuggestionInput.onInput InsertedValue
+                        , AvardaUi.SuggestionInput.onSelect OnSelect
                         ]
                         HandleSelect
                         selectMsg
@@ -148,8 +148,8 @@ main =
             \controls ->
                 ( { controls = decodeControls controls controlsDecoder defaultControls
                   , suggestionInputModel =
-                        Ui.SuggestionInput.init "test-suggestions"
-                            |> Ui.SuggestionInput.setSuggestions suggestions
+                        AvardaUi.SuggestionInput.init "test-suggestions"
+                            |> AvardaUi.SuggestionInput.setSuggestions suggestions
                   }
                 , Cmd.none
                 )
@@ -161,17 +161,17 @@ main =
                         controls
                 in
                 Html.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.maxWidth (Css.px 300) ] ]
-                    [ Ui.SuggestionInput.new { label = label, suggestionInputModel = suggestionInputModel, suggestionToInputValue = optionToString }
-                        |> Ui.SuggestionInput.withIsDisabled isDisabled
-                        |> Ui.SuggestionInput.withBorderRadius 8
-                        |> Ui.SuggestionInput.withMaybeError error
-                        |> Ui.SuggestionInput.withIsRequired isRequired
-                        |> withConditionalBuilder (Ui.SuggestionInput.withLeftChild mockIconView) showIconLeft
-                        |> withConditionalBuilder (Ui.SuggestionInput.withRightChild mockIconView) showIconRight
-                        |> withMaybeBuilder Ui.SuggestionInput.withPlaceholder placeholder
-                        |> withMaybeBuilder Ui.SuggestionInput.withHint hint
-                        |> withMaybeBuilder Ui.SuggestionInput.withMenuMaxHeight maxHeight
-                        |> Ui.SuggestionInput.view HandleSelect
+                    [ AvardaUi.SuggestionInput.new { label = label, suggestionInputModel = suggestionInputModel, suggestionToInputValue = optionToString }
+                        |> AvardaUi.SuggestionInput.withIsDisabled isDisabled
+                        |> AvardaUi.SuggestionInput.withBorderRadius 8
+                        |> AvardaUi.SuggestionInput.withMaybeError error
+                        |> AvardaUi.SuggestionInput.withIsRequired isRequired
+                        |> withConditionalBuilder (AvardaUi.SuggestionInput.withLeftChild mockIconView) showIconLeft
+                        |> withConditionalBuilder (AvardaUi.SuggestionInput.withRightChild mockIconView) showIconRight
+                        |> withMaybeBuilder AvardaUi.SuggestionInput.withPlaceholder placeholder
+                        |> withMaybeBuilder AvardaUi.SuggestionInput.withHint hint
+                        |> withMaybeBuilder AvardaUi.SuggestionInput.withMenuMaxHeight maxHeight
+                        |> AvardaUi.SuggestionInput.view HandleSelect
                     ]
                     |> Html.toUnstyled
         , subscriptions = \_ -> Sub.none

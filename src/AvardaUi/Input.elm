@@ -1,4 +1,45 @@
-module Ui.Input exposing (inputWrapperId, new, view, withAdditionalWrapperStyles, withAttributes, withAutocomplete, withBorderRadius, withHint, withInputType, withIsDisabled, withIsRequired, withLeftChild, withMaxLength, withMaybeError, withOnKeyDown, withPlaceholder, withRightChild)
+module AvardaUi.Input exposing
+    ( new, view
+    , withPlaceholder, withIsRequired, withIsDisabled, withInputType, withMaxLength, withBorderRadius, withAutocomplete, withAttributes, withAdditionalWrapperStyles, withOnKeyDown
+    , withMaybeError, withHint
+    , withLeftChild, withRightChild
+    )
+
+{-| Input field component for Avarda design system.
+
+This module provides a styled input with support for floating labels, hints, error messages,
+and optional left/right children. It uses the **builder pattern**:
+
+1.  Start with [`new`](#new) to create a base input.
+2.  Chain configuration functions like [`withPlaceholder`](#withPlaceholder) or [`withIsRequired`](#withIsRequired).
+3.  Finish with [`view`](#view) to render it.
+
+
+# Creating an Input
+
+@docs new, view
+
+
+# Identifiers
+
+@docs inputWrapperId
+
+
+# Configuration
+
+@docs withPlaceholder, withIsRequired, withIsDisabled, withInputType, withMaxLength, withBorderRadius, withAutocomplete, withAttributes, withAdditionalWrapperStyles, withOnKeyDown
+
+
+# Validation and Messaging
+
+@docs withMaybeError, withHint
+
+
+# Children
+
+@docs withLeftChild, withRightChild
+
+-}
 
 import Css
 import Css.Global
@@ -71,6 +112,17 @@ type Input msg
         }
 
 
+{-| Create a new input with required fields: `id`, `value`, `msg`, and `label`.
+
+This gives you a base input that you can configure further with `withX` functions.
+
+    Input.new "username"
+        { value = model.username
+        , msg = UsernameChanged
+        , label = "Username"
+        }
+
+-}
 new : String -> { value : String, msg : String -> msg, label : String } -> Input msg
 new id { value, msg, label } =
     let
@@ -102,76 +154,176 @@ new id { value, msg, label } =
         }
 
 
+{-| Show an error message and mark the input invalid.
+Replaces any active hint text.
+
+    Input.new "username" {...}
+        |> Input.withMaybeError (Just "This field is required")
+
+-}
 withMaybeError : Maybe String -> Input msg -> Input msg
 withMaybeError maybeError (Settings model) =
     Settings { model | maybeError = maybeError }
 
 
+{-| Add a placeholder to the input.
+Chain after `new`.
+
+    Input.new "username" {...}
+        |> Input.withPlaceholder "Enter username"
+
+-}
 withPlaceholder : String -> Input msg -> Input msg
 withPlaceholder placeholder (Settings model) =
     Settings { model | placeholder = Just placeholder }
 
 
+{-| Add a left-side child element, e.g. an icon.
+
+    Input.new "username" {...}
+        |> Input.withLeftChild (Icons.user [])
+
+-}
 withLeftChild : Html msg -> Input msg -> Input msg
 withLeftChild leftChild (Settings model) =
     Settings { model | leftChild = Just leftChild }
 
 
+{-| Add a right-side child element, e.g. a clear button.
+
+    Input.new "username" {...}
+        |> Input.withRightChild (Icons.clear [ onClick Clear ])
+
+-}
 withRightChild : Html msg -> Input msg -> Input msg
 withRightChild rightChild (Settings model) =
     Settings { model | rightChild = Just rightChild }
 
 
+{-| Mark the input as required.
+This adds a `*` to the label and sets `required=true`.
+
+    Input.new "username" {...}
+        |> Input.withIsRequired True
+
+-}
 withIsRequired : Bool -> Input msg -> Input msg
 withIsRequired isRequired (Settings model) =
     Settings { model | isRequired = isRequired }
 
 
+{-| Add a hint text below the input (shown when there is no error).
+
+    Input.new "username" {...}
+        |> Input.withHint "Must be at least 8 characters"
+
+-}
 withHint : String -> Input msg -> Input msg
 withHint hintText (Settings model) =
     Settings { model | hintText = Just hintText }
 
 
+{-| Add custom CSS styles to the outer wrapper element.
+
+    Input.new "username" {...}
+        |> Input.withAdditionalWrapperStyles [ Css.marginTop (Css.px 16) ]
+
+-}
 withAdditionalWrapperStyles : List Css.Style -> Input msg -> Input msg
 withAdditionalWrapperStyles additionalWrapperStyles (Settings model) =
     Settings { model | additionalWrapperStyles = additionalWrapperStyles }
 
 
+{-| Change the input type (e.g. `"text"`, `"password"`, `"email"`).
+
+    Input.new "password" {...}
+        |> Input.withInputType "password"
+
+-}
 withInputType : String -> Input msg -> Input msg
 withInputType inputType (Settings model) =
     Settings { model | inputType = inputType }
 
 
+{-| Disable the input.
+Visually dims and prevents typing.
+
+    Input.new "username" {...}
+        |> Input.withIsDisabled True
+
+-}
 withIsDisabled : Bool -> Input msg -> Input msg
 withIsDisabled isDisabled (Settings model) =
     Settings { model | isDisabled = isDisabled }
 
 
+{-| Adjust the border radius of the input box.
+
+    Input.new "username" {...}
+        |> Input.withBorderRadius 12
+
+-}
 withBorderRadius : Float -> Input msg -> Input msg
 withBorderRadius borderRadius (Settings model) =
     Settings { model | borderRadius = borderRadius }
 
 
+{-| Limit the maximum number of characters.
+
+    Input.new "username" {...}
+        |> Input.withMaxLength 20
+
+-}
 withMaxLength : Int -> Input msg -> Input msg
 withMaxLength maxLength (Settings model) =
     Settings { model | maxLength = maxLength }
 
 
+{-| Enable autocomplete with a given string like `"username"` or `"off"`.
+
+    Input.new "username" {...}
+        |> Input.withAutocomplete "username"
+
+-}
 withAutocomplete : String -> Input msg -> Input msg
 withAutocomplete autocomplete (Settings model) =
     Settings { model | autocomplete = Just autocomplete }
 
 
+{-| Attach additional HTML attributes to the underlying `<input>` element.
+For example `name` or `data-*` attributes.
+
+    Input.new "username" {...}
+        |> Input.withAttributes [ Attributes.name "username" ]
+
+-}
 withAttributes : List (Attribute msg) -> Input msg -> Input msg
 withAttributes attributes (Settings model) =
     Settings { model | attributes = attributes }
 
 
+{-| Listen for key presses and map them to messages.
+Useful for handling Enter/Escape in forms.
+
+    Input.new "username" {...}
+        |> Input.withOnKeyDown [ ( KeyPressUtil.Enter, Submit ) ]
+
+-}
 withOnKeyDown : List ( KeyPressUtil.KeyboardKey, msg ) -> Input msg -> Input msg
 withOnKeyDown onKeyDown (Settings model) =
     Settings { model | onKeyDown = onKeyDown }
 
 
+{-| Render the configured input as HTML.
+
+Always call this after you’ve built up the input with `new` and chained settings.
+
+    Input.new "username" {...}
+        |> Input.withPlaceholder "Enter username"
+        |> Input.withIsRequired True
+        |> Input.view
+
+-}
 view : Input msg -> Html msg
 view ((Settings { leftChild, rightChild, borderRadius, id, isDisabled, hintText, additionalWrapperStyles, maybeError }) as model) =
     let

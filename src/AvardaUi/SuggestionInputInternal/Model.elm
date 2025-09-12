@@ -1,4 +1,4 @@
-module Ui.SuggestionInputInternal.Model exposing (Model, deselectSuggestion, getFilteredSuggestions, getInputId, getInputLength, getInputValue, getIsSuggestionsExpanded, getListboxId, getListboxOptionId, getMaybeHighlightedIndex, getSelectedSuggestion, getSuggestions, hideSuggestions, init, isSuggestionsEmpty, moveHighlight, reinit, resetFilteredSuggestions, resetHighlight, setFilteredSuggestions, setInputValue, setSelectedSuggestion, setSuggestions, showSuggestions)
+module AvardaUi.SuggestionInputInternal.Model exposing (Model, deselectSuggestion, getFilteredSuggestions, getInputId, getInputLength, getInputValue, getIsSuggestionsExpanded, getListboxId, getListboxOptionId, getMaybeHighlightedIndex, getSelectedSuggestion, getSuggestions, hideSuggestions, init, isSuggestionsEmpty, moveHighlight, reinit, resetFilteredSuggestions, resetHighlight, setFilteredSuggestions, setInputValue, setSelectedSuggestion, setSuggestions, showSuggestions)
 
 
 type Model a

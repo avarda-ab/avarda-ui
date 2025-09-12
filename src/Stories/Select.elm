@@ -1,11 +1,11 @@
 module Stories.Select exposing (main)
 
+import AvardaUi.Select
 import Browser
 import Css
 import Html.Styled as Html
 import Html.Styled.Attributes as Attributes
 import Json.Decode as Decode
-import Ui.Select
 import Util.Components exposing (withConditionalBuilder, withMaybeBuilder)
 import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeIntControl, decodeMaybeStringControl, decodeStringControl)
 
@@ -67,13 +67,13 @@ optionToString option =
 
 
 type Msg
-    = HandleSelect (Ui.Select.Msg Option)
+    = HandleSelect (AvardaUi.Select.Msg Option)
     | OnSelect Option
     | NoOp
 
 
 type alias Model =
-    ControlsModelExtended Controls { selectModel : Ui.Select.Model Option }
+    ControlsModelExtended Controls { selectModel : AvardaUi.Select.Model Option }
 
 
 update : Model -> Msg -> ( Model, Cmd Msg )
@@ -82,7 +82,7 @@ update model msg =
         HandleSelect selectMsg ->
             let
                 ( updatedSelectModel, selectCmd ) =
-                    Ui.Select.updateWithCallbacks [ Ui.Select.onSelectCallback OnSelect ]
+                    AvardaUi.Select.updateWithCallbacks [ AvardaUi.Select.onSelectCallback OnSelect ]
                         HandleSelect
                         selectMsg
                         model.selectModel
@@ -102,7 +102,7 @@ main =
         { init =
             \controls ->
                 ( { controls = decodeControls controls controlsDecoder defaultControls
-                  , selectModel = Ui.Select.init "test-options"
+                  , selectModel = AvardaUi.Select.init "test-options"
                   }
                 , Cmd.none
                 )
@@ -114,14 +114,14 @@ main =
                         controls
                 in
                 Html.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.maxWidth (Css.px 300) ] ]
-                    [ Ui.Select.new { label = label, selectModel = selectModel, optionToString = optionToString }
-                        |> Ui.Select.setOptions [ Option1, Option2, Option3, Option4 ]
-                        |> Ui.Select.withIsDisabled isDisabled
-                        |> Ui.Select.withBorderRadius 8
-                        |> Ui.Select.withMaybeError error
-                        |> withConditionalBuilder Ui.Select.withIsRequired isRequired
-                        |> withMaybeBuilder Ui.Select.withMenuMaxHeight maxHeight
-                        |> Ui.Select.view HandleSelect
+                    [ AvardaUi.Select.new { label = label, selectModel = selectModel, optionToString = optionToString }
+                        |> AvardaUi.Select.setOptions [ Option1, Option2, Option3, Option4 ]
+                        |> AvardaUi.Select.withIsDisabled isDisabled
+                        |> AvardaUi.Select.withBorderRadius 8
+                        |> AvardaUi.Select.withMaybeError error
+                        |> withConditionalBuilder AvardaUi.Select.withIsRequired isRequired
+                        |> withMaybeBuilder AvardaUi.Select.withMenuMaxHeight maxHeight
+                        |> AvardaUi.Select.view HandleSelect
                     ]
                     |> Html.toUnstyled
         , subscriptions = \_ -> Sub.none
