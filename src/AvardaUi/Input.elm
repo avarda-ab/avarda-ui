@@ -20,11 +20,6 @@ and optional left/right children. It uses the **builder pattern**:
 @docs new, view
 
 
-# Identifiers
-
-@docs inputWrapperId
-
-
 # Configuration
 
 @docs withPlaceholder, withIsRequired, withIsDisabled, withInputType, withMaxLength, withBorderRadius, withAutocomplete, withAttributes, withAdditionalWrapperStyles, withOnKeyDown
