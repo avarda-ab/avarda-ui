@@ -1,6 +1,6 @@
 {
   "type": "package",
-  "name": "AvardaAB/avarda-ui",
+  "name": "avarda-ab/avarda-ui",
   "summary": "A design system made by Avarda devs.",
   "license": "MIT",
   "source-directories": ["src"],
