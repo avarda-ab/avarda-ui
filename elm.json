@@ -1,25 +1,26 @@
 {
-  "type": "package",
-  "name": "avarda-ab/avarda-ui",
-  "summary": "A design system made by Avarda devs.",
-  "license": "MIT",
-  "source-directories": ["src"],
-  "version": "1.0.0",
-  "exposed-modules": ["AvardaUi.Input"],
-  "elm-version": "0.19.0 <= v < 0.20.0",
-  "dependencies": {
-    "NoRedInk/elm-json-decode-pipeline": "1.0.1 <= v < 2.0.0",
-    "elm/browser": "1.0.0 <= v < 2.0.0",
-    "elm/core": "1.0.0 <= v < 2.0.0",
-    "elm/html": "1.0.0 <= v < 2.0.0",
-    "elm/http": "2.0.0 <= v < 3.0.0",
-    "elm/json": "1.0.0 <= v < 2.0.0",
-    "elm/time": "1.0.0 <= v < 2.0.0",
-    "elm/url": "1.0.0 <= v < 2.0.0",
-    "elm/virtual-dom": "1.0.2 <= v < 2.0.0",
-    "elm-community/list-extra": "8.7.0 <= v < 9.0.0",
-    "krisajenkins/remotedata": "6.1.0 <= v < 7.0.0",
-    "rtfeldman/elm-css": "18.0.0 <= v < 19.0.0"
-  },
-  "test-dependencies": {}
+    "type": "package",
+    "name": "avarda-ab/avarda-ui",
+    "summary": "A design system made by Avarda devs.",
+    "license": "MIT",
+    "version": "1.0.1",
+    "exposed-modules": [
+        "AvardaUi.Input"
+    ],
+    "elm-version": "0.19.0 <= v < 0.20.0",
+    "dependencies": {
+        "NoRedInk/elm-json-decode-pipeline": "1.0.1 <= v < 2.0.0",
+        "elm/browser": "1.0.0 <= v < 2.0.0",
+        "elm/core": "1.0.0 <= v < 2.0.0",
+        "elm/html": "1.0.0 <= v < 2.0.0",
+        "elm/http": "2.0.0 <= v < 3.0.0",
+        "elm/json": "1.0.0 <= v < 2.0.0",
+        "elm/time": "1.0.0 <= v < 2.0.0",
+        "elm/url": "1.0.0 <= v < 2.0.0",
+        "elm/virtual-dom": "1.0.2 <= v < 2.0.0",
+        "elm-community/list-extra": "8.7.0 <= v < 9.0.0",
+        "krisajenkins/remotedata": "6.1.0 <= v < 7.0.0",
+        "rtfeldman/elm-css": "18.0.0 <= v < 19.0.0"
+    },
+    "test-dependencies": {}
 }
