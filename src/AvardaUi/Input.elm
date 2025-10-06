@@ -1,14 +1,10 @@
 module AvardaUi.Input exposing
     ( new, view
-    , withPlaceholder, withIsRequired, withIsDisabled, withInputType, withMaxLength, withBorderRadius, withAutocomplete, withAttributes, withAdditionalWrapperStyles, withOnKeyDown
-    , withMaybeError, withHint
-    , withLeftChild, withRightChild
+    , withPlaceholder, withIsRequired, withIsDisabled, withInputType, withMaxLength, withBorderRadius, withAutocomplete, withAttributes, withOnKeyDown, withMaybeError, withHint, withLeftChild, withRightChild
     )
 
-{-| Input field component for Avarda design system.
-
-This module provides a styled input with support for floating labels, hints, error messages,
-and optional left/right children. It uses the **builder pattern**:
+{-| This component provides a styled input with support for floating labels, hints, error messages,
+and optional left/right children. It uses the [builder pattern](https://sporto.github.io/elm-patterns/basic/builder-pattern.html):
 
 1.  Start with [`new`](#new) to create a base input.
 2.  Chain configuration functions like [`withPlaceholder`](#withPlaceholder) or [`withIsRequired`](#withIsRequired).
@@ -22,27 +18,17 @@ and optional left/right children. It uses the **builder pattern**:
 
 # Configuration
 
-@docs withPlaceholder, withIsRequired, withIsDisabled, withInputType, withMaxLength, withBorderRadius, withAutocomplete, withAttributes, withAdditionalWrapperStyles, withOnKeyDown
-
-
-# Validation and Messaging
-
-@docs withMaybeError, withHint
-
-
-# Children
-
-@docs withLeftChild, withRightChild
+@docs withPlaceholder, withIsRequired, withIsDisabled, withInputType, withMaxLength, withBorderRadius, withAutocomplete, withAttributes, withOnKeyDown, withMaybeError, withHint, withLeftChild, withRightChild
 
 -}
 
+import AvardaUi.Util.Accessibility as AccessibilityUtil
+import AvardaUi.Util.KeyPress as KeyPressUtil
 import Css
 import Css.Global
 import Html.Styled as Html exposing (Attribute, Html)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
-import Util.Accessibility as AccessibilityUtil
-import Util.KeyPress as KeyPressUtil
 
 
 baseId : String
@@ -101,7 +87,6 @@ type Input msg
         , rightChild : Maybe (Html msg)
         , hintText : Maybe String
         , autocomplete : Maybe String
-        , additionalWrapperStyles : List Css.Style
         , maybeError : Maybe String
         , onKeyDown : List ( KeyPressUtil.KeyboardKey, msg )
         }
@@ -111,9 +96,9 @@ type Input msg
 
 This gives you a base input that you can configure further with `withX` functions.
 
-    Input.new "username"
+    AvardaUi.Input.new "username"
         { value = model.username
-        , msg = UsernameChanged
+        , msg = InsertedUsername
         , label = "Username"
         }
 
@@ -143,18 +128,13 @@ new id { value, msg, label } =
         , rightChild = Nothing
         , hintText = Nothing
         , autocomplete = Nothing
-        , additionalWrapperStyles = []
         , maybeError = Nothing
         , onKeyDown = []
         }
 
 
 {-| Show an error message and mark the input invalid.
-Replaces any active hint text.
-
-    Input.new "username" {...}
-        |> Input.withMaybeError (Just "This field is required")
-
+**Replaces any active hint text.**
 -}
 withMaybeError : Maybe String -> Input msg -> Input msg
 withMaybeError maybeError (Settings model) =
@@ -162,11 +142,6 @@ withMaybeError maybeError (Settings model) =
 
 
 {-| Add a placeholder to the input.
-Chain after `new`.
-
-    Input.new "username" {...}
-        |> Input.withPlaceholder "Enter username"
-
 -}
 withPlaceholder : String -> Input msg -> Input msg
 withPlaceholder placeholder (Settings model) =
@@ -174,10 +149,6 @@ withPlaceholder placeholder (Settings model) =
 
 
 {-| Add a left-side child element, e.g. an icon.
-
-    Input.new "username" {...}
-        |> Input.withLeftChild (Icons.user [])
-
 -}
 withLeftChild : Html msg -> Input msg -> Input msg
 withLeftChild leftChild (Settings model) =
@@ -185,10 +156,6 @@ withLeftChild leftChild (Settings model) =
 
 
 {-| Add a right-side child element, e.g. a clear button.
-
-    Input.new "username" {...}
-        |> Input.withRightChild (Icons.clear [ onClick Clear ])
-
 -}
 withRightChild : Html msg -> Input msg -> Input msg
 withRightChild rightChild (Settings model) =
@@ -197,43 +164,20 @@ withRightChild rightChild (Settings model) =
 
 {-| Mark the input as required.
 This adds a `*` to the label and sets `required=true`.
-
-    Input.new "username" {...}
-        |> Input.withIsRequired True
-
 -}
 withIsRequired : Bool -> Input msg -> Input msg
 withIsRequired isRequired (Settings model) =
     Settings { model | isRequired = isRequired }
 
 
-{-| Add a hint text below the input (shown when there is no error).
-
-    Input.new "username" {...}
-        |> Input.withHint "Must be at least 8 characters"
-
+{-| Add a hint text below the input.
 -}
 withHint : String -> Input msg -> Input msg
 withHint hintText (Settings model) =
     Settings { model | hintText = Just hintText }
 
 
-{-| Add custom CSS styles to the outer wrapper element.
-
-    Input.new "username" {...}
-        |> Input.withAdditionalWrapperStyles [ Css.marginTop (Css.px 16) ]
-
--}
-withAdditionalWrapperStyles : List Css.Style -> Input msg -> Input msg
-withAdditionalWrapperStyles additionalWrapperStyles (Settings model) =
-    Settings { model | additionalWrapperStyles = additionalWrapperStyles }
-
-
 {-| Change the input type (e.g. `"text"`, `"password"`, `"email"`).
-
-    Input.new "password" {...}
-        |> Input.withInputType "password"
-
 -}
 withInputType : String -> Input msg -> Input msg
 withInputType inputType (Settings model) =
@@ -242,10 +186,6 @@ withInputType inputType (Settings model) =
 
 {-| Disable the input.
 Visually dims and prevents typing.
-
-    Input.new "username" {...}
-        |> Input.withIsDisabled True
-
 -}
 withIsDisabled : Bool -> Input msg -> Input msg
 withIsDisabled isDisabled (Settings model) =
@@ -253,10 +193,6 @@ withIsDisabled isDisabled (Settings model) =
 
 
 {-| Adjust the border radius of the input box.
-
-    Input.new "username" {...}
-        |> Input.withBorderRadius 12
-
 -}
 withBorderRadius : Float -> Input msg -> Input msg
 withBorderRadius borderRadius (Settings model) =
@@ -264,21 +200,13 @@ withBorderRadius borderRadius (Settings model) =
 
 
 {-| Limit the maximum number of characters.
-
-    Input.new "username" {...}
-        |> Input.withMaxLength 20
-
 -}
 withMaxLength : Int -> Input msg -> Input msg
 withMaxLength maxLength (Settings model) =
     Settings { model | maxLength = maxLength }
 
 
-{-| Enable autocomplete with a given string like `"username"` or `"off"`.
-
-    Input.new "username" {...}
-        |> Input.withAutocomplete "username"
-
+{-| Enable autocomplete with a given string like `"username"`. It is set to `"off"` by default.
 -}
 withAutocomplete : String -> Input msg -> Input msg
 withAutocomplete autocomplete (Settings model) =
@@ -287,10 +215,6 @@ withAutocomplete autocomplete (Settings model) =
 
 {-| Attach additional HTML attributes to the underlying `<input>` element.
 For example `name` or `data-*` attributes.
-
-    Input.new "username" {...}
-        |> Input.withAttributes [ Attributes.name "username" ]
-
 -}
 withAttributes : List (Attribute msg) -> Input msg -> Input msg
 withAttributes attributes (Settings model) =
@@ -298,10 +222,10 @@ withAttributes attributes (Settings model) =
 
 
 {-| Listen for key presses and map them to messages.
-Useful for handling Enter/Escape in forms.
+It uses the `KeyboardKey` type from `AvardaUi.Util.KeyPress` module.
 
-    Input.new "username" {...}
-        |> Input.withOnKeyDown [ ( KeyPressUtil.Enter, Submit ) ]
+    AvardaUi.Input.new "username" {...}
+        |> AvardaUi.Input.withOnKeyDown [ ( KeyPressUtil.Enter, HandleSubmit ) ]
 
 -}
 withOnKeyDown : List ( KeyPressUtil.KeyboardKey, msg ) -> Input msg -> Input msg
@@ -311,16 +235,16 @@ withOnKeyDown onKeyDown (Settings model) =
 
 {-| Render the configured input as HTML.
 
-Always call this after you’ve built up the input with `new` and chained settings.
+Always call this after you've built up the input with `new` and chained settings.
 
-    Input.new "username" {...}
-        |> Input.withPlaceholder "Enter username"
-        |> Input.withIsRequired True
-        |> Input.view
+    AvardaUi.Input.new "username" {...}
+        |> AvardaUi.Input.withPlaceholder "Enter username"
+        |> AvardaUi.Input.withIsRequired True
+        |> AvardaUi.Input.view
 
 -}
 view : Input msg -> Html msg
-view ((Settings { leftChild, rightChild, borderRadius, id, isDisabled, hintText, additionalWrapperStyles, maybeError }) as model) =
+view ((Settings { leftChild, rightChild, borderRadius, id, isDisabled, hintText, maybeError }) as model) =
     let
         inputView_ =
             let
@@ -371,16 +295,14 @@ view ((Settings { leftChild, rightChild, borderRadius, id, isDisabled, hintText,
     Html.div
         [ Attributes.id (inputWrapperId id)
         , Attributes.css
-            ([ Css.displayFlex
-             , Css.flexDirection Css.column
-             , Css.property "gap" "4px"
-             , Css.lineHeight (Css.px 20)
-             , Css.fontSize (Css.px 14)
-             , Css.width (Css.pct 100)
-             , Css.position Css.relative
-             ]
-                ++ additionalWrapperStyles
-            )
+            [ Css.displayFlex
+            , Css.flexDirection Css.column
+            , Css.property "gap" "4px"
+            , Css.lineHeight (Css.px 20)
+            , Css.fontSize (Css.px 14)
+            , Css.width (Css.pct 100)
+            , Css.position Css.relative
+            ]
         ]
         [ inputView_
         , hintView isValid hintText id

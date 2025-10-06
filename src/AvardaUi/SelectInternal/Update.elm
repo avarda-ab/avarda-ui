@@ -1,4 +1,4 @@
-module AvardaUi.SelectInternal.Update exposing (Callback(..), Callbacks, ScrollOptionIntoViewCmd, update, updateWithCallbacks)
+module AvardaUi.SelectInternal.Update exposing (ScrollOptionIntoViewCmd, UpdateOption(..), UpdateOptions, update, updateWith)
 
 import AvardaUi.SelectInternal.Model as Model exposing (Model)
 import AvardaUi.SelectInternal.Msg exposing (Msg(..))
@@ -7,12 +7,12 @@ import List.Extra
 import Task
 
 
-type Callback a msg
+type UpdateOption a msg
     = OnSelect (a -> msg)
     | ScrollOptionIntoView (ScrollOptionIntoViewCmd msg)
 
 
-type alias Callbacks a msg =
+type alias UpdateOptions a msg =
     { onSelect : Maybe (a -> msg)
     , scrollOptionIntoViewCmd : Maybe (ScrollOptionIntoViewCmd msg)
     }
@@ -22,13 +22,13 @@ type alias ScrollOptionIntoViewCmd msg =
     String -> Cmd msg
 
 
-defaultCallbacks : Callbacks a msg
-defaultCallbacks =
+defaultUpdateOptions : UpdateOptions a msg
+defaultUpdateOptions =
     { onSelect = Nothing, scrollOptionIntoViewCmd = Nothing }
 
 
-callbacksFromList : List (Callback a msg) -> Callbacks a msg
-callbacksFromList =
+updateOptionsFromList : List (UpdateOption a msg) -> UpdateOptions a msg
+updateOptionsFromList =
     List.foldl
         (\opt opts ->
             case opt of
@@ -38,20 +38,20 @@ callbacksFromList =
                 ScrollOptionIntoView scrollOptionIntoViewCmd ->
                     { opts | scrollOptionIntoViewCmd = Just scrollOptionIntoViewCmd }
         )
-        defaultCallbacks
+        defaultUpdateOptions
 
 
 update : (Msg a -> msg) -> Msg a -> Model a -> ( Model a, Cmd msg )
 update =
-    updateRaw (callbacksFromList [])
+    updateRaw (updateOptionsFromList [])
 
 
-updateWithCallbacks : List (Callback a msg) -> (Msg a -> msg) -> Msg a -> Model a -> ( Model a, Cmd msg )
-updateWithCallbacks callbackList =
-    updateRaw (callbacksFromList callbackList)
+updateWith : List (UpdateOption a msg) -> (Msg a -> msg) -> Msg a -> Model a -> ( Model a, Cmd msg )
+updateWith updateOptionList =
+    updateRaw (updateOptionsFromList updateOptionList)
 
 
-updateRaw : Callbacks a msg -> (Msg a -> msg) -> Msg a -> Model a -> ( Model a, Cmd msg )
+updateRaw : UpdateOptions a msg -> (Msg a -> msg) -> Msg a -> Model a -> ( Model a, Cmd msg )
 updateRaw { onSelect, scrollOptionIntoViewCmd } wrapMsg msg model =
     let
         isSelectOpened =

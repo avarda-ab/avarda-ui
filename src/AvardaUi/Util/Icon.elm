@@ -1,7 +1,7 @@
 -- TODO: `Util.Icon` will not be an Util but a separate Ui file
 
 
-module Util.Icon exposing (arrowDown, arrowUp, denmarkFlag, faroeIslandsFlag, finlandFlag, greenlandFlag, mockIconView, norwayFlag, radioButton, swedenFlag)
+module AvardaUi.Util.Icon exposing (arrowDown, arrowUp, denmarkFlag, faroeIslandsFlag, finlandFlag, greenlandFlag, mockIconView, norwayFlag, radioButton, swedenFlag)
 
 import Css
 import Html.Styled exposing (Html)

@@ -1,79 +1,230 @@
-module AvardaUi.SuggestionInput exposing (Model, Msg, getSelectedSuggestion, init, new, onInput, onSelect, reinit, remoteSuggestions, scrollSuggestionIntoViewCmd, setInputValue, setSuggestions, update, updateWith, view, withAriaLabel, withAutocomplete, withBorderRadius, withCustomSuggestionViewFn, withHint, withIsDisabled, withIsRequired, withLeftChild, withMaybeError, withMenuMaxHeight, withPlaceholder, withRightChild, withSelectedSuggestionAdditionalStyles, withTopPx)
+module AvardaUi.SuggestionInput exposing
+    ( Model, init, setSuggestions, reinit, Msg, update, new, view
+    , setInputValue
+    , updateWith, onSelect, onInput, remoteSuggestions, scrollSuggestionIntoView
+    , withBorderRadius, withHint, withPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight
+    , getSelectedSuggestion, withAriaLabel, withAutocomplete, withCustomSuggestionViewFn, withLeftChild, withRightChild, withSelectedSuggestionAdditionalStyles, withTopPx
+    )
+
+{-| This module provides a component that allows you to get autocomplete suggestions. These can be either hardcoded or you can use remote suggestions obtained from API call.
+It uses the [builder pattern](https://sporto.github.io/elm-patterns/basic/builder-pattern.html):
+
+1.  Start with [`new`](#new) to create a base input.
+2.  Chain configuration functions like [`withPlaceholder`](#withPlaceholder) or [`withIsRequired`](#withIsRequired).
+3.  Finish with [`view`](#view) to render it.
+
+
+# Creating a SuggestionInput
+
+@docs Model, init, setSuggestions, reinit, Msg, update, new, view
+
+
+# Setting suggestion list
+
+To use it with the hardcoded list of suggestions, just [`setSuggestions`](#setSuggestions) after [`init`](#init).
+
+    SuggestionInput.init "address"
+        |> SuggestionInput.setSuggestions suggestionList
+
+If you wish to use it with remote suggestions, add a [`remoteSuggestions`](#remoteSuggestions) update option in your [`updateWith`](#updateWith) function.
+
+    SuggestionInput.updateWith
+        [ SuggestionInput.remoteSuggestions { requestCmd = fetchSuggestions, requestMinInputLength = 3 } ]
+
+
+# Setting input value
+
+@docs setInputValue
+
+
+# Update with extra options
+
+You can pass extra options / callbacks to this component using `updateWith`
+
+@docs updateWith, onSelect, onInput, remoteSuggestions, scrollSuggestionIntoView
+
+
+# Configuration
+
+@docs withBorderRadius, withHint, withPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight
+
+-}
 
 import AvardaUi.Input as Input
 import AvardaUi.SuggestionInputInternal.Model as Model exposing (Model)
 import AvardaUi.SuggestionInputInternal.Msg as Msg exposing (Msg(..))
 import AvardaUi.SuggestionInputInternal.Update as Update
+import AvardaUi.Util.Accessibility as AccessibilityUtil
+import AvardaUi.Util.Builder exposing (withMaybeBuilder)
+import AvardaUi.Util.Html as HtmlUtil
+import AvardaUi.Util.KeyPress as KeyPressUtil
 import Css
 import Css.Global
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Json.Decode as Decode
-import Util.Accessibility as AccessibilityUtil
-import Util.Components exposing (withMaybeBuilder)
-import Util.Html as HtmlUtil
-import Util.KeyPress as KeyPressUtil
 
 
+{-| Model type for the SuggestionInput component. Use this in your own model.
+
+    type alias ContactInfoModel =
+        { addressSuggestionInputModel : AvardaUi.SuggestionInput.Model Address }
+
+-}
 type alias Model a =
     Model.Model a
 
 
+{-| Msg type for the SuggestionInput component. Use this for the wrap msg in your own Msg type.
+
+    type ContactInfoMsg
+        = HandleAddressSuggestionInput (AvardaUi.SuggestionInput.Msg Address)
+        | NoUpdate
+
+-}
 type alias Msg a =
     Msg.Msg a
 
 
+{-|
+
+    update : Model -> Msg -> ( Model, Cmd Msg )
+    update model msg =
+        case msg of
+            HandleAddressSuggestionsInput suggestionInputMsg ->
+                let
+                    ( HandleAddressSuggestionInput, suggestionInputCmd ) =
+                        SuggestionInput.updateWith
+                            [ SuggestionInput.onInput InsertedAddress
+                            , SuggestionInput.onSelect ClickedAddressSuggestion
+                            ]
+                            HandleAddressSuggestionsInput
+                            suggestionInputMsg
+                            model.addressSuggestionInputModel
+                in
+                ( { model | addressSuggestionInputModel = HandleAddressSuggestionInput }, suggestionInputCmd )
+
+-}
 updateWith : List (Update.UpdateOption a msg) -> (Msg a -> msg) -> Msg a -> Model a -> ( Model a, Cmd msg )
 updateWith =
     Update.updateWith
 
 
+{-|
+
+    update : Model -> Msg -> ( Model, Cmd Msg )
+    update model msg =
+        case msg of
+            HandleAddressSuggestionsInput suggestionInputMsg ->
+                let
+                    ( HandleAddressSuggestionInput, suggestionInputCmd ) =
+                        SuggestionInput.update
+                            HandleAddressSuggestionsInput
+                            suggestionInputMsg
+                            model.addressSuggestionInputModel
+                in
+                ( { model | addressSuggestionInputModel = HandleAddressSuggestionInput }, suggestionInputCmd )
+
+-}
 update : (Msg a -> msg) -> Msg a -> Model a -> ( Model a, Cmd msg )
 update =
     Update.update
 
 
+{-| Used for triggering a message when suggestion is selected.
+-}
 onSelect : (a -> msg) -> Update.UpdateOption a msg
 onSelect =
     Update.OnSelect
 
 
+{-| Used for triggering a message when the input is typed into.
+-}
 onInput : (String -> msg) -> Update.UpdateOption a msg
 onInput =
     Update.OnInput
 
 
+{-| Used in [`updateWith`](#updateWith) in order to use suggestions obtain from an API call instead of hardcoded ones set with [`setSuggestions`](#setSuggestions).
+
+The `RemoteSuggestionsPayload` looks like this:
+
+    type alias RemoteSuggestionsPayload a msg =
+        { requestCmd : String -> (RemoteData.WebData (List a) -> msg) -> Cmd msg
+        , requestMinInputLength : Int
+        }
+
+where `String` is the request's query.
+
+**Example of the `requestCmd`**:
+
+    getAddressSuggestions : String -> (RemoteData.WebData (List Address) -> msg) -> Cmd msg
+    getAddressSuggestions query msg =
+        { method = "GET"
+        , headers = []
+        , url = "https://api.example.com/suggestions?query=" ++ query
+        , body = Http.emptyBody
+        , expect = Http.expectJson (RemoteData.fromResult >> msg) addressSuggestionDecoder
+        , timeout = Nothing
+        , tracker = Nothing
+        }
+            |> Http.request
+
+-}
 remoteSuggestions : Update.RemoteSuggestionsPayload a msg -> Update.UpdateOption a msg
 remoteSuggestions =
     Update.RemoteSuggestions
 
 
-scrollSuggestionIntoViewCmd : Update.ScrollSuggestionIntoViewCmd msg -> Update.UpdateOption a msg
-scrollSuggestionIntoViewCmd =
+{-| Used to fix issue with scrolling option into view when used in ShadowDOM.
+_elm/browser cannot find the element ID when this component is used by an app which uses ShadowDOM_
+
+    type alias ScrollOptionIntoViewCmd msg =
+        String -> Cmd msg
+
+-}
+scrollSuggestionIntoView : Update.ScrollSuggestionIntoViewCmd msg -> Update.UpdateOption a msg
+scrollSuggestionIntoView =
     Update.ScrollSuggestionIntoView
 
 
+{-| Initialize the SuggestionInput model.
+
+    init : ContactInfoModel
+    init =
+        { addressSuggestionInputModel = AvardaUi.SuggestionInput.init "address" }
+
+-}
 init : String -> Model a
 init =
     Model.init
 
 
+{-| In some cases it's nice to have the option to re-init the component with no need to pass `id` again.
+-}
 reinit : Model a -> Model a
 reinit =
     Model.reinit
 
 
+{-| Get the currently selected suggestion.
+If none is selected, returns _Nothing_.
+-}
 getSelectedSuggestion : Model a -> Maybe a
 getSelectedSuggestion =
     Model.getSelectedSuggestion
 
 
+{-| Used after [`init`](#init) to use hardcoded list of suggestions.
+-}
 setSuggestions : List a -> Model a -> Model a
 setSuggestions suggestions model =
     Model.setSuggestions suggestions model
 
 
+{-| Set the input value.
+-}
 setInputValue : String -> Model a -> Model a
 setInputValue inputValue model =
     Model.setInputValue inputValue model
@@ -101,6 +252,15 @@ type SuggestionInput a msg
         }
 
 
+{-| Create a new SuggestionInput component.
+
+    AvardaUi.SuggestionInput.new
+        { label = "Address"
+        , suggestionInputModel = addressSuggestionInputModel
+        , suggestionToInputValue = .addressLine1
+        }
+
+-}
 new : { label : String, suggestionInputModel : Model a, suggestionToInputValue : a -> String } -> SuggestionInput a msg
 new { suggestionInputModel, label, suggestionToInputValue } =
     let
@@ -133,81 +293,124 @@ new { suggestionInputModel, label, suggestionToInputValue } =
         }
 
 
+{-| Add a hint text below the input.
+-}
 withHint : String -> SuggestionInput a msg -> SuggestionInput a msg
 withHint hint (Settings model) =
     Settings { model | hint = Just hint }
 
 
+{-| Add a placeholder to the input.
+-}
 withPlaceholder : String -> SuggestionInput a msg -> SuggestionInput a msg
 withPlaceholder placeholder (Settings model) =
     Settings { model | inputPlaceholder = Just placeholder }
 
 
+{-| Enable autocomplete with a given string like `"address1"`. It is set to `"off"` by default.
+-}
 withAutocomplete : String -> SuggestionInput a msg -> SuggestionInput a msg
 withAutocomplete autocomplete (Settings model) =
     Settings { model | autocomplete = Just autocomplete }
 
 
+{-| Add a left-side child element.
+-}
 withLeftChild : Html msg -> SuggestionInput a msg -> SuggestionInput a msg
 withLeftChild leftChild (Settings model) =
     Settings { model | leftChild = Just leftChild }
 
 
+{-| Add a right-side child element.
+-}
 withRightChild : Html msg -> SuggestionInput a msg -> SuggestionInput a msg
 withRightChild rightChild (Settings model) =
     Settings { model | rightChild = Just rightChild }
 
 
+{-| Set a maximum height for the dropdown menu.
+-}
 withMenuMaxHeight : Int -> SuggestionInput a msg -> SuggestionInput a msg
 withMenuMaxHeight maxHeight (Settings model) =
     Settings { model | maybeMaxHeight = Just maxHeight }
 
 
+{-| Show an error message and mark the input invalid.
+**Replaces any active hint text.**
+-}
 withMaybeError : Maybe String -> SuggestionInput a msg -> SuggestionInput a msg
 withMaybeError maybeError (Settings model) =
     Settings { model | maybeError = maybeError }
 
 
+{-| Mark the input as required.
+This adds a `*` to the label and sets `required=true`.
+-}
 withIsRequired : Bool -> SuggestionInput a msg -> SuggestionInput a msg
 withIsRequired isRequired (Settings model) =
     Settings { model | isRequired = isRequired }
 
 
+{-| Disable the input.
+Visually dims and prevents user actions.
+-}
 withIsDisabled : Bool -> SuggestionInput a msg -> SuggestionInput a msg
 withIsDisabled isDisabled (Settings model) =
     Settings { model | isDisabled = isDisabled }
 
 
+{-| Adjust the border radius of the input box.
+-}
 withBorderRadius : Float -> SuggestionInput a msg -> SuggestionInput a msg
 withBorderRadius borderRadius (Settings model) =
     Settings { model | borderRadius = borderRadius }
 
 
+{-| Adjust the gap between the Select and the dropdown menu.
+-}
 withTopPx : Float -> SuggestionInput a msg -> SuggestionInput a msg
 withTopPx topPx (Settings model) =
     Settings { model | topPx = topPx }
 
 
+{-| Provide a custom view function for rendering suggestions.
+-}
 withCustomSuggestionViewFn : (a -> Html msg) -> SuggestionInput a msg -> SuggestionInput a msg
 withCustomSuggestionViewFn suggestionViewFn (Settings model) =
     Settings { model | suggestionViewFn = Just suggestionViewFn }
 
 
+{-| Set a custom ARIA label.
+-}
 withAriaLabel : String -> SuggestionInput a msg -> SuggestionInput a msg
-withAriaLabel id (Settings model) =
-    Settings { model | ariaLabel = Just id }
+withAriaLabel ariaLabel (Settings model) =
+    Settings { model | ariaLabel = Just ariaLabel }
 
 
+{-| Provide additional styles for the selected suggestion.
+-}
 withSelectedSuggestionAdditionalStyles : List Css.Style -> SuggestionInput a msg -> SuggestionInput a msg
 withSelectedSuggestionAdditionalStyles selectedSuggestionAdditionalStyles (Settings model) =
     Settings { model | selectedSuggestionAdditionalStyles = selectedSuggestionAdditionalStyles }
 
 
+{-| Render the Select as HTML.
+
+Always call this after you've built up the input with `new` and chained settings.
+
+    AvardaUi.SuggestionInput.new "address"
+        |> AvardaUi.SuggestionInput.withIsRequired True
+        |> AvardaUi.SuggestionInput.view
+
+-}
 view : (Msg a -> msg) -> SuggestionInput a msg -> Html msg
-view wrapMsg ((Settings { suggestionInputModel, isDisabled, label, borderRadius, hint, inputPlaceholder, isRequired, autocomplete, maybeError, leftChild, rightChild, suggestionToInputValue }) as viewModel) =
+view wrapMsg ((Settings { suggestionInputModel, isDisabled, label, ariaLabel, borderRadius, hint, inputPlaceholder, isRequired, autocomplete, maybeError, leftChild, rightChild, suggestionToInputValue }) as viewModel) =
     let
         maybeAriaActiveDescendantAttribute =
             HtmlUtil.maybeAttribute (\index -> AccessibilityUtil.ariaActiveDescendant (Model.getListboxOptionId suggestionInputModel index)) (Model.getMaybeHighlightedIndex suggestionInputModel)
+
+        maybeAriaLabelAttribute =
+            HtmlUtil.maybeAttribute AccessibilityUtil.ariaLabel ariaLabel
 
         attributesBasedOnIsDisabled =
             if isDisabled then
@@ -255,12 +458,12 @@ view wrapMsg ((Settings { suggestionInputModel, isDisabled, label, borderRadius,
                  , AccessibilityUtil.ariaRequired isRequired
                  , AccessibilityUtil.ariaAutocompleteList
                  , maybeAriaActiveDescendantAttribute
+                 , maybeAriaLabelAttribute
                  ]
                     ++ attributesBasedOnIsDisabled
                 )
             |> withMaybeBuilder Input.withLeftChild leftChild
             |> withMaybeBuilder Input.withRightChild rightChild
-            |> Input.withAdditionalWrapperStyles [ Css.position Css.relative ]
             |> Input.withMaybeError maybeError
             |> Input.withIsDisabled isDisabled
             |> Input.withBorderRadius borderRadius

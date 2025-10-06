@@ -1,12 +1,12 @@
 module Stories.Select exposing (main)
 
 import AvardaUi.Select
+import AvardaUi.Util.Builder exposing (withConditionalBuilder, withMaybeBuilder)
 import Browser
 import Css
 import Html.Styled as Html
 import Html.Styled.Attributes as Attributes
 import Json.Decode as Decode
-import Util.Components exposing (withConditionalBuilder, withMaybeBuilder)
 import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeIntControl, decodeMaybeStringControl, decodeStringControl)
 
 
@@ -82,7 +82,7 @@ update model msg =
         HandleSelect selectMsg ->
             let
                 ( updatedSelectModel, selectCmd ) =
-                    AvardaUi.Select.updateWithCallbacks [ AvardaUi.Select.onSelectCallback OnSelect ]
+                    AvardaUi.Select.updateWith [ AvardaUi.Select.onSelect OnSelect ]
                         HandleSelect
                         selectMsg
                         model.selectModel

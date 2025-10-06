@@ -1,4 +1,4 @@
-module Util.Accessibility exposing
+module AvardaUi.Util.Accessibility exposing
     ( ariaActiveDescendant
     , ariaAutocompleteList
     , ariaControls

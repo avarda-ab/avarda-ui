@@ -1,14 +1,14 @@
 module Stories.SuggestionInput exposing (main)
 
 import AvardaUi.SuggestionInput
+import AvardaUi.Util.Builder exposing (withConditionalBuilder, withMaybeBuilder)
+import AvardaUi.Util.Icon exposing (mockIconView)
 import Browser
 import Css
 import Html.Styled as Html
 import Html.Styled.Attributes as Attributes
 import Json.Decode as Decode
-import Util.Components exposing (withConditionalBuilder, withMaybeBuilder)
 import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeIntControl, decodeMaybeStringControl, decodeStringControl)
-import Util.Icon exposing (mockIconView)
 
 
 type alias Controls =

@@ -1,4 +1,4 @@
-module Util.Html exposing (maybeAttribute)
+module AvardaUi.Util.Html exposing (maybeAttribute)
 
 import Html.Styled exposing (Attribute)
 import Html.Styled.Attributes as Attributes

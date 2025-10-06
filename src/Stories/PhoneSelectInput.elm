@@ -1,13 +1,13 @@
 module Stories.PhoneSelectInput exposing (main)
 
 import AvardaUi.PhoneSelectInput
+import AvardaUi.Util.Builder exposing (withMaybeBuilder)
 import Browser
 import Css
 import Html.Styled as Html
 import Html.Styled.Attributes as Attributes
 import Json.Decode as Decode
 import Shared.Data exposing (CountryCode(..))
-import Util.Components exposing (withMaybeBuilder)
 import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeIntControl, decodeMaybeStringControl, decodeStringControl)
 
 
@@ -67,9 +67,9 @@ update model msg =
         HandlePhoneSelectInput selectMsg ->
             let
                 ( updatedSelectModel, selectCmd ) =
-                    AvardaUi.PhoneSelectInput.updateWithCallbacks
-                        [ AvardaUi.PhoneSelectInput.onSelectCallback OnSelect
-                        , AvardaUi.PhoneSelectInput.onInputCallback OnInput
+                    AvardaUi.PhoneSelectInput.updateWith
+                        [ AvardaUi.PhoneSelectInput.onSelect OnSelect
+                        , AvardaUi.PhoneSelectInput.onInput OnInput
                         ]
                         HandlePhoneSelectInput
                         selectMsg
@@ -94,7 +94,7 @@ main =
             \controls ->
                 ( { phoneSelectInputModel =
                         AvardaUi.PhoneSelectInput.init "dialing-code"
-                            |> AvardaUi.PhoneSelectInput.setSelectedOption SE
+                            |> AvardaUi.PhoneSelectInput.setSelectedCountry SE
                   , controls = decodeControls controls controlsDecoder defaultControls
                   }
                 , Cmd.none
@@ -108,7 +108,7 @@ main =
                 in
                 Html.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.maxWidth (Css.px 300) ] ]
                     [ AvardaUi.PhoneSelectInput.new { inputLabel = label, selectAriaLabel = "Dialing code", phoneSelectInputModel = phoneSelectInputModel }
-                        |> AvardaUi.PhoneSelectInput.setOptions [ SE, CZ, FI, SE, NO, DK ]
+                        |> AvardaUi.PhoneSelectInput.setCountries [ SE, CZ, FI, SE, NO, DK ]
                         |> AvardaUi.PhoneSelectInput.withIsDisabled isDisabled
                         |> AvardaUi.PhoneSelectInput.withMaybeError error
                         |> AvardaUi.PhoneSelectInput.withIsRequired isRequired

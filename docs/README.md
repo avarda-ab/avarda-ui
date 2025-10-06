@@ -24,13 +24,21 @@ In order for these repos to stay in sync, this following flow is in place:
 1. Create branch from master
 2. Make some changes
 3. Run `elm bump`
-4. Commit changes
-5. Create PR in DevOps
-6. Squash and merge to `master`
-7. Create a git tag in DevOps with name of the new version from `elm bump` you ran earlier
-8. Pull from DevOps master (`git pull {devops_origin} master`)
-9. Push to Github master, including tags (`git push --tags {github_origin} master`)
-10. Run `elm publish`
+4. After running `elm bump`, it always removes `"source-directories"` from `elm.json` which breaks the further development process (linting, formatting, hot-reload). Add it back.
+
+```json
+"source-directories": [
+    "src"
+]
+```
+
+5. Commit changes
+6. Create PR in DevOps
+7. Squash and merge to `master`
+8. Create a git tag in DevOps with name of the new version from `elm bump` you ran earlier
+9. Pull from DevOps master (`git pull {devops_origin} master`)
+10. Push to Github master, including tags (`git push --tags {github_origin} master`)
+11. Run `elm publish`
 
 ## Quick Tip
 

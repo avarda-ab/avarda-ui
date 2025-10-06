@@ -1,8 +1,57 @@
-module AvardaUi.Select exposing (Model, Msg, init, new, onSelectCallback, scrollOptionIntoView, setOptions, setSelectedOption, update, updateWithCallbacks, view, withAdditionalWrapperStyles, withAriaLabel, withBorderRadius, withContainerPosition, withCustomOptionViewFn, withCustomSelectedOptionViewFn, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withTopPx)
+module AvardaUi.Select exposing
+    ( Model, init, Msg, update, new, view
+    , updateWith, onSelect, scrollOptionIntoView
+    , setSelectedOption, setOptions
+    , getSelectedOption
+    , withMaybeError, withIsRequired, withIsDisabled, withBorderRadius, withTopPx, withMenuMaxHeight
+    , withCustomOptionViewFn, withCustomSelectedOptionViewFn
+    , withAdditionalWrapperStyles, withContainerPosition, withAriaLabel
+    )
+
+{-| This module provides a customizable accessible select dropdown. It uses the [builder pattern](https://sporto.github.io/elm-patterns/basic/builder-pattern.html):
+
+1.  Start with [`new`](#new) to create a base input.
+2.  Chain configuration functions like [`withPlaceholder`](#withPlaceholder) or [`withIsRequired`](#withIsRequired).
+3.  Finish with [`view`](#view) to render it.
+
+
+# Creating a Select
+
+@docs Model, init, Msg, update, new, view
+
+
+# Update with extra options
+
+You can pass extra options / callbacks to this component using `updateWith`
+
+@docs updateWith, onSelect, scrollOptionIntoView
+
+
+# Setting options
+
+@docs setSelectedOption, setOptions
+
+
+# Getting selected option
+
+@docs getSelectedOption
+
+
+# Configuration
+
+@docs withMaybeError, withIsRequired, withIsDisabled, withBorderRadius, withTopPx, withMenuMaxHeight
+@docs withCustomOptionViewFn, withCustomSelectedOptionViewFn
+@docs withAdditionalWrapperStyles, withContainerPosition, withAriaLabel
+
+-}
 
 import AvardaUi.SelectInternal.Model as Model exposing (Model)
 import AvardaUi.SelectInternal.Msg as Msg exposing (Msg(..))
 import AvardaUi.SelectInternal.Update as Update
+import AvardaUi.Util.Accessibility as AccessibilityUtil
+import AvardaUi.Util.Html as HtmlUtil
+import AvardaUi.Util.Icon as Icon
+import AvardaUi.Util.KeyPress as KeyPressUtil
 import Css
 import Css.Global
 import Html.Styled as Html exposing (Html)
@@ -10,48 +59,115 @@ import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Json.Decode as Decode
 import List.Extra
-import Util.Accessibility as AccessibilityUtil
-import Util.Html as HtmlUtil
-import Util.Icon as Icon
-import Util.KeyPress as KeyPressUtil
 
 
+{-| Model type for the Select component. Use this in your own model.
+
+    type alias DashboardModel =
+        { languageSelectModel : AvardaUi.Select.Model Language }
+
+-}
 type alias Model a =
     Model.Model a
 
 
+{-| Msg type for the Select component. Use this for the wrap msg in your own Msg type.
+
+    type DashboardMsg
+        = HandleLanguageSelect (AvardaUi.Select.Msg Language)
+        | NoUpdate
+
+-}
 type alias Msg a =
     Msg.Msg a
 
 
-updateWithCallbacks : List (Update.Callback a msg) -> (Msg a -> msg) -> Msg a -> Model a -> ( Model a, Cmd msg )
-updateWithCallbacks =
-    Update.updateWithCallbacks
+{-|
+
+    update : Model -> Msg -> ( Model, Cmd Msg )
+    update model msg =
+        case msg of
+            HandleLanguageSelect selectMsg ->
+                let
+                    ( updatedSelectModel, selectCmd ) =
+                        AvardaUi.Select.updateWith [ AvardaUi.Select.onSelect SaveLanguageToStorage ]
+                            HandleLanguageSelect
+                            selectMsg
+                            model.languageSelectModel
+                in
+                ( { model | languageSelectModel = updatedSelectModel }, selectCmd )
+
+-}
+updateWith : List (Update.UpdateOption a msg) -> (Msg a -> msg) -> Msg a -> Model a -> ( Model a, Cmd msg )
+updateWith =
+    Update.updateWith
 
 
+{-| Update function for the Select component. Call this in your update function to handle Select's internal messages
+
+    update : Model -> Msg -> ( Model, Cmd Msg )
+    update model msg =
+        case msg of
+            HandleLanguageSelect selectMsg ->
+                let
+                    ( updatedSelectModel, selectCmd ) =
+                        AvardaUi.Select.update
+                            HandleLanguageSelect
+                            selectMsg
+                            model.languageSelectModel
+                in
+                ( { model | languageSelectModel = updatedSelectModel }, selectCmd )
+
+-}
 update : (Msg a -> msg) -> Msg a -> Model a -> ( Model a, Cmd msg )
 update =
     Update.update
 
 
-onSelectCallback : (a -> msg) -> Update.Callback a msg
-onSelectCallback =
+{-| Use for triggering a message when an option is selected.
+-}
+onSelect : (a -> msg) -> Update.UpdateOption a msg
+onSelect =
     Update.OnSelect
 
 
-scrollOptionIntoView : Update.ScrollOptionIntoViewCmd msg -> Update.Callback a msg
+{-| Use to fix issue with scrolling option into view when used in ShadowDOM.
+_elm/browser cannot find the element ID when this component is used by an app which uses ShadowDOM_
+
+    type alias ScrollOptionIntoViewCmd msg =
+        String -> Cmd msg
+
+-}
+scrollOptionIntoView : Update.ScrollOptionIntoViewCmd msg -> Update.UpdateOption a msg
 scrollOptionIntoView =
     Update.ScrollOptionIntoView
 
 
+{-| Initialize the Select model.
+
+    init : DashboardModel
+    init =
+        { languageSelectModel = AvardaUi.Select.init "language" }
+
+-}
 init : String -> Model a
 init =
     Model.init
 
 
+{-| Set the selected option.
+-}
 setSelectedOption : a -> Model a -> Model a
 setSelectedOption option model =
     Model.setSelectedOption option model
+
+
+{-| Get the currently selected option.
+If none is selected, returns _Nothing_.
+-}
+getSelectedOption : Model a -> Maybe a
+getSelectedOption model =
+    Model.getSelectedOption model
 
 
 type Select a msg
@@ -74,6 +190,15 @@ type Select a msg
         }
 
 
+{-| Create a new Select component.
+
+    AvardaUi.Select.new
+        { label = "Choose a language"
+        , selectModel = dashboardModel.languageSelectModel
+        , optionToString = .name
+        }
+
+-}
 new : { label : String, selectModel : Model a, optionToString : a -> String } -> Select a msg
 new { selectModel, label, optionToString } =
     let
@@ -104,66 +229,101 @@ new { selectModel, label, optionToString } =
         }
 
 
+{-| Set a maximum height for the dropdown menu.
+-}
 withMenuMaxHeight : Int -> Select a msg -> Select a msg
 withMenuMaxHeight maxHeight (Settings model) =
     Settings { model | maybeMaxHeight = Just maxHeight }
 
 
+{-| Show an error message and mark the Select as invalid.
+-}
 withMaybeError : Maybe String -> Select a msg -> Select a msg
 withMaybeError maybeError (Settings model) =
     Settings { model | maybeError = maybeError }
 
 
+{-| Mark the Select as required.
+-}
 withIsRequired : Select a msg -> Select a msg
 withIsRequired (Settings model) =
     Settings { model | isRequired = True }
 
 
+{-| Disable the select.
+Visually dims and prevents user actions.
+-}
 withIsDisabled : Bool -> Select a msg -> Select a msg
 withIsDisabled isDisabled (Settings model) =
     Settings { model | isDisabled = isDisabled }
 
 
+{-| Change the border radius of the Select.
+-}
 withBorderRadius : Float -> Select a msg -> Select a msg
 withBorderRadius borderRadius (Settings model) =
     Settings { model | borderRadius = borderRadius }
 
 
+{-| Adjust the gap between the Select and the dropdown menu.
+-}
 withTopPx : Float -> Select a msg -> Select a msg
 withTopPx topPx (Settings model) =
     Settings { model | topPx = topPx }
 
 
+{-| Provide a custom view function for rendering options.
+-}
 withCustomOptionViewFn : (a -> Html msg) -> Select a msg -> Select a msg
 withCustomOptionViewFn optionViewFn (Settings model) =
     Settings { model | optionViewFn = Just optionViewFn }
 
 
+{-| Provide a custom view function for the selected option.
+-}
 withCustomSelectedOptionViewFn : (a -> Html msg) -> Select a msg -> Select a msg
 withCustomSelectedOptionViewFn selectedOptionViewFn (Settings model) =
     Settings { model | selectedOptionViewFn = Just selectedOptionViewFn }
 
 
+{-| Add additional styles.
+-}
 withAdditionalWrapperStyles : List Css.Style -> Select a msg -> Select a msg
 withAdditionalWrapperStyles additionalWrapperStyles (Settings model) =
     Settings { model | additionalWrapperStyles = additionalWrapperStyles }
 
 
+{-| Set the CSS position of the Select container.
+-}
 withContainerPosition : Css.Position {} -> Select a msg -> Select a msg
 withContainerPosition position (Settings model) =
     Settings { model | containerPosition = position }
 
 
+{-| Set a custom ARIA label (instead of label element).
+-}
 withAriaLabel : String -> Select a msg -> Select a msg
 withAriaLabel id (Settings model) =
     Settings { model | ariaLabel = Just id }
 
 
+{-| Provide a list of options to the Select.
+**Note that this needs to be used as a builder, when you are creating a Select, not on init**
+-}
 setOptions : List a -> Select a msg -> Select a msg
 setOptions optionList (Settings ({ optionToString } as model)) =
     Settings { model | optionList = optionList |> List.Extra.unique |> List.sortBy optionToString }
 
 
+{-| Render the Select as HTML.
+
+Always call this after you've built up the input with `new` and chained settings.
+
+    AvardaUi.Select.new {...}
+        |> AvardaUi.Select.withIsRequired True
+        |> AvardaUi.Select.view
+
+-}
 view : (Msg a -> msg) -> Select a msg -> Html msg
 view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadius, selectedOptionViewFn, optionToString, additionalWrapperStyles, containerPosition, isRequired, ariaLabel, maybeError }) as viewModel) =
     let

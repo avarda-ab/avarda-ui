@@ -1,10 +1,44 @@
-module Util.KeyPress exposing (KeyboardEvent(..), KeyboardKey(..), onKeyDown, onKeyDownPreventDefault, onKeyPress, onKeyPressPreventDefault, onKeyUp, onKeyUpPreventDefault)
+module AvardaUi.Util.KeyPress exposing
+    ( KeyboardKey(..)
+    , onKeyDown, onKeyDownPreventDefault, onKeyUp, onKeyUpPreventDefault, onKeyPress, onKeyPressPreventDefault
+    )
+
+{-| Utility functions for handling keyboard events in Elm.
+
+This module provides a way to bind messages to specific keys.
+It exposes helpers for `keydown`, `keyup`, and `keypress` events, with or without `preventDefault`.
+
+
+# KeyboardKey type
+
+@docs KeyboardKey
+
+
+# Event Handlers
+
+@docs onKeyDown, onKeyDownPreventDefault, onKeyUp, onKeyUpPreventDefault, onKeyPress, onKeyPressPreventDefault
+
+
+## Example
+
+    import AvardaUi.Util.KeyPress as KeyPressUtil
+
+    view : Html Msg
+    view =
+        Html.input
+            [ KeyPressUtil.onKeyDown [ ( KeyPress.Enter, HandleSubmit ) ]
+            ]
+            []
+
+-}
 
 import Html.Styled exposing (Attribute)
 import Html.Styled.Events as Events
 import Json.Decode as Decode
 
 
+{-| Supported keyboard keys so far.
+-}
 type KeyboardKey
     = Enter
     | Esc
@@ -69,31 +103,43 @@ keyboardKeyToKeyCode keyboardKey =
             32
 
 
+{-| Attach a `keypress` listener.
+-}
 onKeyPress : List ( KeyboardKey, msg ) -> Attribute msg
 onKeyPress =
     onKey KeyPress
 
 
+{-| Attach a `keyup` listener.
+-}
 onKeyUp : List ( KeyboardKey, msg ) -> Attribute msg
 onKeyUp =
     onKey KeyUp
 
 
+{-| Attach a `keydown` listener.
+-}
 onKeyDown : List ( KeyboardKey, msg ) -> Attribute msg
 onKeyDown =
     onKey KeyDown
 
 
+{-| Attach a `keydown` listener and prevent the default browser action.
+-}
 onKeyDownPreventDefault : List ( KeyboardKey, msg ) -> Attribute msg
 onKeyDownPreventDefault =
     onKeyPreventDefault KeyDown
 
 
+{-| Attach a `keyup` listener and prevent the default browser action.
+-}
 onKeyUpPreventDefault : List ( KeyboardKey, msg ) -> Attribute msg
 onKeyUpPreventDefault =
     onKeyPreventDefault KeyUp
 
 
+{-| Attach a `keypress` listener and prevent the default browser action.
+-}
 onKeyPressPreventDefault : List ( KeyboardKey, msg ) -> Attribute msg
 onKeyPressPreventDefault =
     onKeyPreventDefault KeyPress

@@ -65,8 +65,8 @@ update =
 
 
 updateWith : List (UpdateOption a msg) -> (Msg a -> msg) -> Msg a -> Model a -> ( Model a, Cmd msg )
-updateWith callbackList =
-    updateRaw (updateOptionsFromList callbackList)
+updateWith updateOptionList =
+    updateRaw (updateOptionsFromList updateOptionList)
 
 
 updateRaw : UpdateOptions a msg -> (Msg a -> msg) -> Msg a -> Model a -> ( Model a, Cmd msg )

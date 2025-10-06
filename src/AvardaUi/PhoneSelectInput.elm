@@ -1,27 +1,69 @@
-module AvardaUi.PhoneSelectInput exposing (Model, Msg, init, new, onInputCallback, onInputTabKeyDownCallback, onSelectCallback, scrollOptionIntoView, setOptions, setPhoneInputValue, setSelectedOption, update, updateWithCallbacks, view, withBorderRadius, withHint, withInputMaxLength, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight)
+module AvardaUi.PhoneSelectInput exposing
+    ( Model, init, Msg, update, new, view
+    , updateWith, onSelect, onInput, onInputTabKeyDown, scrollOptionIntoView
+    , withBorderRadius, withHint, withInputMaxLength, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight
+    , setCountries, setSelectedCountry, setPhoneInputValue
+    , getSelectedCountryCode, getPhoneInputValue
+    )
+
+{-| This module provides a component that combines a `Select` for country dialing codes
+with an `Input` for entering a phone number. It uses the [builder pattern](https://sporto.github.io/elm-patterns/basic/builder-pattern.html):
+
+1.  Start with [`new`](#new) to create a base input.
+2.  Chain configuration functions like [`withPlaceholder`](#withPlaceholder) or [`withIsRequired`](#withIsRequired).
+3.  Finish with [`view`](#view) to render it.
+
+
+# Creating a PhoneSelectInput
+
+@docs Model, init, Msg, update, new, view
+
+
+# Update with extra options
+
+You can pass extra options / callbacks to this component using `updateWith`
+
+@docs updateWith, onSelect, onInput, onInputTabKeyDown, scrollOptionIntoView
+
+
+# Configuration
+
+@docs withBorderRadius, withHint, withInputMaxLength, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight
+
+
+# Setting values
+
+@docs setCountries, setSelectedCountry, setPhoneInputValue
+
+
+# Getting values
+
+@docs getSelectedCountryCode, getPhoneInputValue
+
+-}
 
 import AvardaUi.Input as Input
 import AvardaUi.Select as Select
 import AvardaUi.SelectInternal.Model
+import AvardaUi.Util.Builder exposing (withMaybeBuilder)
+import AvardaUi.Util.Icon as Icon
+import AvardaUi.Util.KeyPress as KeyPressUtil
 import Css
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attributes
 import List.Extra
 import Shared.Data as Data exposing (CountryCode(..))
 import Task
-import Util.Components exposing (withMaybeBuilder)
-import Util.Icon as Icon
-import Util.KeyPress as KeyPressUtil
 
 
-type Callback msg
+type UpdateOption msg
     = OnSelect (CountryCode -> msg)
     | OnInput (String -> msg)
     | OnInputTabKeyDown msg
     | ScrollOptionIntoView (ScrollOptionIntoViewCmd msg)
 
 
-type alias Callbacks msg =
+type alias UpdateOptions msg =
     { onSelect : Maybe (CountryCode -> msg)
     , onInput : Maybe (String -> msg)
     , onInputTabKeyDown : Maybe msg
@@ -29,28 +71,41 @@ type alias Callbacks msg =
     }
 
 
-onSelectCallback : (CountryCode -> msg) -> Callback msg
-onSelectCallback =
+{-| Used for triggering a message when an `CountryCode` is selected.
+-}
+onSelect : (CountryCode -> msg) -> UpdateOption msg
+onSelect =
     OnSelect
 
 
-onInputCallback : (String -> msg) -> Callback msg
-onInputCallback =
+{-| Used for triggering a message when the phone input is typed into.
+-}
+onInput : (String -> msg) -> UpdateOption msg
+onInput =
     OnInput
 
 
-onInputTabKeyDownCallback : msg -> Callback msg
-onInputTabKeyDownCallback =
+{-| Used for triggering a message when `Tab` is pressed in the input.
+-}
+onInputTabKeyDown : msg -> UpdateOption msg
+onInputTabKeyDown =
     OnInputTabKeyDown
 
 
-scrollOptionIntoView : ScrollOptionIntoViewCmd msg -> Callback msg
+{-| Used to fix issue with scrolling option into view when used in ShadowDOM.
+_elm/browser cannot find the element ID when this component is used by an app which uses ShadowDOM_
+
+    type alias ScrollOptionIntoViewCmd msg =
+        String -> Cmd msg
+
+-}
+scrollOptionIntoView : ScrollOptionIntoViewCmd msg -> UpdateOption msg
 scrollOptionIntoView =
     ScrollOptionIntoView
 
 
-defaultCallbacks : Callbacks msg
-defaultCallbacks =
+defaultUpdateOptions : UpdateOptions msg
+defaultUpdateOptions =
     { onSelect = Nothing
     , onInput = Nothing
     , onInputTabKeyDown = Nothing
@@ -62,8 +117,8 @@ type alias ScrollOptionIntoViewCmd msg =
     String -> Cmd msg
 
 
-callbacksFromList : List (Callback msg) -> Callbacks msg
-callbacksFromList =
+updateOptionsFromList : List (UpdateOption msg) -> UpdateOptions msg
+updateOptionsFromList =
     List.foldl
         (\opt opts ->
             case opt of
@@ -79,9 +134,16 @@ callbacksFromList =
                 ScrollOptionIntoView scrollOptionIntoViewCmd ->
                     { opts | scrollOptionIntoViewCmd = Just scrollOptionIntoViewCmd }
         )
-        defaultCallbacks
+        defaultUpdateOptions
 
 
+{-| Msg type for the PhoneSelectInput component. Use this for the wrap msg in your own Msg type.
+
+    type DashboardMsg
+        = HandlePhoneSelectInput AvardaUi.PhoneSelectInput.Msg
+        | NoUpdate
+
+-}
 type Msg
     = HandleSelect (Select.Msg CountryCode)
     | SelectedCountryCode CountryCode
@@ -89,23 +151,58 @@ type Msg
     | InputTabKeyDown
 
 
+{-| Update function for the PhoneSelectInput component. Call this in your update function to handle Select's internal messages
+
+    update : Model -> Msg -> ( Model, Cmd Msg )
+    update model msg =
+        case msg of
+            HandlePhoneSelectInput phoneSelectInputMsg ->
+                let
+                    ( updatedPhoneSelectInputModel, phoneSelectInputCmd ) =
+                        AvardaUi.PhoneSelectInput.update
+                            HandlePhoneSelectInput
+                            phoneSelectInputMsg
+                            model.phoneSelectInputModel
+                in
+                ( { model | phoneSelectInputModel = updatedPhoneSelectInputModel }, phoneSelectInputCmd )
+
+-}
 update : (Msg -> msg) -> Msg -> Model -> ( Model, Cmd msg )
 update =
-    updateRaw (callbacksFromList [])
+    updateRaw (updateOptionsFromList [])
 
 
-updateWithCallbacks : List (Callback msg) -> (Msg -> msg) -> Msg -> Model -> ( Model, Cmd msg )
-updateWithCallbacks callbackList =
-    updateRaw (callbacksFromList callbackList)
+{-|
+
+    update : Model -> Msg -> ( Model, Cmd Msg )
+    update model msg =
+        case msg of
+            HandlePhoneSelectInput phoneSelectInputMsg ->
+                let
+                    ( updatedPhoneSelectInputModel, phoneSelectInputCmd ) =
+                        AvardaUi.PhoneSelectInput.updateWith
+                            [ AvardaUi.PhoneSelectInput.onSelect OnSelect
+                            , AvardaUi.PhoneSelectInput.onInput OnInput
+                            ]
+                            HandlePhoneSelectInput
+                            phoneSelectInputMsg
+                            model.phoneSelectInputModel
+                in
+                ( { model | phoneSelectInputModel = updatedPhoneSelectInputModel }, selectCmd )
+
+-}
+updateWith : List (UpdateOption msg) -> (Msg -> msg) -> Msg -> Model -> ( Model, Cmd msg )
+updateWith updateOptionList =
+    updateRaw (updateOptionsFromList updateOptionList)
 
 
-updateRaw : Callbacks msg -> (Msg -> msg) -> Msg -> Model -> ( Model, Cmd msg )
-updateRaw { onInput, onSelect, onInputTabKeyDown, scrollOptionIntoViewCmd } wrapMsg msg ((ModelInternal ({ selectModel } as modelInternal)) as model) =
+updateRaw : UpdateOptions msg -> (Msg -> msg) -> Msg -> Model -> ( Model, Cmd msg )
+updateRaw updateOtions wrapMsg msg ((ModelInternal ({ selectModel } as modelInternal)) as model) =
     case msg of
         HandleSelect subMsg ->
             let
                 maybeScrollOptionIntoViewCmd =
-                    case scrollOptionIntoViewCmd of
+                    case updateOtions.scrollOptionIntoViewCmd of
                         Just scrollOptionIntoViewCmd_ ->
                             [ Select.scrollOptionIntoView scrollOptionIntoViewCmd_ ]
 
@@ -113,7 +210,7 @@ updateRaw { onInput, onSelect, onInputTabKeyDown, scrollOptionIntoViewCmd } wrap
                             []
 
                 ( updatedSelectModel, selectCmd ) =
-                    Select.updateWithCallbacks (Select.onSelectCallback (SelectedCountryCode >> wrapMsg) :: maybeScrollOptionIntoViewCmd)
+                    Select.updateWith (Select.onSelect (SelectedCountryCode >> wrapMsg) :: maybeScrollOptionIntoViewCmd)
                         (HandleSelect >> wrapMsg)
                         subMsg
                         selectModel
@@ -121,13 +218,13 @@ updateRaw { onInput, onSelect, onInputTabKeyDown, scrollOptionIntoViewCmd } wrap
             ( ModelInternal { modelInternal | selectModel = updatedSelectModel }, selectCmd )
 
         SelectedCountryCode countryCode ->
-            ( model, maybeTriggerParentMsg onSelect countryCode )
+            ( model, maybeTriggerParentMsg updateOtions.onSelect countryCode )
 
         InsertedValue value ->
-            ( ModelInternal { modelInternal | phoneInputValue = value }, maybeTriggerParentMsg onInput value )
+            ( ModelInternal { modelInternal | phoneInputValue = value }, maybeTriggerParentMsg updateOtions.onInput value )
 
         InputTabKeyDown ->
-            ( model, maybeTriggerParentMsgWithoutValue onInputTabKeyDown )
+            ( model, maybeTriggerParentMsgWithoutValue updateOtions.onInputTabKeyDown )
 
 
 maybeTriggerParentMsg : Maybe (value -> msg) -> value -> Cmd msg
@@ -152,6 +249,12 @@ maybeTriggerParentMsgWithoutValue maybeMsg =
             Cmd.none
 
 
+{-| Model type for the Select component. Use this in your own model.
+
+    type alias DashboardModel =
+        { phoneSelectInputModel : AvardaUi.PhoneSelectInput.Model }
+
+-}
 type Model
     = ModelInternal
         { id : String
@@ -160,9 +263,19 @@ type Model
         }
 
 
+{-| Get the current value of the phone input.
+-}
 getPhoneInputValue : Model -> String
 getPhoneInputValue (ModelInternal { phoneInputValue }) =
     phoneInputValue
+
+
+{-| Get the currently selected `CountryCode`.
+If none is selected, returns _Nothing_.
+-}
+getSelectedCountryCode : Model -> Maybe CountryCode
+getSelectedCountryCode (ModelInternal { selectModel }) =
+    Select.getSelectedOption selectModel
 
 
 getId : Model -> String
@@ -175,16 +288,27 @@ getSelectModel (ModelInternal { selectModel }) =
     selectModel
 
 
-setSelectedOption : CountryCode -> Model -> Model
-setSelectedOption countryCode (ModelInternal ({ selectModel } as modelInternal)) =
+{-| Set the selected `CountryCode`.
+-}
+setSelectedCountry : CountryCode -> Model -> Model
+setSelectedCountry countryCode (ModelInternal ({ selectModel } as modelInternal)) =
     ModelInternal { modelInternal | selectModel = Select.setSelectedOption countryCode selectModel }
 
 
+{-| Set the phone input value.
+-}
 setPhoneInputValue : String -> Model -> Model
 setPhoneInputValue value (ModelInternal modelInternal) =
     ModelInternal { modelInternal | phoneInputValue = value }
 
 
+{-| Initialize the PhoneSelectInput model.
+
+    init : DashboardModel
+    init =
+        { phoneSelectInputModel = AvardaUi.PhoneSelectInput.init "phone" }
+
+-}
 init : String -> Model
 init id =
     ModelInternal
@@ -211,6 +335,15 @@ type PhoneSelectInput msg
         }
 
 
+{-| Create a new PhoneSelectInput component.
+
+    AvardaUi.PhoneSelectInput.new
+        { inputLabel = "Phone"
+        , selectAriaLabel = "Country code"
+        , phoneSelectInputModel = model.phoneSelectInputModel
+        }
+
+-}
 new : { inputLabel : String, selectAriaLabel : String, phoneSelectInputModel : Model } -> PhoneSelectInput msg
 new { inputLabel, selectAriaLabel, phoneSelectInputModel } =
     let
@@ -233,56 +366,79 @@ new { inputLabel, selectAriaLabel, phoneSelectInputModel } =
         }
 
 
+{-| Set a maximum height for the dropdown menu.
+-}
 withMenuMaxHeight : Int -> PhoneSelectInput msg -> PhoneSelectInput msg
 withMenuMaxHeight maxHeight (Settings model) =
     Settings { model | maybeMaxHeight = Just maxHeight }
 
 
+{-| Adjust the border radius of the PhoneSelectInput.
+-}
 withBorderRadius : Float -> PhoneSelectInput msg -> PhoneSelectInput msg
 withBorderRadius borderRadius (Settings model) =
     Settings { model | borderRadius = borderRadius }
 
 
+{-| Mark the PhoneSelectInput as required.
+-}
 withIsRequired : Bool -> PhoneSelectInput msg -> PhoneSelectInput msg
 withIsRequired isRequired (Settings model) =
     Settings { model | isRequired = isRequired }
 
 
+{-| Disable the PhoneSelectInput
+-}
 withIsDisabled : Bool -> PhoneSelectInput msg -> PhoneSelectInput msg
 withIsDisabled isDisabled (Settings model) =
     Settings { model | isDisabled = isDisabled }
 
 
+{-| Show an error message and mark the PhoneSelectInput as invalid.
+**Replaces any active hint text.**
+-}
 withMaybeError : Maybe String -> PhoneSelectInput msg -> PhoneSelectInput msg
 withMaybeError maybeError (Settings model) =
     Settings { model | maybeError = maybeError }
 
 
+{-| Add a hint text below the PhoneSelectInput.
+-}
 withHint : String -> PhoneSelectInput msg -> PhoneSelectInput msg
 withHint hint (Settings model) =
     Settings { model | hint = Just hint }
 
 
+{-| Add a placeholder to the input.
+-}
 withInputPlaceholder : String -> PhoneSelectInput msg -> PhoneSelectInput msg
 withInputPlaceholder placeholder (Settings model) =
     Settings { model | inputPlaceholder = Just placeholder }
 
 
+{-| Limit the maximum number of characters.
+-}
 withInputMaxLength : Int -> PhoneSelectInput msg -> PhoneSelectInput msg
 withInputMaxLength maxLength (Settings model) =
     Settings { model | inputMaxLength = Just maxLength }
 
 
-withMaybeBuilder : (prop -> builder -> builder) -> Maybe prop -> (builder -> builder)
-withMaybeBuilder builder =
-    Maybe.map builder >> Maybe.withDefault identity
-
-
-setOptions : List CountryCode -> PhoneSelectInput msg -> PhoneSelectInput msg
-setOptions countryCodeList (Settings model) =
+{-| Set the available `CountryCode`s for country select.
+-}
+setCountries : List CountryCode -> PhoneSelectInput msg -> PhoneSelectInput msg
+setCountries countryCodeList (Settings model) =
     Settings { model | countryCodeList = countryCodeList |> List.Extra.unique |> List.sortBy Data.countryCodeToString }
 
 
+{-| Render the PhoneSelectInput as HTML .
+
+Always call this after you've built up the input with `new` and chained settings.
+
+    AvardaUi.PhoneSelectInput.new "phone" {...}
+        |> AvardaUi.PhoneSelectInput.withIsRequired True
+        |> AvardaUi.PhoneSelectInput.view
+
+-}
 view : (Msg -> msg) -> PhoneSelectInput msg -> Html msg
 view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, maybeError, isRequired, inputMaxLength, isDisabled, borderRadius, countryCodeList, maybeMaxHeight, hint, inputPlaceholder }) =
     let
@@ -303,7 +459,6 @@ view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, may
     in
     Input.new (getId phoneSelectInputModel) { value = getPhoneInputValue phoneSelectInputModel, msg = InsertedValue, label = inputLabel }
         |> Input.withLeftChild selectView
-        |> Input.withAdditionalWrapperStyles [ Css.position Css.relative ]
         |> Input.withMaybeError maybeError
         |> Input.withIsDisabled isDisabled
         |> Input.withBorderRadius borderRadius

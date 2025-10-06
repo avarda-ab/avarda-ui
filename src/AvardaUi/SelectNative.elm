@@ -1,13 +1,40 @@
-module AvardaUi.SelectNative exposing (new, setBasicOptions, setOptionGroups, view, withAriaLabel, withBorderRadius, withCustomOptionSorting, withIsDisabled, withIsRequired, withMaybeError, withOptionToLabel)
+module AvardaUi.SelectNative exposing
+    ( new, view
+    , withAriaLabel, withBorderRadius, withCustomOptionSorting, withIsDisabled, withIsRequired, withMaybeError, withOptionToLabel
+    , setBasicOptions, setOptionGroups
+    )
 
+{-| A native styled HTML `<select>` without custom dropdown menu. It uses the [builder pattern](https://sporto.github.io/elm-patterns/basic/builder-pattern.html):
+
+1.  Start with [`new`](#new) to create a base input.
+2.  Chain configuration functions like [`withPlaceholder`](#withPlaceholder) or [`withIsRequired`](#withIsRequired).
+3.  Finish with [`view`](#view) to render it.
+
+
+# Creating a SelectNative
+
+@docs new, view
+
+
+# Configuration
+
+@docs withAriaLabel, withBorderRadius, withCustomOptionSorting, withIsDisabled, withIsRequired, withMaybeError, withOptionToLabel
+
+
+# Setting Options
+
+@docs setBasicOptions, setOptionGroups
+
+-}
+
+import AvardaUi.Util.Accessibility as AccessibilityUtil
+import AvardaUi.Util.Icon as Icon
 import Css
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import Json.Decode as Decode
 import List.Extra
-import Util.Accessibility as AccessibilityUtil
-import Util.Icon as Icon
 
 
 baseId : String
@@ -54,6 +81,18 @@ type OptionType a
     | OptionGroupList (List (List a))
 
 
+{-| Create a new `SelectNative`.
+
+    SelectNative.new "country"
+        { label = "Country"
+        , optionToStringValue = .code
+        , stringValueToOption = countryToString
+        , onChange = SelectedCountry
+        , placeholder = "Choose country"
+        , selectedOption = Nothing
+        }
+
+-}
 new :
     String
     ->
@@ -67,7 +106,6 @@ new :
     -> Select a msg
 new id { label, optionToStringValue, onChange, selectedOption, placeholder, stringValueToOption } =
     let
-        -- TODO: Should be part of Theme
         defaultBorderRadius =
             8
     in
@@ -89,36 +127,51 @@ new id { label, optionToStringValue, onChange, selectedOption, placeholder, stri
         }
 
 
+{-| Show an error message and mark the select as invalid.
+-}
 withMaybeError : Maybe String -> Select a msg -> Select a msg
 withMaybeError maybeError (Settings model) =
     Settings { model | maybeError = maybeError }
 
 
+{-| Mark the select as required.
+-}
 withIsRequired : Bool -> Select a msg -> Select a msg
 withIsRequired isRequired (Settings model) =
     Settings { model | isRequired = isRequired }
 
 
+{-| Disable the input.
+Visually dims and prevents user actions.
+-}
 withIsDisabled : Bool -> Select a msg -> Select a msg
 withIsDisabled isDisabled (Settings model) =
     Settings { model | isDisabled = isDisabled }
 
 
+{-| Adjust the border radius.
+-}
 withBorderRadius : Float -> Select a msg -> Select a msg
 withBorderRadius borderRadius (Settings model) =
     Settings { model | borderRadius = borderRadius }
 
 
+{-| Set a custom ARIA label.
+-}
 withAriaLabel : String -> Select a msg -> Select a msg
 withAriaLabel ariaLabel (Settings model) =
     Settings { model | ariaLabel = Just ariaLabel }
 
 
+{-| Provide a custom label function for options.
+-}
 withOptionToLabel : (a -> String) -> Select a msg -> Select a msg
 withOptionToLabel optionToLabel (Settings model) =
     Settings { model | maybeOptionToLabel = Just optionToLabel }
 
 
+{-| Provide a custom sort function for the option list(s).
+-}
 withCustomOptionSorting : (List a -> List a) -> Select a msg -> Select a msg
 withCustomOptionSorting sortFn (Settings model) =
     Settings
@@ -133,16 +186,29 @@ withCustomOptionSorting sortFn (Settings model) =
         }
 
 
+{-| Set a flat list of options.
+-}
 setBasicOptions : List a -> Select a msg -> Select a msg
-setBasicOptions optionList (Settings ({ optionToStringValue } as model)) =
-    Settings { model | options = optionList |> List.Extra.unique |> List.sortBy optionToStringValue |> BasicOptionList }
+setBasicOptions optionList (Settings model) =
+    Settings { model | options = optionList |> List.Extra.unique |> BasicOptionList }
 
 
+{-| Set a grouped list of options. Each inner list will render as an `<optgroup>`.
+-}
 setOptionGroups : List (List a) -> Select a msg -> Select a msg
-setOptionGroups optionGroupList (Settings ({ optionToStringValue } as model)) =
-    Settings { model | options = optionGroupList |> List.map (List.Extra.unique >> List.sortBy optionToStringValue) |> OptionGroupList }
+setOptionGroups optionGroupList (Settings model) =
+    Settings { model | options = optionGroupList |> List.map List.Extra.unique |> OptionGroupList }
 
 
+{-| Render the SelectNative as HTML.
+
+Always call this after you've built up the input with `new` and chained settings.
+
+    AvardaUi.SelectNative.new {...}
+        |> AvardaUi.SelectNative.withIsRequired True
+        |> AvardaUi.SelectNative.view
+
+-}
 view : Select a msg -> Html msg
 view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, maybeError, onChange, stringValueToOption }) as model) =
     let
@@ -160,14 +226,14 @@ view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, ma
                     , Css.padding2 (Css.px 0) (Css.px 6)
                     , Css.backgroundColor (Css.hex "#FFFFFF")
                     ]
-                , Attributes.id <| labelId id
+                , Attributes.id (labelId id)
                 ]
                 [ Html.text label, AccessibilityUtil.requiredAsterisk isRequired ]
 
         ariaLabelAttribute =
             ariaLabel
                 |> Maybe.map AccessibilityUtil.ariaLabel
-                |> Maybe.withDefault (AccessibilityUtil.ariaLabelledBy <| labelId id)
+                |> Maybe.withDefault (labelId id |> AccessibilityUtil.ariaLabelledBy)
 
         onChangeEvent msg =
             Events.on "change" (Decode.map msg Events.targetValue)

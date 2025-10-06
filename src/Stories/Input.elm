@@ -1,14 +1,15 @@
 module Stories.Input exposing (main)
 
 import AvardaUi.Input
+import AvardaUi.Util.Builder exposing (withConditionalBuilder, withMaybeBuilder)
+import AvardaUi.Util.Icon exposing (mockIconView)
+import AvardaUi.Util.KeyPress as KeyPressUtil
 import Browser
 import Css
 import Html.Styled as Html
 import Html.Styled.Attributes as Attributes
 import Json.Decode as Decode
-import Util.Components exposing (withConditionalBuilder, withMaybeBuilder)
 import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeIntControl, decodeMaybeStringControl, decodeStringControl)
-import Util.Icon exposing (mockIconView)
 
 
 type alias Controls =
@@ -95,6 +96,7 @@ main =
                     |> withMaybeBuilder AvardaUi.Input.withPlaceholder placeholder
                     |> withMaybeBuilder AvardaUi.Input.withHint hint
                     |> withMaybeBuilder AvardaUi.Input.withMaxLength maxLength
+                    |> AvardaUi.Input.withAttributes [ KeyPressUtil.onKeyDownPreventDefault [ ( KeyPressUtil.Enter, NoOp ) ] ]
                     |> AvardaUi.Input.view
                     |> List.singleton
                     |> Html.div [ Attributes.css [ Css.maxWidth (Css.px 300) ] ]
