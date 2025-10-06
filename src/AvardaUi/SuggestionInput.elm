@@ -1,9 +1,9 @@
 module AvardaUi.SuggestionInput exposing
     ( Model, init, setSuggestions, reinit, Msg, update, new, view
     , setInputValue
+    , getSelectedSuggestion
     , updateWith, onSelect, onInput, remoteSuggestions, scrollSuggestionIntoView
-    , withBorderRadius, withHint, withPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight
-    , getSelectedSuggestion, withAriaLabel, withAutocomplete, withCustomSuggestionViewFn, withLeftChild, withRightChild, withSelectedSuggestionAdditionalStyles, withTopPx
+    , withBorderRadius, withHint, withPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withAriaLabel, withAutocomplete, withCustomSuggestionViewFn, withLeftChild, withRightChild, withSelectedSuggestionAdditionalStyles, withTopPx
     )
 
 {-| This module provides a component that allows you to get autocomplete suggestions. These can be either hardcoded or you can use remote suggestions obtained from API call.
@@ -37,6 +37,11 @@ If you wish to use it with remote suggestions, add a [`remoteSuggestions`](#remo
 @docs setInputValue
 
 
+# Getting selected suggestion
+
+@docs getSelectedSuggestion
+
+
 # Update with extra options
 
 You can pass extra options / callbacks to this component using `updateWith`
@@ -46,7 +51,7 @@ You can pass extra options / callbacks to this component using `updateWith`
 
 # Configuration
 
-@docs withBorderRadius, withHint, withPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight
+@docs withBorderRadius, withHint, withPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withAriaLabel, withAutocomplete, withCustomSuggestionViewFn, withLeftChild, withRightChild, withSelectedSuggestionAdditionalStyles, withTopPx
 
 -}
 
@@ -209,7 +214,8 @@ reinit =
 
 
 {-| Get the currently selected suggestion.
-If none is selected, returns _Nothing_.
+If none is selected, returns `Nothing`.
+_Note that if you select a suggestion and then write anything to the input, the suggestion is no longer selected in the model_
 -}
 getSelectedSuggestion : Model a -> Maybe a
 getSelectedSuggestion =
