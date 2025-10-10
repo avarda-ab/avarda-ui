@@ -3,6 +3,7 @@ module AvardaUi.Select exposing
     , updateWith, onSelect, scrollOptionIntoView
     , setSelectedOption, setOptions
     , getSelectedOption
+    , getIsOpen
     , withMaybeError, withIsRequired, withIsDisabled, withBorderRadius, withTopPx, withMenuMaxHeight
     , withCustomOptionViewFn, withCustomSelectedOptionViewFn
     , withAdditionalWrapperStyles, withAdditionalMenuStyles, withContainerPosition, withAriaLabel
@@ -35,6 +36,11 @@ You can pass extra options / callbacks to this component using `updateWith`
 # Getting selected option
 
 @docs getSelectedOption
+
+
+# Getting component state
+
+@docs getIsOpen
 
 
 # Configuration
@@ -168,6 +174,13 @@ If none is selected, returns _Nothing_.
 getSelectedOption : Model a -> Maybe a
 getSelectedOption model =
     Model.getSelectedOption model
+
+
+{-| Get information if Select is open or not.
+-}
+getIsOpen : Model a -> Bool
+getIsOpen model =
+    Model.getIsOpen model
 
 
 type Select a msg
