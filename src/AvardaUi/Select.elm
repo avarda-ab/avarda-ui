@@ -5,7 +5,7 @@ module AvardaUi.Select exposing
     , getSelectedOption
     , withMaybeError, withIsRequired, withIsDisabled, withBorderRadius, withTopPx, withMenuMaxHeight
     , withCustomOptionViewFn, withCustomSelectedOptionViewFn
-    , withAdditionalWrapperStyles, withContainerPosition, withAriaLabel
+    , withAdditionalWrapperStyles, withAdditionalMenuStyles, withContainerPosition, withAriaLabel
     )
 
 {-| This module provides a customizable accessible select dropdown. It uses the [builder pattern](https://sporto.github.io/elm-patterns/basic/builder-pattern.html):
@@ -41,7 +41,7 @@ You can pass extra options / callbacks to this component using `updateWith`
 
 @docs withMaybeError, withIsRequired, withIsDisabled, withBorderRadius, withTopPx, withMenuMaxHeight
 @docs withCustomOptionViewFn, withCustomSelectedOptionViewFn
-@docs withAdditionalWrapperStyles, withContainerPosition, withAriaLabel
+@docs withAdditionalWrapperStyles, withAdditionalMenuStyles, withContainerPosition, withAriaLabel
 
 -}
 
@@ -185,6 +185,7 @@ type Select a msg
         , borderRadius : Float
         , topPx : Float
         , additionalWrapperStyles : List Css.Style
+        , additionalMenuStyles : List Css.Style
         , containerPosition : Css.Position {}
         , ariaLabel : Maybe String
         }
@@ -224,6 +225,7 @@ new { selectModel, label, optionToString } =
         , optionViewFn = Nothing
         , selectedOptionViewFn = Nothing
         , additionalWrapperStyles = []
+        , additionalMenuStyles = []
         , containerPosition = Css.relative
         , ariaLabel = Nothing
         }
@@ -291,6 +293,13 @@ withCustomSelectedOptionViewFn selectedOptionViewFn (Settings model) =
 withAdditionalWrapperStyles : List Css.Style -> Select a msg -> Select a msg
 withAdditionalWrapperStyles additionalWrapperStyles (Settings model) =
     Settings { model | additionalWrapperStyles = additionalWrapperStyles }
+
+
+{-| Add additional menu container styles.
+-}
+withAdditionalMenuStyles : List Css.Style -> Select a msg -> Select a msg
+withAdditionalMenuStyles additionalMenuStyles (Settings model) =
+    Settings { model | additionalMenuStyles = additionalMenuStyles }
 
 
 {-| Set the CSS position of the Select container.
@@ -473,7 +482,7 @@ defaultSelectedOptionView selectModel maybeOption =
 
 
 optionListView : (Msg a -> msg) -> Select a msg -> Html msg
-optionListView wrapMsg ((Settings { selectModel, maybeMaxHeight, borderRadius, optionList, topPx }) as viewModel) =
+optionListView wrapMsg ((Settings { selectModel, maybeMaxHeight, borderRadius, optionList, topPx, additionalMenuStyles }) as viewModel) =
     let
         listboxId =
             Model.getListboxId selectModel
@@ -492,24 +501,26 @@ optionListView wrapMsg ((Settings { selectModel, maybeMaxHeight, borderRadius, o
     Html.div
         [ Attributes.id listboxId
         , Attributes.css
-            [ Css.position Css.absolute
-            , Css.top (Css.px topPx)
-            , Css.width (Css.pct 100)
-            , Css.left (Css.px 0)
-            , Css.border3 (Css.px 1) Css.solid (Css.hex "#CCC")
-            , Css.backgroundColor (Css.hex "#FFF")
-            , Css.zIndex (Css.int 4)
-            , Css.borderRadius (Css.px borderRadius)
-            , Css.flexDirection Css.column
-            , maxHeightStyle
-            , Css.overflowY Css.auto
-            , if Model.getIsOpen selectModel then
+            ([ Css.position Css.absolute
+             , Css.top (Css.px topPx)
+             , Css.width (Css.pct 100)
+             , Css.left (Css.px 0)
+             , Css.border3 (Css.px 1) Css.solid (Css.hex "#CCC")
+             , Css.backgroundColor (Css.hex "#FFF")
+             , Css.zIndex (Css.int 4)
+             , Css.borderRadius (Css.px borderRadius)
+             , Css.flexDirection Css.column
+             , maxHeightStyle
+             , Css.overflowY Css.auto
+             , if Model.getIsOpen selectModel then
                 Css.displayFlex
 
-              else
+               else
                 Css.display Css.none
-            , dividerStyle
-            ]
+             , dividerStyle
+             ]
+                ++ additionalMenuStyles
+            )
         , AccessibilityUtil.role "listbox"
         , Attributes.tabindex -1
         ]

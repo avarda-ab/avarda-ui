@@ -17,7 +17,10 @@ If the value is `Nothing`, the builder is skipped.
         |> Input.view
 
 -}
-withMaybeBuilder : (prop -> builder -> builder) -> Maybe prop -> (builder -> builder)
+withMaybeBuilder :
+    (prop -> builder -> builder)
+    -> Maybe prop
+    -> (builder -> builder)
 withMaybeBuilder builder =
     Maybe.map builder >> Maybe.withDefault identity
 
@@ -30,7 +33,10 @@ If the condition is `False`, the builder is skipped.
         |> Input.view
 
 -}
-withConditionalBuilder : (builder -> builder) -> Bool -> (builder -> builder)
+withConditionalBuilder :
+    (builder -> builder)
+    -> Bool
+    -> (builder -> builder)
 withConditionalBuilder builder shouldAddBuilder =
     if shouldAddBuilder then
         builder
