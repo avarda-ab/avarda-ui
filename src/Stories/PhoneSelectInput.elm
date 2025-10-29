@@ -2,12 +2,12 @@ module Stories.PhoneSelectInput exposing (main)
 
 import AvardaUi.PhoneSelectInput
 import AvardaUi.Util.Builder exposing (withMaybeBuilder)
+import AvardaUi.Util.CountryCode exposing (CountryCode(..))
 import Browser
 import Css
 import Html.Styled as Html
 import Html.Styled.Attributes as Attributes
 import Json.Decode as Decode
-import Shared.Data exposing (CountryCode(..))
 import Util.Controls exposing (ControlsFlags, ControlsModelExtended, decodeBoolControl, decodeControls, decodeMaybeIntControl, decodeMaybeStringControl, decodeStringControl)
 
 

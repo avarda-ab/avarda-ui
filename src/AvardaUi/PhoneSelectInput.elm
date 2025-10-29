@@ -1,5 +1,6 @@
 module AvardaUi.PhoneSelectInput exposing
     ( Model, init, Msg, update, new, view
+    , UpdateOption
     , updateWith, onSelect, onInput, onInputTabKeyDown, scrollOptionIntoView
     , withBorderRadius, withHint, withInputMaxLength, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withInputFloatingLabelBackgroundColor
     , setCountries, setSelectedCountry, setPhoneInputValue
@@ -7,7 +8,8 @@ module AvardaUi.PhoneSelectInput exposing
     )
 
 {-| This module provides a component that combines a `Select` for country dialing codes
-with an `Input` for entering a phone number. It uses the [builder pattern](https://sporto.github.io/elm-patterns/basic/builder-pattern.html):
+with an `Input` for entering a phone number.
+It uses the [builder pattern](https://sporto.github.io/elm-patterns/basic/builder-pattern.html):
 
 1.  Start with [`new`](#new) to create a base input.
 2.  Chain configuration functions like [`withPlaceholder`](#withPlaceholder) or [`withIsRequired`](#withIsRequired).
@@ -22,6 +24,8 @@ with an `Input` for entering a phone number. It uses the [builder pattern](https
 # Update with extra options
 
 You can pass extra options / callbacks to this component using `updateWith`
+
+@docs UpdateOption
 
 @docs updateWith, onSelect, onInput, onInputTabKeyDown, scrollOptionIntoView
 
@@ -46,16 +50,18 @@ import AvardaUi.Input as Input
 import AvardaUi.Select as Select
 import AvardaUi.SelectInternal.Model
 import AvardaUi.Util.Builder exposing (withMaybeBuilder)
+import AvardaUi.Util.CountryCode as CountryCodeUtil exposing (CountryCode(..))
 import AvardaUi.Util.Icon as Icon
 import AvardaUi.Util.KeyPress as KeyPressUtil
 import Css
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attributes
 import List.Extra
-import Shared.Data as Data exposing (CountryCode(..))
 import Task
 
 
+{-| UpdateOption type
+-}
 type UpdateOption msg
     = OnSelect (CountryCode -> msg)
     | OnInput (String -> msg)
@@ -288,7 +294,7 @@ getSelectModel (ModelInternal { selectModel }) =
     selectModel
 
 
-{-| Set the selected `CountryCode`.
+{-| Set the selected `CountryCode`. It has to come from **AvardaUi.Util.CountryCode**.
 -}
 setSelectedCountry : CountryCode -> Model -> Model
 setSelectedCountry countryCode (ModelInternal ({ selectModel } as modelInternal)) =
@@ -433,11 +439,11 @@ withInputFloatingLabelBackgroundColor color (Settings model) =
     Settings { model | inputFloatingLabelBackgroundColor = color }
 
 
-{-| Set the available `CountryCode`s for country select.
+{-| Set the available `CountryCode`s for country select. These country codes have to come from **AvardaUi.Util.CountryCode**.
 -}
 setCountries : List CountryCode -> PhoneSelectInput msg -> PhoneSelectInput msg
 setCountries countryCodeList (Settings model) =
-    Settings { model | countryCodeList = countryCodeList |> List.Extra.unique |> List.sortBy Data.countryCodeToString }
+    Settings { model | countryCodeList = countryCodeList |> List.Extra.unique |> List.sortBy CountryCodeUtil.toString }
 
 
 {-| Render the PhoneSelectInput as HTML .
@@ -456,7 +462,7 @@ view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, may
             getSelectModel phoneSelectInputModel
 
         selectView =
-            Select.new { label = "", selectModel = selectModel, optionToString = Data.countryCodeToString }
+            Select.new { label = "", selectModel = selectModel, optionToString = CountryCodeUtil.toString }
                 |> Select.withIsDisabled isDisabled
                 |> Select.withAriaLabel selectAriaLabel
                 |> Select.withAdditionalWrapperStyles [ Css.borderStyle Css.none, Css.padding Css.zero ]
@@ -488,9 +494,6 @@ view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, may
 selectedOptionView : Select.Model CountryCode -> CountryCode -> Html msg
 selectedOptionView selectModel countryCode =
     let
-        dialingCode =
-            Data.countryCodeToDialingCode countryCode
-
         flag =
             countryCodeToIcon countryCode
     in
@@ -503,22 +506,19 @@ selectedOptionView selectModel countryCode =
               else
                 Icon.arrowDown
             ]
-        , Html.text dialingCode
+        , Html.text (countryCodeToDialingCode countryCode)
         ]
 
 
 optionView : CountryCode -> Html msg
 optionView countryCode =
     let
-        dialingCode =
-            Data.countryCodeToDialingCode countryCode
-
         flag =
             countryCodeToIcon countryCode
     in
     Html.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.row, Css.alignItems Css.center ] ]
         [ maybeFlagView flag
-        , Html.text <| "(" ++ dialingCode ++ ")"
+        , Html.text <| "(" ++ countryCodeToDialingCode countryCode ++ ")"
         ]
 
 
@@ -580,3 +580,52 @@ countryCodeToIcon code =
 
         Unknown ->
             Nothing
+
+
+countryCodeToDialingCode : CountryCode -> String
+countryCodeToDialingCode code =
+    case code of
+        SE ->
+            "+46"
+
+        FI ->
+            "+358"
+
+        NO ->
+            "+47"
+
+        DK ->
+            "+45"
+
+        PL ->
+            "+48"
+
+        EE ->
+            "+372"
+
+        LV ->
+            "+371"
+
+        SK ->
+            "+421"
+
+        CZ ->
+            "+420"
+
+        AT ->
+            "+43"
+
+        DE ->
+            "+49"
+
+        XI ->
+            ""
+
+        GL ->
+            "+299"
+
+        FO ->
+            "+298"
+
+        Unknown ->
+            ""

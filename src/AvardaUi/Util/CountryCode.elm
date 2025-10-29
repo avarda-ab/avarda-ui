@@ -1,6 +1,28 @@
-module Shared.Data exposing (CountryCode(..), countryCodeFromString, countryCodeToDialingCode, countryCodeToString)
+module AvardaUi.Util.CountryCode exposing
+    ( CountryCode(..)
+    , fromString, toString
+    )
+
+{-| Utility module for handling ISO-style country codes used in the AvardaUi.PhoneSelectInput.
+
+This module defines a `CountryCode` type representing supported countries and provides
+helpers to convert between the `CountryCode` type and its two-letter string code.
 
 
+# Types
+
+@docs CountryCode
+
+
+# Parsers
+
+@docs fromString, toString
+
+-}
+
+
+{-| Supported country codes.
+-}
 type CountryCode
     = SE
     | FI
@@ -19,8 +41,11 @@ type CountryCode
     | Unknown
 
 
-countryCodeToString : CountryCode -> String
-countryCodeToString code =
+{-| Converts a `CountryCode` value into its corresponding two-letter string code.
+Returns an empty string for `Unknown`.
+-}
+toString : CountryCode -> String
+toString code =
     case code of
         SE ->
             "SE"
@@ -68,8 +93,11 @@ countryCodeToString code =
             ""
 
 
-countryCodeFromString : String -> CountryCode
-countryCodeFromString code =
+{-| Parses a two-letter country code string into a `CountryCode` value.
+Returns `Unknown` if the string does not match any supported code.
+-}
+fromString : String -> CountryCode
+fromString code =
     case code of
         "SE" ->
             SE
@@ -115,52 +143,3 @@ countryCodeFromString code =
 
         _ ->
             Unknown
-
-
-countryCodeToDialingCode : CountryCode -> String
-countryCodeToDialingCode code =
-    case code of
-        SE ->
-            "+46"
-
-        FI ->
-            "+358"
-
-        NO ->
-            "+47"
-
-        DK ->
-            "+45"
-
-        PL ->
-            "+48"
-
-        EE ->
-            "+372"
-
-        LV ->
-            "+371"
-
-        SK ->
-            "+421"
-
-        CZ ->
-            "+420"
-
-        AT ->
-            "+43"
-
-        DE ->
-            "+49"
-
-        XI ->
-            ""
-
-        GL ->
-            "+299"
-
-        FO ->
-            "+298"
-
-        Unknown ->
-            ""
