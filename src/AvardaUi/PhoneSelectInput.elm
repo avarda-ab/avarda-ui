@@ -1,7 +1,7 @@
 module AvardaUi.PhoneSelectInput exposing
     ( Model, init, Msg, update, new, view
     , updateWith, onSelect, onInput, onInputTabKeyDown, scrollOptionIntoView
-    , withBorderRadius, withHint, withInputMaxLength, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight
+    , withBorderRadius, withHint, withInputMaxLength, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withInputFloatingLabelBackgroundColor
     , setCountries, setSelectedCountry, setPhoneInputValue
     , getSelectedCountryCode, getPhoneInputValue
     )
@@ -28,7 +28,7 @@ You can pass extra options / callbacks to this component using `updateWith`
 
 # Configuration
 
-@docs withBorderRadius, withHint, withInputMaxLength, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight
+@docs withBorderRadius, withHint, withInputMaxLength, withInputPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withInputFloatingLabelBackgroundColor
 
 
 # Setting values
@@ -332,6 +332,7 @@ type PhoneSelectInput msg
         , selectAriaLabel : String
         , hint : Maybe String
         , inputMaxLength : Maybe Int
+        , inputFloatingLabelBackgroundColor : Css.Color
         }
 
 
@@ -363,6 +364,7 @@ new { inputLabel, selectAriaLabel, phoneSelectInputModel } =
         , selectAriaLabel = selectAriaLabel
         , hint = Nothing
         , inputMaxLength = Nothing
+        , inputFloatingLabelBackgroundColor = Css.hex "#FFFFFF"
         }
 
 
@@ -423,6 +425,14 @@ withInputMaxLength maxLength (Settings model) =
     Settings { model | inputMaxLength = Just maxLength }
 
 
+{-| Sets the background color of the floating input label.
+This is useful when the color of the background behind the input is something else then `#FFFFFF`.
+-}
+withInputFloatingLabelBackgroundColor : Css.Color -> PhoneSelectInput msg -> PhoneSelectInput msg
+withInputFloatingLabelBackgroundColor color (Settings model) =
+    Settings { model | inputFloatingLabelBackgroundColor = color }
+
+
 {-| Set the available `CountryCode`s for country select.
 -}
 setCountries : List CountryCode -> PhoneSelectInput msg -> PhoneSelectInput msg
@@ -440,7 +450,7 @@ Always call this after you've built up the input with `new` and chained settings
 
 -}
 view : (Msg -> msg) -> PhoneSelectInput msg -> Html msg
-view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, maybeError, isRequired, inputMaxLength, isDisabled, borderRadius, countryCodeList, maybeMaxHeight, hint, inputPlaceholder }) =
+view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, maybeError, isRequired, inputMaxLength, isDisabled, borderRadius, countryCodeList, maybeMaxHeight, hint, inputPlaceholder, inputFloatingLabelBackgroundColor }) =
     let
         selectModel =
             getSelectModel phoneSelectInputModel
@@ -470,6 +480,7 @@ view wrapMsg (Settings { phoneSelectInputModel, selectAriaLabel, inputLabel, may
         |> withMaybeBuilder Input.withHint hint
         |> withMaybeBuilder Input.withPlaceholder inputPlaceholder
         |> withMaybeBuilder Input.withMaxLength inputMaxLength
+        |> Input.withFloatingLabelBackgroundColor inputFloatingLabelBackgroundColor
         |> Input.view
         |> Html.map wrapMsg
 

@@ -1,6 +1,6 @@
 module AvardaUi.SelectNative exposing
     ( new, view
-    , withAriaLabel, withBorderRadius, withCustomOptionSorting, withIsDisabled, withIsRequired, withMaybeError, withOptionToLabel
+    , withAriaLabel, withBorderRadius, withCustomOptionSorting, withIsDisabled, withIsRequired, withMaybeError, withOptionToLabel, withFloatingLabelBackgroundColor
     , setBasicOptions, setOptionGroups
     )
 
@@ -18,7 +18,7 @@ module AvardaUi.SelectNative exposing
 
 # Configuration
 
-@docs withAriaLabel, withBorderRadius, withCustomOptionSorting, withIsDisabled, withIsRequired, withMaybeError, withOptionToLabel
+@docs withAriaLabel, withBorderRadius, withCustomOptionSorting, withIsDisabled, withIsRequired, withMaybeError, withOptionToLabel, withFloatingLabelBackgroundColor
 
 
 # Setting Options
@@ -73,6 +73,7 @@ type Select a msg
         , label : String
         , borderRadius : Float
         , ariaLabel : Maybe String
+        , floatingLabelBackgroundColor : Css.Color
         }
 
 
@@ -124,6 +125,7 @@ new id { label, optionToStringValue, onChange, selectedOption, placeholder, stri
         , optionToStringValue = optionToStringValue
         , stringValueToOption = stringValueToOption
         , maybeOptionToLabel = Nothing
+        , floatingLabelBackgroundColor = Css.hex "#FFFFFF"
         }
 
 
@@ -186,6 +188,14 @@ withCustomOptionSorting sortFn (Settings model) =
         }
 
 
+{-| Sets the background color of the floating label.
+This is useful when the color of the background behind the select is something else then `#FFFFFF`.
+-}
+withFloatingLabelBackgroundColor : Css.Color -> Select a msg -> Select a msg
+withFloatingLabelBackgroundColor color (Settings model) =
+    Settings { model | floatingLabelBackgroundColor = color }
+
+
 {-| Set a flat list of options.
 -}
 setBasicOptions : List a -> Select a msg -> Select a msg
@@ -210,7 +220,7 @@ Always call this after you've built up the input with `new` and chained settings
 
 -}
 view : Select a msg -> Html msg
-view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, maybeError, onChange, stringValueToOption }) as model) =
+view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, maybeError, onChange, stringValueToOption, floatingLabelBackgroundColor }) as model) =
     let
         isInvalid =
             maybeError /= Nothing
@@ -224,7 +234,7 @@ view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, ma
                     , Css.left (Css.px 10)
                     , Css.lineHeight (Css.px 18)
                     , Css.padding2 (Css.px 0) (Css.px 6)
-                    , Css.backgroundColor (Css.hex "#FFFFFF")
+                    , Css.backgroundColor floatingLabelBackgroundColor
                     ]
                 , Attributes.id (labelId id)
                 ]

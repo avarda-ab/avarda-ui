@@ -6,7 +6,7 @@ module AvardaUi.Select exposing
     , getIsOpen
     , withMaybeError, withIsRequired, withIsDisabled, withBorderRadius, withTopPx, withMenuMaxHeight
     , withCustomOptionViewFn, withCustomSelectedOptionViewFn
-    , withAdditionalWrapperStyles, withAdditionalMenuStyles, withContainerPosition, withAriaLabel
+    , withAdditionalWrapperStyles, withAdditionalMenuStyles, withContainerPosition, withAriaLabel, withFloatingLabelBackgroundColor
     )
 
 {-| This module provides a customizable accessible select dropdown. It uses the [builder pattern](https://sporto.github.io/elm-patterns/basic/builder-pattern.html):
@@ -47,7 +47,7 @@ You can pass extra options / callbacks to this component using `updateWith`
 
 @docs withMaybeError, withIsRequired, withIsDisabled, withBorderRadius, withTopPx, withMenuMaxHeight
 @docs withCustomOptionViewFn, withCustomSelectedOptionViewFn
-@docs withAdditionalWrapperStyles, withAdditionalMenuStyles, withContainerPosition, withAriaLabel
+@docs withAdditionalWrapperStyles, withAdditionalMenuStyles, withContainerPosition, withAriaLabel, withFloatingLabelBackgroundColor
 
 -}
 
@@ -201,6 +201,7 @@ type Select a msg
         , additionalMenuStyles : List Css.Style
         , containerPosition : Css.Position {}
         , ariaLabel : Maybe String
+        , floatingLabelBackgroundColor : Css.Color
         }
 
 
@@ -241,6 +242,7 @@ new { selectModel, label, optionToString } =
         , additionalMenuStyles = []
         , containerPosition = Css.relative
         , ariaLabel = Nothing
+        , floatingLabelBackgroundColor = Css.hex "#FFFFFF"
         }
 
 
@@ -329,6 +331,14 @@ withAriaLabel id (Settings model) =
     Settings { model | ariaLabel = Just id }
 
 
+{-| Sets the background color of the floating label.
+This is useful when the color of the background behind the select is something else then `#FFFFFF`.
+-}
+withFloatingLabelBackgroundColor : Css.Color -> Select a msg -> Select a msg
+withFloatingLabelBackgroundColor color (Settings model) =
+    Settings { model | floatingLabelBackgroundColor = color }
+
+
 {-| Provide a list of options to the Select.
 **Note that this needs to be used as a builder, when you are creating a Select, not on init**
 -}
@@ -347,7 +357,7 @@ Always call this after you've built up the input with `new` and chained settings
 
 -}
 view : (Msg a -> msg) -> Select a msg -> Html msg
-view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadius, selectedOptionViewFn, optionToString, additionalWrapperStyles, containerPosition, isRequired, ariaLabel, maybeError }) as viewModel) =
+view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadius, selectedOptionViewFn, optionToString, additionalWrapperStyles, containerPosition, isRequired, ariaLabel, maybeError, floatingLabelBackgroundColor }) as viewModel) =
     let
         isInvalid =
             maybeError /= Nothing
@@ -403,7 +413,7 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
                             , Css.left (Css.px 10)
                             , Css.lineHeight (Css.px 18)
                             , Css.padding2 (Css.px 0) (Css.px 6)
-                            , Css.backgroundColor (Css.hex "#FFFFFF")
+                            , Css.backgroundColor floatingLabelBackgroundColor
                             ]
                 in
                 Html.span [ Attributes.css labelStyles, Attributes.id (Model.getLabelId selectModel) ] [ Html.text label, AccessibilityUtil.requiredAsterisk isRequired ]

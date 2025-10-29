@@ -1,6 +1,6 @@
 module AvardaUi.Input exposing
     ( new, view
-    , withPlaceholder, withIsRequired, withIsDisabled, withInputType, withMaxLength, withBorderRadius, withAutocomplete, withAttributes, withOnKeyDown, withMaybeError, withHint, withLeftChild, withRightChild
+    , withPlaceholder, withIsRequired, withIsDisabled, withInputType, withMaxLength, withBorderRadius, withAutocomplete, withAttributes, withOnKeyDown, withMaybeError, withHint, withLeftChild, withRightChild, withFloatingLabelBackgroundColor
     )
 
 {-| This component provides a styled input with support for floating labels, hints, error messages,
@@ -18,7 +18,7 @@ and optional left/right children. It uses the [builder pattern](https://sporto.g
 
 # Configuration
 
-@docs withPlaceholder, withIsRequired, withIsDisabled, withInputType, withMaxLength, withBorderRadius, withAutocomplete, withAttributes, withOnKeyDown, withMaybeError, withHint, withLeftChild, withRightChild
+@docs withPlaceholder, withIsRequired, withIsDisabled, withInputType, withMaxLength, withBorderRadius, withAutocomplete, withAttributes, withOnKeyDown, withMaybeError, withHint, withLeftChild, withRightChild, withFloatingLabelBackgroundColor
 
 -}
 
@@ -89,6 +89,7 @@ type Input msg
         , autocomplete : Maybe String
         , maybeError : Maybe String
         , onKeyDown : List ( KeyPressUtil.KeyboardKey, msg )
+        , floatingLabelBackgroundColor : Css.Color
         }
 
 
@@ -130,6 +131,7 @@ new id { value, msg, label } =
         , autocomplete = Nothing
         , maybeError = Nothing
         , onKeyDown = []
+        , floatingLabelBackgroundColor = Css.hex "#FFFFFF"
         }
 
 
@@ -231,6 +233,14 @@ It uses the `KeyboardKey` type from `AvardaUi.Util.KeyPress` module.
 withOnKeyDown : List ( KeyPressUtil.KeyboardKey, msg ) -> Input msg -> Input msg
 withOnKeyDown onKeyDown (Settings model) =
     Settings { model | onKeyDown = onKeyDown }
+
+
+{-| Sets the background color of the floating label.
+This is useful when the color of the background behind the input is something else then `#FFFFFF`.
+-}
+withFloatingLabelBackgroundColor : Css.Color -> Input msg -> Input msg
+withFloatingLabelBackgroundColor color (Settings model) =
+    Settings { model | floatingLabelBackgroundColor = color }
 
 
 {-| Render the configured input as HTML.
@@ -375,7 +385,7 @@ childView child isDisabled =
 
 
 labelWithInputView : Input msg -> List Css.Style -> Html msg
-labelWithInputView ((Settings { value, isRequired, label, leftChild, rightChild, id }) as model) inputStyles =
+labelWithInputView ((Settings { value, isRequired, label, leftChild, rightChild, id, floatingLabelBackgroundColor }) as model) inputStyles =
     let
         notFocusedLabelStyles =
             if String.isEmpty value then
@@ -411,7 +421,7 @@ labelWithInputView ((Settings { value, isRequired, label, leftChild, rightChild,
             , Css.left (Css.px 10)
             , Css.lineHeight (Css.px 18)
             , Css.padding2 (Css.px 0) (Css.px 6)
-            , Css.backgroundColor (Css.hex "#FFFFFF")
+            , Css.backgroundColor floatingLabelBackgroundColor
             , Css.color (Css.hex "#000000")
             , Css.width Css.unset
             ]

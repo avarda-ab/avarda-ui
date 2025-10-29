@@ -3,7 +3,7 @@ module AvardaUi.SuggestionInput exposing
     , setInputValue
     , getSelectedSuggestion
     , updateWith, onSelect, onInput, remoteSuggestions, scrollSuggestionIntoView
-    , withBorderRadius, withHint, withPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withAriaLabel, withAutocomplete, withCustomSuggestionViewFn, withLeftChild, withRightChild, withSelectedSuggestionAdditionalStyles, withTopPx
+    , withBorderRadius, withHint, withPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withAriaLabel, withAutocomplete, withCustomSuggestionViewFn, withLeftChild, withRightChild, withSelectedSuggestionAdditionalStyles, withTopPx, withFloatingLabelBackgroundColor
     )
 
 {-| This module provides a component that allows you to get autocomplete suggestions. These can be either hardcoded or you can use remote suggestions obtained from API call.
@@ -51,7 +51,7 @@ You can pass extra options / callbacks to this component using `updateWith`
 
 # Configuration
 
-@docs withBorderRadius, withHint, withPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withAriaLabel, withAutocomplete, withCustomSuggestionViewFn, withLeftChild, withRightChild, withSelectedSuggestionAdditionalStyles, withTopPx
+@docs withBorderRadius, withHint, withPlaceholder, withIsDisabled, withIsRequired, withMaybeError, withMenuMaxHeight, withAriaLabel, withAutocomplete, withCustomSuggestionViewFn, withLeftChild, withRightChild, withSelectedSuggestionAdditionalStyles, withTopPx, withFloatingLabelBackgroundColor
 
 -}
 
@@ -255,6 +255,7 @@ type SuggestionInput a msg
         , inputPlaceholder : Maybe String
         , hint : Maybe String
         , selectedSuggestionAdditionalStyles : List Css.Style
+        , floatingLabelBackgroundColor : Css.Color
         }
 
 
@@ -296,6 +297,7 @@ new { suggestionInputModel, label, suggestionToInputValue } =
         , inputPlaceholder = Nothing
         , hint = Nothing
         , selectedSuggestionAdditionalStyles = []
+        , floatingLabelBackgroundColor = Css.hex "#FFFFFF"
         }
 
 
@@ -400,6 +402,14 @@ withSelectedSuggestionAdditionalStyles selectedSuggestionAdditionalStyles (Setti
     Settings { model | selectedSuggestionAdditionalStyles = selectedSuggestionAdditionalStyles }
 
 
+{-| Sets the background color of the floating label.
+This is useful when the color of the background behind the input is something else then `#FFFFFF`.
+-}
+withFloatingLabelBackgroundColor : Css.Color -> SuggestionInput a msg -> SuggestionInput a msg
+withFloatingLabelBackgroundColor color (Settings model) =
+    Settings { model | floatingLabelBackgroundColor = color }
+
+
 {-| Render the Select as HTML.
 
 Always call this after you've built up the input with `new` and chained settings.
@@ -410,7 +420,7 @@ Always call this after you've built up the input with `new` and chained settings
 
 -}
 view : (Msg a -> msg) -> SuggestionInput a msg -> Html msg
-view wrapMsg ((Settings { suggestionInputModel, isDisabled, label, ariaLabel, borderRadius, hint, inputPlaceholder, isRequired, autocomplete, maybeError, leftChild, rightChild, suggestionToInputValue }) as viewModel) =
+view wrapMsg ((Settings { suggestionInputModel, isDisabled, label, ariaLabel, borderRadius, hint, inputPlaceholder, isRequired, autocomplete, maybeError, leftChild, rightChild, suggestionToInputValue, floatingLabelBackgroundColor }) as viewModel) =
     let
         maybeAriaActiveDescendantAttribute =
             HtmlUtil.maybeAttribute (\index -> AccessibilityUtil.ariaActiveDescendant (Model.getListboxOptionId suggestionInputModel index)) (Model.getMaybeHighlightedIndex suggestionInputModel)
@@ -478,6 +488,7 @@ view wrapMsg ((Settings { suggestionInputModel, isDisabled, label, ariaLabel, bo
             |> Input.withIsRequired isRequired
             |> withMaybeBuilder Input.withHint hint
             |> withMaybeBuilder Input.withPlaceholder inputPlaceholder
+            |> Input.withFloatingLabelBackgroundColor floatingLabelBackgroundColor
             |> Input.view
         , if List.isEmpty (Model.getFilteredSuggestions suggestionInputModel) then
             Html.text ""
