@@ -1,6 +1,6 @@
 module AvardaUi.Util.CountryCode exposing
     ( CountryCode(..)
-    , fromString, toString
+    , fromString, toString, countryCodeToMaybeString
     )
 
 {-| Utility module for handling ISO-style country codes used in the AvardaUi.PhoneSelectInput.
@@ -16,7 +16,7 @@ helpers to convert between the `CountryCode` type and its two-letter string code
 
 # Parsers
 
-@docs fromString, toString
+@docs fromString, toString, countryCodeToMaybeString
 
 -}
 
@@ -143,3 +143,15 @@ fromString code =
 
         _ ->
             Unknown
+
+
+{-| Converts a `CountryCode` value into its corresponding two-letter string code wrapped in `Maybe`.
+Returns `Nothing` for `Unknown`.
+-}
+countryCodeToMaybeString : CountryCode -> Maybe String
+countryCodeToMaybeString countryCode =
+    if countryCode == Unknown then
+        Nothing
+
+    else
+        Just <| toString countryCode
