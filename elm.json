@@ -3,7 +3,7 @@
     "name": "avarda-ab/avarda-ui",
     "summary": "A design system made by Avarda devs.",
     "license": "MIT",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "exposed-modules": [
         "AvardaUi.Input",
         "AvardaUi.Select",

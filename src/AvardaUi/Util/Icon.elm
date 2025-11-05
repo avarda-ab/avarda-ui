@@ -1,7 +1,7 @@
 -- TODO: `Util.Icon` will not be an Util but a separate Ui file
 
 
-module AvardaUi.Util.Icon exposing (arrowDown, arrowUp, denmarkFlag, faroeIslandsFlag, finlandFlag, greenlandFlag, mockIconView, norwayFlag, radioButton, swedenFlag)
+module AvardaUi.Util.Icon exposing (arrowDown, arrowUp, checkMark, denmarkFlag, faroeIslandsFlag, finlandFlag, greenlandFlag, mockIconView, norwayFlag, swedenFlag)
 
 import Css
 import Html.Styled exposing (Html)
@@ -308,33 +308,19 @@ arrowUp =
         ]
 
 
-radioButton : Bool -> Html msg
-radioButton isSelected =
-    let
-        ( outlineColor, fillColor ) =
-            if isSelected then
-                ( "#000", "#000" )
-
-            else
-                ( "#CCC", "#00000000" )
-    in
+checkMark : Html msg
+checkMark =
     Svg.svg
         [ SvgAttributes.width "24"
         , SvgAttributes.height "24"
-        , SvgAttributes.viewBox "1 1 22 22"
+        , SvgAttributes.viewBox "0 0 24 24"
+        , SvgAttributes.fill "none"
         ]
         [ Svg.path
-            [ SvgAttributes.fillRule "evenodd"
-            , SvgAttributes.clipRule "evenodd"
-            , SvgAttributes.d "M1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92486 23 12C23 18.0751 18.0751 23 12 23C5.92486 23 1 18.0751 1 12ZM12 3C7.02943 3 3 7.02943 3 12C3 16.9705 7.02944 21 12 21C16.9705 21 21 16.9705 21 12C21 7.02944 16.9705 3 12 3Z"
-            , SvgAttributes.fill outlineColor
-            ]
-            []
-        , Svg.path
-            [ SvgAttributes.fillRule "evenodd"
-            , SvgAttributes.clipRule "evenodd"
-            , SvgAttributes.d "M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM7.53044 11.9697C7.23755 11.6768 6.76268 11.6768 6.46978 11.9697C6.17689 12.2626 6.17689 12.7374 6.46978 13.0303L9.46978 16.0303C9.76268 16.3232 10.2376 16.3232 10.5304 16.0303L17.5304 9.03033C17.8233 8.73744 17.8233 8.26256 17.5304 7.96967C17.2375 7.67678 16.7627 7.67678 16.4698 7.96967L10.0001 14.4393L7.53044 11.9697Z"
-            , SvgAttributes.fill fillColor
+            [ SvgAttributes.d "M5 12.9041L8.38885 16.2929C8.77937 16.6834 9.41253 16.6834 9.80306 16.2929L18.6531 7.4428"
+            , SvgAttributes.stroke "black"
+            , SvgAttributes.strokeWidth "2"
+            , SvgAttributes.strokeLinecap "round"
             ]
             []
         ]

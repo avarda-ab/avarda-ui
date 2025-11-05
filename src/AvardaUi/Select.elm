@@ -568,6 +568,13 @@ optionView wrapMsg (Settings { selectModel, optionToString, optionViewFn }) opti
                     [ defaultFocusOutline ]
                 ]
 
+        ( selectedStyle, selectedCheckMarkIcon ) =
+            if isSelected then
+                ( Css.backgroundColor (Css.hex "#F0F0F0"), Icon.checkMark )
+
+            else
+                ( Css.batch [], Html.text "" )
+
         optionView_ =
             optionViewFn
                 |> Maybe.map (\optionViewFn_ -> optionViewFn_ option)
@@ -581,17 +588,19 @@ optionView wrapMsg (Settings { selectModel, optionToString, optionViewFn }) opti
         , Attributes.id (listboxOptionId index)
         , AccessibilityUtil.ariaSelected isSelected
         , Attributes.css
-            [ Css.padding (Css.px 16)
+            [ Css.padding2 (Css.px 13) (Css.px 16)
             , Css.property "gap" "8px"
             , Css.cursor Css.pointer
             , Css.displayFlex
             , Css.alignSelf Css.stretch
             , Css.alignItems Css.center
             , Css.justifyContent Css.spaceBetween
+            , Css.minHeight (Css.px 54)
+            , selectedStyle
             ]
         ]
         [ optionView_
-        , Icon.radioButton isSelected
+        , selectedCheckMarkIcon
         , if isHighlighted then
             highlightGlobalStyle
 
