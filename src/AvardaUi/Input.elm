@@ -310,7 +310,11 @@ view ((Settings { leftChild, rightChild, borderRadius, id, isDisabled, hintText,
             , Css.property "gap" "4px"
             , Css.lineHeight (Css.px 20)
             , Css.fontSize (Css.px 14)
-            , Css.width (Css.pct 100)
+
+            -- This is currently used as a fix for Safari layout issues (TIP-3415)
+            , Css.property "flex" "1 1 100%"
+
+            --
             , Css.position Css.relative
             ]
         ]
@@ -428,9 +432,9 @@ labelWithInputView ((Settings { value, isRequired, label, leftChild, rightChild,
     in
     Html.div
         [ Attributes.css
-            ([ Css.displayFlex
-             , Css.width (Css.pct 100)
-             , Css.Global.children
+            [ Css.displayFlex
+            , Css.width (Css.pct 100)
+            , Css.Global.children
                 [ Css.Global.input
                     [ Css.focus
                         [ Css.Global.generalSiblings
@@ -438,20 +442,13 @@ labelWithInputView ((Settings { value, isRequired, label, leftChild, rightChild,
                         ]
                     ]
                 ]
-             ]
-                ++ (if leftChild /= Nothing then
-                        [ if String.isEmpty value then
-                            Css.position Css.relative
+            , if String.isEmpty value then
+                Css.position Css.relative
 
-                          else
-                            Css.position Css.static
-                        , Css.pseudoClass "focus-within" [ Css.position Css.static ]
-                        ]
-
-                    else
-                        []
-                   )
-            )
+              else
+                Css.position Css.static
+            , Css.pseudoClass "focus-within" [ Css.position Css.static ]
+            ]
         ]
         [ inputView model inputStyles
         , Html.label
