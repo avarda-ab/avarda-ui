@@ -54,6 +54,7 @@ You can pass extra options / callbacks to this component using `updateWith`
 import AvardaUi.SelectInternal.Model as Model exposing (Model)
 import AvardaUi.SelectInternal.Msg as Msg exposing (Msg(..))
 import AvardaUi.SelectInternal.Update as Update
+import AvardaUi.Theme.Colors as Colors
 import AvardaUi.Util.Accessibility as AccessibilityUtil
 import AvardaUi.Util.Html as HtmlUtil
 import AvardaUi.Util.Icon as Icon
@@ -242,7 +243,7 @@ new { selectModel, label, optionToString } =
         , additionalMenuStyles = []
         , containerPosition = Css.relative
         , ariaLabel = Nothing
-        , floatingLabelBackgroundColor = Css.hex "#FFFFFF"
+        , floatingLabelBackgroundColor = Colors.white
         }
 
 
@@ -398,7 +399,7 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
                     labelStyles =
                         if Model.getSelectedOption selectModel == Nothing then
                             [ Css.fontSize (Css.px 16)
-                            , Css.color (Css.hex "#454545")
+                            , Css.color Colors.grayscale11
                             , Css.position Css.absolute
                             , Css.top (Css.px 22)
                             , Css.left (Css.px 16)
@@ -413,6 +414,7 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
                             , Css.left (Css.px 10)
                             , Css.lineHeight (Css.px 18)
                             , Css.padding2 (Css.px 0) (Css.px 6)
+                            , Css.color Colors.grayscale12
                             , Css.backgroundColor floatingLabelBackgroundColor
                             ]
                 in
@@ -442,7 +444,7 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
              , Attributes.css
                 ([ Css.displayFlex
                  , Css.padding2 (Css.px 12) (Css.px 16)
-                 , Css.border3 (Css.px 1) Css.solid (Css.hex "#767676")
+                 , Css.border3 (Css.px 1) Css.solid Colors.grayscale12
                  , Css.width (Css.pct 100)
                  , Css.borderRadius (Css.px borderRadius)
                  , Css.height (Css.px 54)
@@ -475,7 +477,7 @@ errorView maybeError id =
         Just error ->
             Html.span
                 [ Attributes.id id
-                , Attributes.css [ Css.fontSize (Css.px 14), Css.lineHeight (Css.px 18), Css.color (Css.hex "#BB0E15") ]
+                , Attributes.css [ Css.fontSize (Css.px 14), Css.lineHeight (Css.px 18), Css.color Colors.red11 ]
                 ]
                 [ Html.text error ]
 
@@ -494,7 +496,7 @@ defaultSelectedOptionView selectModel maybeOption =
                 Nothing ->
                     ( Html.text "", Css.justifyContent Css.flexEnd )
     in
-    Html.div [ Attributes.css [ Css.displayFlex, Css.alignItems Css.center, Css.width (Css.pct 100), justifyContentStyle, Css.color (Css.hex "#000") ] ]
+    Html.div [ Attributes.css [ Css.displayFlex, Css.alignItems Css.center, Css.width (Css.pct 100), justifyContentStyle, Css.color Colors.black ] ]
         [ maybeOptionView
         , if Model.getIsOpen selectModel then
             Icon.arrowUp
@@ -513,7 +515,7 @@ optionListView wrapMsg ((Settings { selectModel, maybeMaxHeight, borderRadius, o
         dividerStyle =
             Css.Global.children
                 [ Css.Global.selector "*:not(:last-child)"
-                    [ Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "0000001A") ]
+                    [ Css.borderBottom3 (Css.px 1) Css.solid Colors.grayscale6 ]
                 ]
 
         maxHeightStyle =
@@ -528,8 +530,8 @@ optionListView wrapMsg ((Settings { selectModel, maybeMaxHeight, borderRadius, o
              , Css.top (Css.px topPx)
              , Css.width (Css.pct 100)
              , Css.left (Css.px 0)
-             , Css.border3 (Css.px 1) Css.solid (Css.hex "#CCC")
-             , Css.backgroundColor (Css.hex "#FFF")
+             , Css.border3 (Css.px 1) Css.solid Colors.grayscale6
+             , Css.backgroundColor Colors.white
              , Css.zIndex (Css.int 4)
              , Css.borderRadius (Css.px borderRadius)
              , Css.flexDirection Css.column
@@ -570,7 +572,7 @@ optionView wrapMsg (Settings { selectModel, optionToString, optionViewFn }) opti
 
         ( selectedStyle, selectedCheckMarkIcon ) =
             if isSelected then
-                ( Css.backgroundColor (Css.hex "#F0F0F0"), Icon.checkMark )
+                ( Css.backgroundColor Colors.grayscale3, Icon.checkMark )
 
             else
                 ( Css.batch [], Html.text "" )
@@ -625,8 +627,8 @@ invalidStyle : Bool -> Css.Style
 invalidStyle isInvalid =
     if isInvalid then
         Css.batch
-            [ Css.outlineColor (Css.hex "#BB0E15")
-            , Css.borderColor (Css.hex "#BB0E15")
+            [ Css.outlineColor Colors.red11
+            , Css.borderColor Colors.red11
             ]
 
     else

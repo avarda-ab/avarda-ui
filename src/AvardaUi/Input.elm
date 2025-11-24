@@ -22,6 +22,7 @@ and optional left/right children. It uses the [builder pattern](https://sporto.g
 
 -}
 
+import AvardaUi.Theme.Colors as Colors
 import AvardaUi.Util.Accessibility as AccessibilityUtil
 import AvardaUi.Util.KeyPress as KeyPressUtil
 import Css
@@ -131,7 +132,7 @@ new id { value, msg, label } =
         , autocomplete = Nothing
         , maybeError = Nothing
         , onKeyDown = []
-        , floatingLabelBackgroundColor = Css.hex "#FFFFFF"
+        , floatingLabelBackgroundColor = Colors.white
         }
 
 
@@ -289,14 +290,14 @@ view ((Settings { leftChild, rightChild, borderRadius, id, isDisabled, hintText,
                         , Css.alignItems Css.center
                         ]
                     ]
-                    [ childView leftChild isDisabled
+                    [ childView leftChild
                     , labelWithInputView model
                         [ Css.borderStyle Css.none
                         , Css.pseudoClass "focus-visible" [ Css.outline Css.none, defaultPlaceholderColor ]
                         , Css.width (Css.pct 100)
                         , Css.height (Css.px 54)
                         ]
-                    , childView rightChild isDisabled
+                    , childView rightChild
                     ]
 
         isValid =
@@ -363,8 +364,8 @@ inputView (Settings { id, isDisabled, value, msg, borderRadius, isRequired, inpu
         []
 
 
-childView : Maybe (Html msg) -> Bool -> Html msg
-childView child isDisabled =
+childView : Maybe (Html msg) -> Html msg
+childView child =
     case child of
         Just child_ ->
             Html.div
@@ -373,11 +374,6 @@ childView child isDisabled =
                     , Css.Global.children
                         [ Css.Global.svg
                             [ Css.height (Css.px 24)
-                            , if isDisabled then
-                                Css.color (Css.hex "#424242")
-
-                              else
-                                Css.color (Css.hex "#000000")
                             ]
                         ]
                     ]
@@ -402,7 +398,7 @@ labelWithInputView ((Settings { value, isRequired, label, leftChild, rightChild,
                             16
                 in
                 [ Css.fontSize (Css.px 16)
-                , Css.color (Css.hex "#454545")
+                , Css.color Colors.grayscale11
                 , Css.position Css.absolute
                 , Css.top (Css.px 21)
                 , Css.left (Css.px leftPx)
@@ -426,7 +422,7 @@ labelWithInputView ((Settings { value, isRequired, label, leftChild, rightChild,
             , Css.lineHeight (Css.px 18)
             , Css.padding2 (Css.px 0) (Css.px 6)
             , Css.backgroundColor floatingLabelBackgroundColor
-            , Css.color (Css.hex "#000000")
+            , Css.color Colors.grayscale12
             , Css.width Css.unset
             ]
     in
@@ -466,7 +462,7 @@ errorView maybeError id =
         Just error ->
             Html.span
                 [ Attributes.id <| errorId id
-                , Attributes.css [ Css.color (Css.hex "#BB0E15"), Css.lineHeight (Css.px 18) ]
+                , Attributes.css [ Css.color Colors.red11, Css.lineHeight (Css.px 18) ]
                 ]
                 [ Html.text error ]
 
@@ -481,7 +477,7 @@ hintView isValid hintText id =
             if isValid then
                 Html.span
                     [ Attributes.id <| hintId id
-                    , Attributes.css [ Css.color (Css.hex "#454545") ]
+                    , Attributes.css [ Css.color Colors.grayscale11 ]
                     ]
                     [ Html.text hintText_ ]
 
@@ -495,7 +491,7 @@ hintView isValid hintText id =
 inputBorderStyle : Float -> Css.Style
 inputBorderStyle borderRadius =
     Css.batch
-        [ Css.border3 (Css.px 1) Css.solid (Css.hex "#767676")
+        [ Css.border3 (Css.px 1) Css.solid Colors.grayscale12
         , Css.borderRadius (Css.px borderRadius)
         ]
 
@@ -503,13 +499,14 @@ inputBorderStyle borderRadius =
 baseInputStyle : Float -> Css.Style
 baseInputStyle borderRadius =
     Css.batch
-        [ Css.backgroundColor Css.transparent
+        [ Css.backgroundColor Colors.transparent
         , inputBorderStyle borderRadius
         , Css.fontFamily Css.inherit
         , Css.fontSize (Css.px 16)
         , Css.fontWeight (Css.int 500)
         , Css.width (Css.pct 100)
-        , Css.pseudoElement "placeholder" [ Css.color Css.transparent ]
+        , Css.color Colors.grayscale12
+        , Css.pseudoElement "placeholder" [ Css.color Colors.transparent ]
         ]
 
 
@@ -528,8 +525,8 @@ disabledStyle isDisabled =
 invalidStyle : Css.Style
 invalidStyle =
     Css.batch
-        [ Css.outlineColor (Css.hex "#BB0E15")
-        , Css.borderColor (Css.hex "#BB0E15")
+        [ Css.outlineColor Colors.red11
+        , Css.borderColor Colors.red11
         ]
 
 
@@ -543,4 +540,4 @@ defaultFocusOutline =
 
 defaultPlaceholderColor : Css.Style
 defaultPlaceholderColor =
-    Css.pseudoElement "placeholder" [ Css.color (Css.hex "#454545") ]
+    Css.pseudoElement "placeholder" [ Css.color Colors.grayscale11 ]

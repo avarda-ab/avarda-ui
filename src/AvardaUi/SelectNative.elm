@@ -27,6 +27,7 @@ module AvardaUi.SelectNative exposing
 
 -}
 
+import AvardaUi.Theme.Colors as Colors
 import AvardaUi.Util.Accessibility as AccessibilityUtil
 import AvardaUi.Util.Icon as Icon
 import Css
@@ -125,7 +126,7 @@ new id { label, optionToStringValue, onChange, selectedOption, placeholder, stri
         , optionToStringValue = optionToStringValue
         , stringValueToOption = stringValueToOption
         , maybeOptionToLabel = Nothing
-        , floatingLabelBackgroundColor = Css.hex "#FFFFFF"
+        , floatingLabelBackgroundColor = Colors.white
         }
 
 
@@ -267,7 +268,7 @@ view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, ma
             , Attributes.css
                 [ Css.displayFlex
                 , Css.padding2 (Css.px 12) (Css.px 16)
-                , Css.border3 (Css.px 1) Css.solid (Css.hex "#767676")
+                , Css.border3 (Css.px 1) Css.solid Colors.grayscale12
                 , Css.width (Css.pct 100)
                 , Css.borderRadius (Css.px borderRadius)
                 , Css.height (Css.px 54)
@@ -276,7 +277,7 @@ view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, ma
                 , Css.disabled [ Css.opacity Css.unset, Css.cursor Css.notAllowed ]
                 , Css.property "appearance" "none"
                 , Css.property "background" "none"
-                , Css.color (Css.hex "#000")
+                , Css.color Colors.black
                 ]
             , Attributes.required isRequired
             , Attributes.disabled isDisabled
@@ -304,7 +305,7 @@ errorView maybeError id =
         Just error ->
             Html.span
                 [ Attributes.id id
-                , Attributes.css [ Css.fontSize (Css.px 14), Css.lineHeight (Css.px 18), Css.color (Css.hex "#BB0E15") ]
+                , Attributes.css [ Css.fontSize (Css.px 14), Css.lineHeight (Css.px 18), Css.color Colors.red11 ]
                 ]
                 [ Html.text error ]
 
@@ -365,8 +366,8 @@ invalidStyle : Bool -> Css.Style
 invalidStyle isInvalid =
     if isInvalid then
         Css.batch
-            [ Css.outlineColor (Css.hex "#BB0E15")
-            , Css.borderColor (Css.hex "#BB0E15")
+            [ Css.outlineColor Colors.red11
+            , Css.borderColor Colors.red11
             ]
 
     else

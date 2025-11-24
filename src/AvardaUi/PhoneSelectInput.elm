@@ -49,6 +49,7 @@ You can pass extra options / callbacks to this component using `updateWith`
 import AvardaUi.Input as Input
 import AvardaUi.Select as Select
 import AvardaUi.SelectInternal.Model
+import AvardaUi.Theme.Colors as Colors
 import AvardaUi.Util.Builder exposing (withMaybeBuilder)
 import AvardaUi.Util.CountryCode as CountryCodeUtil exposing (CountryCode(..))
 import AvardaUi.Util.Icon as Icon
@@ -370,7 +371,7 @@ new { inputLabel, selectAriaLabel, phoneSelectInputModel } =
         , selectAriaLabel = selectAriaLabel
         , hint = Nothing
         , inputMaxLength = Nothing
-        , inputFloatingLabelBackgroundColor = Css.hex "#FFFFFF"
+        , inputFloatingLabelBackgroundColor = Colors.white
         }
 
 

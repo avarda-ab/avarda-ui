@@ -1,5 +1,6 @@
 module AvardaUi.Button exposing (newPrimary, newSecondary, newTertiary, view, withBaseStyles, withHoverStyles, withIsDisabled, withLeftChild, withMsgTypeLink, withMsgTypeOnClick, withMsgTypeSubmit, withRightChild, withSizeSmall, withSizeXSmall)
 
+import AvardaUi.Theme.Colors as Colors
 import Css
 import Css.Global
 import Html.Styled as Html exposing (Attribute, Html)
@@ -228,9 +229,9 @@ stylesBasedOnSizeAndVariant size variant =
         variantStyles =
             case variant of
                 Primary ->
-                    [ Css.backgroundColor (Css.hex "#000000")
+                    [ Css.backgroundColor Colors.black
                     , Css.borderWidth Css.zero
-                    , Css.color (Css.hex "#FFFFFF")
+                    , Css.color Colors.white
                     , Css.hover [ Css.backgroundColor (Css.hex "#141414") ]
                     , Css.active [ Css.backgroundColor (Css.hex "#262626") ]
                     , Css.disabled
@@ -241,10 +242,10 @@ stylesBasedOnSizeAndVariant size variant =
                     ]
 
                 Secondary ->
-                    [ Css.backgroundColor (Css.hex "#00000000")
-                    , Css.color (Css.hex "#000000")
+                    [ Css.backgroundColor Colors.transparent
+                    , Css.color Colors.black
                     , Css.borderStyle Css.solid
-                    , Css.borderColor (Css.hex "#000000")
+                    , Css.borderColor Colors.black
                     , Css.borderWidth (Css.px secondaryButtonBorderWidth)
                     , Css.hover [ Css.borderColor (Css.hex "#141414") ]
                     , Css.active [ Css.borderColor (Css.hex "#262626") ]
@@ -256,13 +257,13 @@ stylesBasedOnSizeAndVariant size variant =
                     ]
 
                 Tertiary ->
-                    [ Css.backgroundColor (Css.hex "#00000000")
-                    , Css.color (Css.hex "#000000")
+                    [ Css.backgroundColor Colors.transparent
+                    , Css.color Colors.black
                     , Css.borderWidth Css.zero
                     , Css.hover [ Css.backgroundColor (Css.hex "#F2F2F2") ]
-                    , Css.active [ Css.backgroundColor (Css.hex "#00000000") ]
+                    , Css.active [ Css.backgroundColor Colors.transparent ]
                     , Css.disabled
-                        [ Css.backgroundColor (Css.hex "#00000000")
+                        [ Css.backgroundColor Colors.transparent
                         , Css.color (Css.hex "#767676")
                         , Css.cursor Css.notAllowed
                         ]

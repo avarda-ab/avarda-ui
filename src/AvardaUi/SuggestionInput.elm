@@ -59,6 +59,7 @@ import AvardaUi.Input as Input
 import AvardaUi.SuggestionInputInternal.Model as Model exposing (Model)
 import AvardaUi.SuggestionInputInternal.Msg as Msg exposing (Msg(..))
 import AvardaUi.SuggestionInputInternal.Update as Update
+import AvardaUi.Theme.Colors as Colors
 import AvardaUi.Util.Accessibility as AccessibilityUtil
 import AvardaUi.Util.Builder exposing (withMaybeBuilder)
 import AvardaUi.Util.Html as HtmlUtil
@@ -297,7 +298,7 @@ new { suggestionInputModel, label, suggestionToInputValue } =
         , inputPlaceholder = Nothing
         , hint = Nothing
         , selectedSuggestionAdditionalStyles = []
-        , floatingLabelBackgroundColor = Css.hex "#FFFFFF"
+        , floatingLabelBackgroundColor = Colors.white
         }
 
 
@@ -507,7 +508,7 @@ suggestionListView wrapMsg ((Settings { suggestionInputModel, maybeMaxHeight, bo
         dividerStyle =
             Css.Global.children
                 [ Css.Global.selector "*:not(:last-child)"
-                    [ Css.borderBottom3 (Css.px 1) Css.solid (Css.hex "0000001A") ]
+                    [ Css.borderBottom3 (Css.px 1) Css.solid Colors.grayscale6 ]
                 ]
 
         maxHeightStyle =
@@ -522,8 +523,8 @@ suggestionListView wrapMsg ((Settings { suggestionInputModel, maybeMaxHeight, bo
             , Css.top (Css.px topPx)
             , Css.width (Css.pct 100)
             , Css.left (Css.px 0)
-            , Css.border3 (Css.px 1) Css.solid (Css.hex "#CCC")
-            , Css.backgroundColor (Css.hex "#FFF")
+            , Css.border3 (Css.px 1) Css.solid Colors.grayscale6
+            , Css.backgroundColor Colors.white
             , Css.zIndex (Css.int 4)
             , Css.borderRadius (Css.px borderRadius)
             , Css.flexDirection Css.column

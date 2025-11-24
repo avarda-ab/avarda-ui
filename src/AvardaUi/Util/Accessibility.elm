@@ -17,6 +17,7 @@ module AvardaUi.Util.Accessibility exposing
     , role
     )
 
+import AvardaUi.Theme.Colors as Colors
 import Css
 import Html.Styled as Html exposing (Attribute, Html)
 import Html.Styled.Attributes as Attributes
@@ -101,10 +102,7 @@ requiredAsterisk : Bool -> Html msg
 requiredAsterisk isRequired =
     if isRequired then
         Html.span
-            [ Attributes.css
-                [ Css.color (Css.hex "#000000") ]
-            , ariaHidden
-            ]
+            [ ariaHidden ]
             [ Html.text "\u{200A}*" ]
 
     else
