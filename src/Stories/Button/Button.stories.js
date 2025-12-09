@@ -35,11 +35,11 @@ export default {
       control: "boolean",
     },
     size: {
-      defaultValue: { summary: "medium" },
-      type: { name: "medium | small | xsmall" },
+      defaultValue: { summary: "large" },
+      type: { name: "large | medium | small" },
       name: "Size",
       control: { type: "select" },
-      options: ["medium", "small", "xsmall"],
+      options: ["large", "medium", "small"],
     },
   },
   args: {
@@ -47,6 +47,6 @@ export default {
     disabled: false,
     showIconLeft: false,
     showIconRight: false,
-    size: "medium",
+    size: "large",
   },
 };

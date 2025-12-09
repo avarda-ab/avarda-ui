@@ -350,7 +350,7 @@ setOptions optionList (Settings ({ optionToString } as model)) =
 
 {-| Render the Select as HTML.
 
-Always call this after you've built up the input with `new` and chained settings.
+Always call this after you've built up the select with `new` and chained settings.
 
     AvardaUi.Select.new {...}
         |> AvardaUi.Select.withIsRequired True

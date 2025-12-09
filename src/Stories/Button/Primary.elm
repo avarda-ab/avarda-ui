@@ -1,5 +1,6 @@
 module Stories.Button.Primary exposing (main)
 
+import AvardaUi.Button
 import Browser
 import Html.Styled as Html
 import Stories.Button.Common as Common
@@ -11,6 +12,6 @@ main =
     Browser.element
         { init = \controls -> ( { controls = decodeControls controls Common.decoder Common.defaultControls }, Cmd.none )
         , update = \_ model -> ( model, Cmd.none )
-        , view = .controls >> Common.view Common.Primary >> Html.toUnstyled
+        , view = .controls >> Common.view AvardaUi.Button.Primary >> Html.toUnstyled
         , subscriptions = \_ -> Sub.none
         }

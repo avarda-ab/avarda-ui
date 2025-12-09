@@ -17,8 +17,6 @@ module AvardaUi.Util.Accessibility exposing
     , role
     )
 
-import AvardaUi.Theme.Colors as Colors
-import Css
 import Html.Styled as Html exposing (Attribute, Html)
 import Html.Styled.Attributes as Attributes
 
