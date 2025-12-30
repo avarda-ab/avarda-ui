@@ -1,10 +1,12 @@
 module AvardaUi.Button exposing
     ( new, view
+    , Button
+    , MsgTypeSet, MsgTypeUnset
     , Variant(..)
     , withVariant, withLeftChild, withRightChild, withIsDisabled
     , withSizeLarge, withSizeMedium, withSizeSmall
-    , withBaseStyles, withHoverStyles, withAttributes
-    , withMsgTypeLink, withMsgTypeOnClick, withMsgTypeSubmit
+    , withCapitalizedLabel, withBorderRadius, withBaseStyles, withHoverStyles, withActiveStyles, withAttributes
+    , withLink, withOnClick, withSubmit
     )
 
 {-| This module provides a styled button component with optional left/right icon. It uses the [builder pattern](https://sporto.github.io/elm-patterns/basic/builder-pattern.html):
@@ -18,6 +20,16 @@ module AvardaUi.Button exposing
 
 @docs new, view
 
+
+# Button
+
+@docs Button
+
+
+# MsgType
+
+@docs MsgTypeSet, MsgTypeUnset
+
 #Variant
 
 @docs Variant
@@ -27,8 +39,14 @@ module AvardaUi.Button exposing
 
 @docs withVariant, withLeftChild, withRightChild, withIsDisabled
 @docs withSizeLarge, withSizeMedium, withSizeSmall
-@docs withBaseStyles, withHoverStyles, withAttributes
-@docs withMsgTypeLink, withMsgTypeOnClick, withMsgTypeSubmit
+@docs withCapitalizedLabel, withBorderRadius, withBaseStyles, withHoverStyles, withActiveStyles, withAttributes
+
+
+## Button action configuration
+
+By default, `submit` is used as the button action. You can change this behaviour by using either `withLink` or `withOnClick`.
+
+@docs withLink, withOnClick, withSubmit
 
 -}
 
@@ -41,10 +59,14 @@ import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 
 
+{-| MsgType which can be used for type annotations when defining helpers in your code.
+-}
 type MsgTypeSet
     = MsgTypeSet
 
 
+{-| MsgType which can be used for type annotations when defining helpers in your code.
+-}
 type MsgTypeUnset
     = MsgTypeUnset
 
@@ -70,6 +92,8 @@ type Variant
     | Tertiary
 
 
+{-| Button type which can be used for type annotations when defining helpers in your code.
+-}
 type Button msgTypeState msg
     = Settings
         { label : String
@@ -79,9 +103,12 @@ type Button msgTypeState msg
         , leftChild : Maybe (Html msg)
         , rightChild : Maybe (Html msg)
         , additionalBaseStyles : List Css.Style
-        , additionalHoverStyles : List Css.Style
+        , maybeHoverStylesOverwrite : Maybe (List Css.Style)
+        , maybeActiveStylesOverwrite : Maybe (List Css.Style)
         , additionalAttributes : List (Attribute msg)
         , msgType : MsgType msg
+        , isLabelCapitalized : Bool
+        , maybeBorderRadius : Maybe Float
         }
 
 
@@ -101,9 +128,12 @@ new { label } =
         , leftChild = Nothing
         , rightChild = Nothing
         , additionalBaseStyles = []
-        , additionalHoverStyles = []
+        , maybeHoverStylesOverwrite = Nothing
+        , maybeActiveStylesOverwrite = Nothing
         , additionalAttributes = []
         , msgType = Submit
+        , isLabelCapitalized = False
+        , maybeBorderRadius = Nothing
         }
 
 
@@ -150,18 +180,25 @@ withSizeSmall (Settings model) =
     Settings { model | size = Small }
 
 
-{-| Overwrite or add additional base styles.
+{-| Add additional base styles.
 -}
 withBaseStyles : List Css.Style -> Button msgTypeState msg -> Button msgTypeState msg
 withBaseStyles styles (Settings model) =
-    Settings { model | additionalBaseStyles = styles }
+    Settings { model | additionalBaseStyles = model.additionalBaseStyles ++ styles }
 
 
-{-| Overwrite or add additional hover styles.
+{-| Overwrite hover styles.
 -}
 withHoverStyles : List Css.Style -> Button msgTypeState msg -> Button msgTypeState msg
 withHoverStyles styles (Settings model) =
-    Settings { model | additionalHoverStyles = styles }
+    Settings { model | maybeHoverStylesOverwrite = Just styles }
+
+
+{-| Overwrite active styles.
+-}
+withActiveStyles : List Css.Style -> Button msgTypeState msg -> Button msgTypeState msg
+withActiveStyles styles (Settings model) =
+    Settings { model | maybeActiveStylesOverwrite = Just styles }
 
 
 {-| Add additional attributes.
@@ -172,11 +209,11 @@ withAttributes attributes (Settings model) =
 
 
 {-| Transfer the `<button>` into `<a>` tag that looks like a button.
-You have to specify a `link` that will be passed into `href` attribute and additional `attributes` list, e.g. `target` or `rel`.
+You have to specify a `url` that will be passed into `href` attribute and additional `attributes` list, e.g. `target` or `rel`.
 
     AvardaUi.Button.new { label = "Link" }
-        |> AvardaUi.Button.withMsgTypeLink
-            { link = "https://google.com"
+        |> AvardaUi.Button.withLink
+            { url = "https://google.com"
             , attributes =
                 [ Attributes.target "_blank"
                 , Attributes.rel "noopener noreferrer"
@@ -185,23 +222,23 @@ You have to specify a `link` that will be passed into `href` attribute and addit
         |> AvardaUi.Button.view
 
 -}
-withMsgTypeLink : { link : String, attributes : List (Attribute msg) } -> Button MsgTypeUnset msg -> Button MsgTypeSet msg
-withMsgTypeLink { link, attributes } (Settings model) =
-    Settings { model | msgType = Link link attributes }
+withLink : { url : String, attributes : List (Attribute msg) } -> Button MsgTypeUnset msg -> Button MsgTypeSet msg
+withLink { url, attributes } (Settings model) =
+    Settings { model | msgType = Link url attributes }
 
 
 {-| `<button>` with onClick handler.
 -}
-withMsgTypeOnClick : msg -> Button MsgTypeUnset msg -> Button MsgTypeSet msg
-withMsgTypeOnClick msg (Settings model) =
+withOnClick : msg -> Button MsgTypeUnset msg -> Button MsgTypeSet msg
+withOnClick msg (Settings model) =
     Settings { model | msgType = OnClick msg }
 
 
 {-| `<button>` with `type = "submit"`.
 This the default button type.
 -}
-withMsgTypeSubmit : Button MsgTypeUnset msg -> Button MsgTypeSet msg
-withMsgTypeSubmit (Settings model) =
+withSubmit : Button MsgTypeUnset msg -> Button MsgTypeSet msg
+withSubmit (Settings model) =
     Settings { model | msgType = Submit }
 
 
@@ -210,6 +247,21 @@ withMsgTypeSubmit (Settings model) =
 withVariant : Variant -> Button msgTypeState msg -> Button msgTypeState msg
 withVariant variant (Settings model) =
     Settings { model | variant = variant }
+
+
+{-| Capitalize the label.
+-}
+withCapitalizedLabel : Bool -> Button msgTypeState msg -> Button msgTypeState msg
+withCapitalizedLabel isLabelCapitalized (Settings model) =
+    Settings { model | isLabelCapitalized = isLabelCapitalized }
+
+
+{-| Explicitly set border-radius.
+**This will override border-radius set in [`withBaseStyles`](#withBaseStyles).**
+-}
+withBorderRadius : Float -> Button msgTypeState msg -> Button msgTypeState msg
+withBorderRadius borderRadius (Settings model) =
+    Settings { model | maybeBorderRadius = Just borderRadius }
 
 
 {-| Render the Button as HTML.
@@ -221,21 +273,24 @@ Always call this after you've built up the button with `new` and chained setting
         |> AvardaUi.Select.view
 
 -}
-view : Button MsgTypeSet msg -> Html msg
-view (Settings { label, isDisabled, leftChild, rightChild, additionalHoverStyles, additionalBaseStyles, additionalAttributes, size, variant, msgType }) =
+view : Button msgTypeState msg -> Html msg
+view ((Settings { label, isDisabled, leftChild, rightChild, additionalBaseStyles, additionalAttributes, size, msgType, maybeBorderRadius, isLabelCapitalized }) as buttonSettings) =
     let
+        maybeBorderRadiusStyle =
+            maybeBorderRadius
+                |> Maybe.map (Css.px >> Css.borderRadius)
+                |> Maybe.withDefault (Css.batch [])
+
         styles =
             Css.Global.descendants [ Css.Global.svg [ iconHeightBasedOnSize size ] ]
-                :: baseButtonStyles
-                ++ stylesBasedOnSizeAndVariant size variant isDisabled
+                :: baseButtonStyles isLabelCapitalized
+                ++ stylesBasedOnSizeAndVariant buttonSettings
                 ++ stylesBasedOnMsgType msgType
                 ++ additionalBaseStyles
-                ++ (if isDisabled then
-                        []
+                -- Explicitly override border-radius
+                ++ [ maybeBorderRadiusStyle ]
 
-                    else
-                        [ Css.hover additionalHoverStyles ]
-                   )
+        --
     in
     msgTypeToElement msgType
         ([ Attributes.css styles, Attributes.disabled isDisabled ]
@@ -250,7 +305,7 @@ view (Settings { label, isDisabled, leftChild, rightChild, additionalHoverStyles
 
 iconView : Maybe (Html msg) -> Html msg
 iconView =
-    Maybe.map identity >> Maybe.withDefault (Html.text "")
+    Maybe.withDefault (Html.text "")
 
 
 
@@ -279,8 +334,8 @@ iconHeightBasedOnSize size =
 -- Styles
 
 
-baseButtonStyles : List Css.Style
-baseButtonStyles =
+baseButtonStyles : Bool -> List Css.Style
+baseButtonStyles isLabelCapitalized =
     [ Css.cursor Css.pointer
     , Css.whiteSpace Css.normal
     , Css.fontFamily Css.inherit
@@ -293,12 +348,17 @@ baseButtonStyles =
     , Css.alignItems Css.center
     , Css.display Css.inlineFlex
     , Css.borderRadius (Css.px 200)
-    , Css.padding (Css.px 0)
+    , Css.width (Css.pct 100)
+    , if isLabelCapitalized then
+        Css.textTransform Css.uppercase
+
+      else
+        Css.textTransform Css.none
     ]
 
 
-stylesBasedOnSizeAndVariant : Size -> Variant -> Bool -> List Css.Style
-stylesBasedOnSizeAndVariant size variant isDisabled =
+stylesBasedOnSizeAndVariant : Button msgTypeState msg -> List Css.Style
+stylesBasedOnSizeAndVariant (Settings { size, variant, isDisabled, maybeHoverStylesOverwrite, maybeActiveStylesOverwrite }) =
     let
         secondaryButtonBorderWidth =
             2
@@ -319,6 +379,12 @@ stylesBasedOnSizeAndVariant size variant isDisabled =
             else
                 styles
 
+        hoverStyles styles =
+            Maybe.withDefault styles maybeHoverStylesOverwrite
+
+        activeStyles styles =
+            Maybe.withDefault styles maybeActiveStylesOverwrite
+
         variantStyles =
             case variant of
                 Primary ->
@@ -328,8 +394,8 @@ stylesBasedOnSizeAndVariant size variant isDisabled =
                     , Css.outlineOffset (Css.px 2)
                     ]
                         ++ hoverAndActiveStyles
-                            [ Css.hover [ Css.backgroundColor Colors.black ]
-                            , Css.active [ Css.backgroundColor Colors.grayscale11 ]
+                            [ Css.hover (hoverStyles [ Css.backgroundColor Colors.black ])
+                            , Css.active (activeStyles [ Css.backgroundColor Colors.grayscale11 ])
                             ]
 
                 Secondary ->
@@ -341,8 +407,8 @@ stylesBasedOnSizeAndVariant size variant isDisabled =
                     , Css.outlineOffset (Css.px 3)
                     ]
                         ++ hoverAndActiveStyles
-                            [ Css.hover [ Css.backgroundColor Colors.grayscale3 ]
-                            , Css.active [ Css.backgroundColor Colors.grayscale4 ]
+                            [ Css.hover (hoverStyles [ Css.backgroundColor Colors.grayscale3 ])
+                            , Css.active (activeStyles [ Css.backgroundColor Colors.grayscale4 ])
                             ]
 
                 Tertiary ->
@@ -351,8 +417,8 @@ stylesBasedOnSizeAndVariant size variant isDisabled =
                     , Css.borderWidth Css.zero
                     ]
                         ++ hoverAndActiveStyles
-                            [ Css.hover [ Css.backgroundColor Colors.grayscale3 ]
-                            , Css.active [ Css.backgroundColor Colors.grayscale4 ]
+                            [ Css.hover (hoverStyles [ Css.backgroundColor Colors.grayscale3 ])
+                            , Css.active (activeStyles [ Css.backgroundColor Colors.grayscale4 ])
                             ]
 
         sizeStyles =

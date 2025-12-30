@@ -64,5 +64,4 @@ view variant { label, isDisabled, showIconLeft, showIconRight, size } =
         |> withConditionalBuilder (AvardaUi.Button.withLeftChild mockIconView) showIconLeft
         |> withConditionalBuilder (AvardaUi.Button.withRightChild mockIconView) showIconRight
         |> sizeBuilder
-        |> AvardaUi.Button.withMsgTypeSubmit
         |> AvardaUi.Button.view
