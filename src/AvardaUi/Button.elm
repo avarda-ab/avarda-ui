@@ -339,6 +339,7 @@ baseButtonStyles isLabelCapitalized =
     [ Css.cursor Css.pointer
     , Css.whiteSpace Css.normal
     , Css.fontFamily Css.inherit
+    , Css.fontWeight (Css.int 500)
     , Css.disabled
         [ Css.cursor Css.notAllowed
         , Css.opacity (Css.num 0.56)
@@ -429,14 +430,16 @@ stylesBasedOnSizeAndVariant (Settings { size, variant, isDisabled, maybeHoverSty
                     , Css.fontSize (Css.px 16)
                     , Css.letterSpacing (Css.px -0.272)
                     , Css.lineHeight (Css.px 20)
+                    , Css.minHeight (Css.px 48)
                     ]
 
                 Medium ->
                     [ Css.property "gap" "6px"
                     , padding2_ 10 16
-                    , Css.fontSize (Css.px 14)
-                    , Css.letterSpacing (Css.px -0.28)
-                    , Css.lineHeight (Css.px 18)
+                    , Css.fontSize (Css.px 16)
+                    , Css.letterSpacing (Css.px -0.272)
+                    , Css.lineHeight (Css.px 20)
+                    , Css.minHeight (Css.px 40)
                     ]
 
                 Small ->
@@ -445,6 +448,7 @@ stylesBasedOnSizeAndVariant (Settings { size, variant, isDisabled, maybeHoverSty
                     , Css.fontSize (Css.px 14)
                     , Css.letterSpacing (Css.px -0.28)
                     , Css.lineHeight (Css.px 18)
+                    , Css.minHeight (Css.px 32)
                     ]
     in
     variantStyles ++ sizeStyles
