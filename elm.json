@@ -3,7 +3,7 @@
     "name": "avarda-ab/avarda-ui",
     "summary": "A design system made by Avarda devs.",
     "license": "MIT",
-    "version": "4.0.1",
+    "version": "5.0.0",
     "exposed-modules": [
         "AvardaUi.Button",
         "AvardaUi.Input",
@@ -14,6 +14,7 @@
         "AvardaUi.Util.KeyPress",
         "AvardaUi.Util.Builder",
         "AvardaUi.Util.CountryCode",
+        "AvardaUi.Util.CountryFlag",
         "AvardaUi.Theme.Colors"
     ],
     "source-directories": [

@@ -322,6 +322,7 @@ view ((Settings { leftChild, rightChild, borderRadius, id, isDisabled, hintText,
         [ inputView_
         , hintView isValid hintText id
         , errorView maybeError id
+        , Css.Global.global [ Css.Global.everything [ Css.boxSizing Css.borderBox ] ]
         ]
 
 

@@ -52,6 +52,7 @@ import AvardaUi.SelectInternal.Model
 import AvardaUi.Theme.Colors as Colors
 import AvardaUi.Util.Builder exposing (withMaybeBuilder)
 import AvardaUi.Util.CountryCode as CountryCodeUtil exposing (CountryCode(..))
+import AvardaUi.Util.CountryFlag as CountryFlag
 import AvardaUi.Util.Icon as Icon
 import AvardaUi.Util.KeyPress as KeyPressUtil
 import Css
@@ -537,47 +538,56 @@ maybeFlagView maybeFlag =
 countryCodeToIcon : CountryCode -> Maybe (Html msg)
 countryCodeToIcon code =
     case code of
-        SE ->
-            Just Icon.swedenFlag
-
-        FI ->
-            Just Icon.finlandFlag
-
-        NO ->
-            Just Icon.norwayFlag
-
-        DK ->
-            Just Icon.denmarkFlag
-
-        PL ->
-            Nothing
-
-        EE ->
-            Nothing
-
-        LV ->
-            Nothing
-
-        SK ->
-            Nothing
+        AT ->
+            Just CountryFlag.austria
 
         CZ ->
-            Nothing
-
-        AT ->
-            Nothing
+            Just CountryFlag.czechia
 
         DE ->
-            Nothing
+            Just CountryFlag.germany
+
+        DK ->
+            Just CountryFlag.denmark
+
+        EE ->
+            Just CountryFlag.estonia
+
+        ES ->
+            Just CountryFlag.spain
+
+        FI ->
+            Just CountryFlag.finland
+
+        FO ->
+            Just CountryFlag.faroeIslands
+
+        GB ->
+            Just CountryFlag.unitedKingdom
+
+        GL ->
+            Just CountryFlag.greenland
+
+        IT ->
+            Just CountryFlag.italy
+
+        LV ->
+            Just CountryFlag.latvia
+
+        NO ->
+            Just CountryFlag.norway
+
+        PL ->
+            Just CountryFlag.poland
+
+        SE ->
+            Just CountryFlag.sweden
+
+        SK ->
+            Just CountryFlag.slovakia
 
         XI ->
             Nothing
-
-        GL ->
-            Just Icon.greenlandFlag
-
-        FO ->
-            Just Icon.faroeIslandsFlag
 
         Unknown ->
             Nothing
@@ -586,47 +596,56 @@ countryCodeToIcon code =
 countryCodeToDialingCode : CountryCode -> String
 countryCodeToDialingCode code =
     case code of
-        SE ->
-            "+46"
-
-        FI ->
-            "+358"
-
-        NO ->
-            "+47"
-
-        DK ->
-            "+45"
-
-        PL ->
-            "+48"
-
-        EE ->
-            "+372"
-
-        LV ->
-            "+371"
-
-        SK ->
-            "+421"
+        AT ->
+            "+43"
 
         CZ ->
             "+420"
 
-        AT ->
-            "+43"
-
         DE ->
             "+49"
 
-        XI ->
-            ""
+        DK ->
+            "+45"
+
+        EE ->
+            "+372"
+
+        ES ->
+            "+34"
+
+        FI ->
+            "+358"
+
+        FO ->
+            "+298"
+
+        GB ->
+            "+44"
 
         GL ->
             "+299"
 
-        FO ->
-            "+298"
+        IT ->
+            "+39"
+
+        LV ->
+            "+371"
+
+        NO ->
+            "+47"
+
+        PL ->
+            "+48"
+
+        SE ->
+            "+46"
+
+        SK ->
+            "+421"
+
+        XI ->
+            ""
 
         Unknown ->
             ""

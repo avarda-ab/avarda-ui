@@ -108,7 +108,24 @@ main =
                 in
                 Html.div [ Attributes.css [ Css.displayFlex, Css.flexDirection Css.column, Css.maxWidth (Css.px 300) ] ]
                     [ AvardaUi.PhoneSelectInput.new { inputLabel = label, selectAriaLabel = "Dialing code", phoneSelectInputModel = phoneSelectInputModel }
-                        |> AvardaUi.PhoneSelectInput.setCountries [ SE, CZ, FI, SE, NO, DK ]
+                        |> AvardaUi.PhoneSelectInput.setCountries
+                            [ AT
+                            , CZ
+                            , DE
+                            , DK
+                            , EE
+                            , ES
+                            , FI
+                            , FO
+                            , GB
+                            , GL
+                            , IT
+                            , LV
+                            , NO
+                            , PL
+                            , SE
+                            , SK
+                            ]
                         |> AvardaUi.PhoneSelectInput.withIsDisabled isDisabled
                         |> AvardaUi.PhoneSelectInput.withMaybeError error
                         |> AvardaUi.PhoneSelectInput.withIsRequired isRequired

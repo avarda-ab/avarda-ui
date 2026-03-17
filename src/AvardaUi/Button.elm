@@ -300,6 +300,7 @@ view ((Settings { label, isDisabled, leftChild, rightChild, additionalBaseStyles
         [ iconView leftChild
         , Html.text label
         , iconView rightChild
+        , Css.Global.global [ Css.Global.everything [ Css.boxSizing Css.borderBox ] ]
         ]
 
 

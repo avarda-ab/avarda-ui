@@ -468,6 +468,7 @@ view wrapMsg ((Settings { selectModel, isDisabled, label, optionList, borderRadi
             [ selectedOptionView ]
         , optionListView wrapMsg viewModel
         , errorView maybeError (Model.getErrorId selectModel)
+        , Css.Global.global [ Css.Global.everything [ Css.boxSizing Css.borderBox ] ]
         ]
 
 

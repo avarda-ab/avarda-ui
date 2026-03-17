@@ -31,6 +31,7 @@ import AvardaUi.Theme.Colors as Colors
 import AvardaUi.Util.Accessibility as AccessibilityUtil
 import AvardaUi.Util.Icon as Icon
 import Css
+import Css.Global
 import Html.Styled as Html exposing (Html)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
@@ -296,6 +297,7 @@ view ((Settings { id, isDisabled, label, borderRadius, isRequired, ariaLabel, ma
             ]
             [ Icon.arrowDown ]
         , errorView maybeError <| errorId id
+        , Css.Global.global [ Css.Global.everything [ Css.boxSizing Css.borderBox ] ]
         ]
 
 
