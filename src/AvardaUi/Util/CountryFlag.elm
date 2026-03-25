@@ -23,48 +23,56 @@ sweden : Html msg
 sweden =
     Svg.svg
         [ SvgAttributes.width "24"
-        , SvgAttributes.height "22"
-        , SvgAttributes.viewBox "0 0 24 22"
+        , SvgAttributes.height "24"
+        , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
         [ Svg.g
-            [ SvgAttributes.filter "url(#filter0_dd_1726_39)"
+            [ SvgAttributes.filter "url(#a)"
+            , SvgAttributes.clipPath "url(#b)"
             ]
             [ Svg.g
-                [ SvgAttributes.clipPath "url(#clip0_1726_39)"
+                [ SvgAttributes.clipPath "url(#d)"
                 ]
                 [ Svg.path
-                    [ SvgAttributes.d "M7.5 3V8.5H3V11.5H7.5V17H10.5V11.5H21V8.5H10.5V3H7.5Z"
-                    , SvgAttributes.fill "#FFCB00"
+                    [ SvgAttributes.d "M7.5 5v5.5H3v3h4.5V19h3v-5.5H21v-3H10.5V5z"
+                    , SvgAttributes.fill "#ffcb00"
                     ]
                     []
                 , Svg.path
-                    [ SvgAttributes.d "M21 11.5H10.5V17H21V11.5Z"
-                    , SvgAttributes.fill "#005293"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M10.5 3V8.5H21V3H10.5Z"
-                    , SvgAttributes.fill "#005293"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M7.5 8.5V3H3V8.5H7.5Z"
-                    , SvgAttributes.fill "#005293"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M7.5 11.5H3V17H7.5V11.5Z"
+                    [ SvgAttributes.d "M21 13.5H10.5V19H21zM10.5 5v5.5H21V5zm-3 5.5V5H3v5.5zm0 3H3V19h4.5z"
                     , SvgAttributes.fill "#005293"
                     ]
                     []
                 ]
             ]
         , Svg.defs []
-            [ Svg.filter
-                [ SvgAttributes.id "filter0_dd_1726_39"
+            [ Svg.clipPath
+                [ SvgAttributes.id "b"
+                ]
+                [ Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M0 0h24v24H0z"
+                    ]
+                    []
+                ]
+            , Svg.clipPath
+                [ SvgAttributes.id "d"
+                ]
+                [ Svg.rect
+                    [ SvgAttributes.x "3"
+                    , SvgAttributes.y "5"
+                    , SvgAttributes.width "18"
+                    , SvgAttributes.height "14"
+                    , SvgAttributes.rx "2"
+                    , SvgAttributes.fill "#fff"
+                    ]
+                    []
+                ]
+            , Svg.filter
+                [ SvgAttributes.id "a"
                 , SvgAttributes.x "-1"
-                , SvgAttributes.y "0"
+                , SvgAttributes.y "2"
                 , SvgAttributes.width "26"
                 , SvgAttributes.height "22"
                 , SvgAttributes.filterUnits "userSpaceOnUse"
@@ -77,7 +85,6 @@ sweden =
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -96,19 +103,16 @@ sweden =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "BackgroundImageFix"
-                    , SvgAttributes.result "effect1_dropShadow_1726_39"
+                    [ SvgAttributes.in2 "BackgroundImageFix"
+                    , SvgAttributes.result "effect1_dropShadow_1726_45"
                     ]
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -127,34 +131,18 @@ sweden =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "effect1_dropShadow_1726_39"
-                    , SvgAttributes.result "effect2_dropShadow_1726_39"
+                    [ SvgAttributes.in2 "effect1_dropShadow_1726_45"
+                    , SvgAttributes.result "effect2_dropShadow_1726_45"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in_ "SourceGraphic"
-                    , SvgAttributes.in2 "effect2_dropShadow_1726_39"
+                    [ SvgAttributes.in_ "SourceGraphic"
+                    , SvgAttributes.in2 "effect2_dropShadow_1726_45"
                     , SvgAttributes.result "shape"
-                    ]
-                    []
-                ]
-            , Svg.clipPath
-                [ SvgAttributes.id "clip0_1726_39"
-                ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "white"
                     ]
                     []
                 ]
@@ -167,48 +155,56 @@ denmark : Html msg
 denmark =
     Svg.svg
         [ SvgAttributes.width "24"
-        , SvgAttributes.height "22"
-        , SvgAttributes.viewBox "0 0 24 22"
+        , SvgAttributes.height "24"
+        , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
         [ Svg.g
-            [ SvgAttributes.filter "url(#filter0_dd_1675_11)"
+            [ SvgAttributes.filter "url(#a)"
+            , SvgAttributes.clipPath "url(#b)"
             ]
             [ Svg.g
-                [ SvgAttributes.clipPath "url(#clip0_1675_11)"
+                [ SvgAttributes.clipPath "url(#d)"
                 ]
                 [ Svg.path
-                    [ SvgAttributes.d "M7.5 3V8.5H3V11.5H7.5V17H10.5V11.5H21V8.5H10.5V3H7.5Z"
-                    , SvgAttributes.fill "white"
+                    [ SvgAttributes.d "M7.5 5v5.5H3v3h4.5V19h3v-5.5H21v-3H10.5V5z"
+                    , SvgAttributes.fill "#fff"
                     ]
                     []
                 , Svg.path
-                    [ SvgAttributes.d "M21 11.5H10.5V17H21V11.5Z"
-                    , SvgAttributes.fill "#EF264D"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M10.5 3V8.5H21V3H10.5Z"
-                    , SvgAttributes.fill "#EF264D"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M7.5 8.5V3H3V8.5H7.5Z"
-                    , SvgAttributes.fill "#EF264D"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M7.5 11.5H3V17H7.5V11.5Z"
-                    , SvgAttributes.fill "#EF264D"
+                    [ SvgAttributes.d "M21 13.5H10.5V19H21zM10.5 5v5.5H21V5zm-3 5.5V5H3v5.5zm0 3H3V19h4.5z"
+                    , SvgAttributes.fill "#ef264d"
                     ]
                     []
                 ]
             ]
         , Svg.defs []
-            [ Svg.filter
-                [ SvgAttributes.id "filter0_dd_1675_11"
+            [ Svg.clipPath
+                [ SvgAttributes.id "b"
+                ]
+                [ Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M0 0h24v24H0z"
+                    ]
+                    []
+                ]
+            , Svg.clipPath
+                [ SvgAttributes.id "d"
+                ]
+                [ Svg.rect
+                    [ SvgAttributes.x "3"
+                    , SvgAttributes.y "5"
+                    , SvgAttributes.width "18"
+                    , SvgAttributes.height "14"
+                    , SvgAttributes.rx "2"
+                    , SvgAttributes.fill "#fff"
+                    ]
+                    []
+                ]
+            , Svg.filter
+                [ SvgAttributes.id "a"
                 , SvgAttributes.x "-1"
-                , SvgAttributes.y "0"
+                , SvgAttributes.y "2"
                 , SvgAttributes.width "26"
                 , SvgAttributes.height "22"
                 , SvgAttributes.filterUnits "userSpaceOnUse"
@@ -221,7 +217,6 @@ denmark =
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -240,19 +235,16 @@ denmark =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "BackgroundImageFix"
-                    , SvgAttributes.result "effect1_dropShadow_1675_11"
+                    [ SvgAttributes.in2 "BackgroundImageFix"
+                    , SvgAttributes.result "effect1_dropShadow_1726_41"
                     ]
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -271,34 +263,18 @@ denmark =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "effect1_dropShadow_1675_11"
-                    , SvgAttributes.result "effect2_dropShadow_1675_11"
+                    [ SvgAttributes.in2 "effect1_dropShadow_1726_41"
+                    , SvgAttributes.result "effect2_dropShadow_1726_41"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in_ "SourceGraphic"
-                    , SvgAttributes.in2 "effect2_dropShadow_1675_11"
+                    [ SvgAttributes.in_ "SourceGraphic"
+                    , SvgAttributes.in2 "effect2_dropShadow_1726_41"
                     , SvgAttributes.result "shape"
-                    ]
-                    []
-                ]
-            , Svg.clipPath
-                [ SvgAttributes.id "clip0_1675_11"
-                ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "white"
                     ]
                     []
                 ]
@@ -311,55 +287,63 @@ norway : Html msg
 norway =
     Svg.svg
         [ SvgAttributes.width "24"
-        , SvgAttributes.height "22"
-        , SvgAttributes.viewBox "0 0 24 22"
+        , SvgAttributes.height "24"
+        , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
         [ Svg.g
-            [ SvgAttributes.filter "url(#filter0_dd_1674_51)"
+            [ SvgAttributes.filter "url(#a)"
+            , SvgAttributes.clipPath "url(#b)"
             ]
             [ Svg.g
-                [ SvgAttributes.clipPath "url(#clip0_1674_51)"
+                [ SvgAttributes.clipPath "url(#d)"
                 ]
                 [ Svg.path
-                    [ SvgAttributes.d "M21 11.5H10.5V17H21V11.5Z"
-                    , SvgAttributes.fill "#F14247"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M10.5 3V8.5H21V3H10.5Z"
-                    , SvgAttributes.fill "#F14247"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M7.5 8.5V3H3V8.5H7.5Z"
-                    , SvgAttributes.fill "#F14247"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M7.5 11.5H3V17H7.5V11.5Z"
-                    , SvgAttributes.fill "#F14247"
+                    [ SvgAttributes.d "M21 13.5H10.5V19H21zM10.5 5v5.5H21V5zm-3 5.5V5H3v5.5zm0 3H3V19h4.5z"
+                    , SvgAttributes.fill "#f14247"
                     ]
                     []
                 , Svg.path
                     [ SvgAttributes.fillRule "evenodd"
                     , SvgAttributes.clipRule "evenodd"
-                    , SvgAttributes.d "M7.5 8.5V3H8.5V9.5H3V8.5H7.5ZM3 10.5V11.5H7.5V17H8.5V10.5H3ZM9.5 17H10.5V11.5H21V10.5H9.5V17ZM21 9.5V8.5H10.5V3H9.5V9.5H21Z"
-                    , SvgAttributes.fill "white"
+                    , SvgAttributes.d "M7.5 10.5V5h1v6.5H3v-1zm-4.5 2v1h4.5V19h1v-6.5zM9.5 19h1v-5.5H21v-1H9.5zM21 11.5v-1H10.5V5h-1v6.5z"
+                    , SvgAttributes.fill "#fff"
                     ]
                     []
                 , Svg.path
-                    [ SvgAttributes.d "M8.5 3V9.5H3V10.5H8.5V17H9.5V10.5H21V9.5H9.5V3H8.5Z"
-                    , SvgAttributes.fill "#0A3A85"
+                    [ SvgAttributes.d "M8.5 5v6.5H3v1h5.5V19h1v-6.5H21v-1H9.5V5z"
+                    , SvgAttributes.fill "#0a3a85"
                     ]
                     []
                 ]
             ]
         , Svg.defs []
-            [ Svg.filter
-                [ SvgAttributes.id "filter0_dd_1674_51"
+            [ Svg.clipPath
+                [ SvgAttributes.id "b"
+                ]
+                [ Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M0 0h24v24H0z"
+                    ]
+                    []
+                ]
+            , Svg.clipPath
+                [ SvgAttributes.id "d"
+                ]
+                [ Svg.rect
+                    [ SvgAttributes.x "3"
+                    , SvgAttributes.y "5"
+                    , SvgAttributes.width "18"
+                    , SvgAttributes.height "14"
+                    , SvgAttributes.rx "2"
+                    , SvgAttributes.fill "#fff"
+                    ]
+                    []
+                ]
+            , Svg.filter
+                [ SvgAttributes.id "a"
                 , SvgAttributes.x "-1"
-                , SvgAttributes.y "0"
+                , SvgAttributes.y "2"
                 , SvgAttributes.width "26"
                 , SvgAttributes.height "22"
                 , SvgAttributes.filterUnits "userSpaceOnUse"
@@ -372,7 +356,6 @@ norway =
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -391,19 +374,16 @@ norway =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "BackgroundImageFix"
-                    , SvgAttributes.result "effect1_dropShadow_1674_51"
+                    [ SvgAttributes.in2 "BackgroundImageFix"
+                    , SvgAttributes.result "effect1_dropShadow_1726_47"
                     ]
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -422,34 +402,18 @@ norway =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "effect1_dropShadow_1674_51"
-                    , SvgAttributes.result "effect2_dropShadow_1674_51"
+                    [ SvgAttributes.in2 "effect1_dropShadow_1726_47"
+                    , SvgAttributes.result "effect2_dropShadow_1726_47"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in_ "SourceGraphic"
-                    , SvgAttributes.in2 "effect2_dropShadow_1674_51"
+                    [ SvgAttributes.in_ "SourceGraphic"
+                    , SvgAttributes.in2 "effect2_dropShadow_1726_47"
                     , SvgAttributes.result "shape"
-                    ]
-                    []
-                ]
-            , Svg.clipPath
-                [ SvgAttributes.id "clip0_1674_51"
-                ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "white"
                     ]
                     []
                 ]
@@ -462,48 +426,56 @@ finland : Html msg
 finland =
     Svg.svg
         [ SvgAttributes.width "24"
-        , SvgAttributes.height "22"
-        , SvgAttributes.viewBox "0 0 24 22"
+        , SvgAttributes.height "24"
+        , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
         [ Svg.g
-            [ SvgAttributes.filter "url(#filter0_dd_1726_17)"
+            [ SvgAttributes.filter "url(#a)"
+            , SvgAttributes.clipPath "url(#b)"
             ]
             [ Svg.g
-                [ SvgAttributes.clipPath "url(#clip0_1726_17)"
+                [ SvgAttributes.clipPath "url(#d)"
                 ]
                 [ Svg.path
-                    [ SvgAttributes.d "M7.5 3V8.5H3V11.5H7.5V17H10.5V11.5H21V8.5H10.5V3H7.5Z"
-                    , SvgAttributes.fill "#0E4CB5"
+                    [ SvgAttributes.d "M7.5 5v5.5H3v3h4.5V19h3v-5.5H21v-3H10.5V5z"
+                    , SvgAttributes.fill "#0e4cb5"
                     ]
                     []
                 , Svg.path
-                    [ SvgAttributes.d "M21 11.5H10.5V17H21V11.5Z"
-                    , SvgAttributes.fill "white"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M10.5 3V8.5H21V3H10.5Z"
-                    , SvgAttributes.fill "white"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M7.5 8.5V3H3V8.5H7.5Z"
-                    , SvgAttributes.fill "white"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M7.5 11.5H3V17H7.5V11.5Z"
-                    , SvgAttributes.fill "white"
+                    [ SvgAttributes.d "M21 13.5H10.5V19H21zM10.5 5v5.5H21V5zm-3 5.5V5H3v5.5zm0 3H3V19h4.5z"
+                    , SvgAttributes.fill "#fff"
                     ]
                     []
                 ]
             ]
         , Svg.defs []
-            [ Svg.filter
-                [ SvgAttributes.id "filter0_dd_1726_17"
+            [ Svg.clipPath
+                [ SvgAttributes.id "b"
+                ]
+                [ Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M0 0h24v24H0z"
+                    ]
+                    []
+                ]
+            , Svg.clipPath
+                [ SvgAttributes.id "d"
+                ]
+                [ Svg.rect
+                    [ SvgAttributes.x "3"
+                    , SvgAttributes.y "5"
+                    , SvgAttributes.width "18"
+                    , SvgAttributes.height "14"
+                    , SvgAttributes.rx "2"
+                    , SvgAttributes.fill "#fff"
+                    ]
+                    []
+                ]
+            , Svg.filter
+                [ SvgAttributes.id "a"
                 , SvgAttributes.x "-1"
-                , SvgAttributes.y "0"
+                , SvgAttributes.y "2"
                 , SvgAttributes.width "26"
                 , SvgAttributes.height "22"
                 , SvgAttributes.filterUnits "userSpaceOnUse"
@@ -516,7 +488,6 @@ finland =
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -535,19 +506,16 @@ finland =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "BackgroundImageFix"
-                    , SvgAttributes.result "effect1_dropShadow_1726_17"
+                    [ SvgAttributes.in2 "BackgroundImageFix"
+                    , SvgAttributes.result "effect1_dropShadow_1726_46"
                     ]
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -566,34 +534,18 @@ finland =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "effect1_dropShadow_1726_17"
-                    , SvgAttributes.result "effect2_dropShadow_1726_17"
+                    [ SvgAttributes.in2 "effect1_dropShadow_1726_46"
+                    , SvgAttributes.result "effect2_dropShadow_1726_46"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in_ "SourceGraphic"
-                    , SvgAttributes.in2 "effect2_dropShadow_1726_17"
+                    [ SvgAttributes.in_ "SourceGraphic"
+                    , SvgAttributes.in2 "effect2_dropShadow_1726_46"
                     , SvgAttributes.result "shape"
-                    ]
-                    []
-                ]
-            , Svg.clipPath
-                [ SvgAttributes.id "clip0_1726_17"
-                ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "white"
                     ]
                     []
                 ]
@@ -606,61 +558,55 @@ greenland : Html msg
 greenland =
     Svg.svg
         [ SvgAttributes.width "24"
-        , SvgAttributes.height "22"
-        , SvgAttributes.viewBox "0 0 24 22"
+        , SvgAttributes.height "24"
+        , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
         [ Svg.g
-            [ SvgAttributes.filter "url(#filter0_dd_1726_32)" ]
-            [ Svg.g
-                [ SvgAttributes.clipPath "url(#clip0)" ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "white"
-                    ]
-                    []
-                , Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "10"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "7"
-                    , SvgAttributes.fill "#D80027"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.fillRule "evenodd"
-                    , SvgAttributes.clipRule "evenodd"
-                    , SvgAttributes.d "M5 10H15C15 7.23858 12.7614 5 10 5C7.23858 5 5 7.23858 5 10Z"
-                    , SvgAttributes.fill "#D80027"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M10 15C12.7614 15 15 12.7614 15 10H5C5 12.7614 7.23858 15 10 15Z"
-                    , SvgAttributes.fill "white"
-                    ]
-                    []
+            [ SvgAttributes.filter "url(#a)"
+            , SvgAttributes.clipPath "url(#b)"
+            ]
+            [ Svg.rect
+                [ SvgAttributes.x "3"
+                , SvgAttributes.y "5"
+                , SvgAttributes.width "18"
+                , SvgAttributes.height "14"
+                , SvgAttributes.rx "2"
+                , SvgAttributes.fill "#fff"
                 ]
+                []
+            , Svg.path
+                [ SvgAttributes.fill "#d80027"
+                , SvgAttributes.d "M3 12h18v7H3z"
+                ]
+                []
+            , Svg.path
+                [ SvgAttributes.fillRule "evenodd"
+                , SvgAttributes.clipRule "evenodd"
+                , SvgAttributes.d "M5 12h10a5 5 0 0 0-10 0"
+                , SvgAttributes.fill "#d80027"
+                ]
+                []
+            , Svg.path
+                [ SvgAttributes.d "M10 17a5 5 0 0 0 5-5H5a5 5 0 0 0 5 5"
+                , SvgAttributes.fill "#fff"
+                ]
+                []
             ]
         , Svg.defs []
             [ Svg.clipPath
-                [ SvgAttributes.id "clip0" ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
+                [ SvgAttributes.id "b"
+                ]
+                [ Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M0 0h24v24H0z"
                     ]
                     []
                 ]
             , Svg.filter
-                [ SvgAttributes.id "filter0_dd_1726_32"
+                [ SvgAttributes.id "a"
                 , SvgAttributes.x "-1"
-                , SvgAttributes.y "0"
+                , SvgAttributes.y "2"
                 , SvgAttributes.width "26"
                 , SvgAttributes.height "22"
                 , SvgAttributes.filterUnits "userSpaceOnUse"
@@ -673,7 +619,6 @@ greenland =
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -692,19 +637,16 @@ greenland =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "BackgroundImageFix"
-                    , SvgAttributes.result "effect1_dropShadow_1726_32"
+                    [ SvgAttributes.in2 "BackgroundImageFix"
+                    , SvgAttributes.result "effect1_dropShadow_1726_50"
                     ]
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -723,20 +665,17 @@ greenland =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "effect1_dropShadow_1726_32"
-                    , SvgAttributes.result "effect2_dropShadow_1726_32"
+                    [ SvgAttributes.in2 "effect1_dropShadow_1726_50"
+                    , SvgAttributes.result "effect2_dropShadow_1726_50"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in_ "SourceGraphic"
-                    , SvgAttributes.in2 "effect2_dropShadow_1726_32"
+                    [ SvgAttributes.in_ "SourceGraphic"
+                    , SvgAttributes.in2 "effect2_dropShadow_1726_50"
                     , SvgAttributes.result "shape"
                     ]
                     []
@@ -750,55 +689,63 @@ faroeIslands : Html msg
 faroeIslands =
     Svg.svg
         [ SvgAttributes.width "24"
-        , SvgAttributes.height "22"
-        , SvgAttributes.viewBox "0 0 24 22"
+        , SvgAttributes.height "24"
+        , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
         [ Svg.g
-            [ SvgAttributes.filter "url(#filter0_dd_1726_23)"
+            [ SvgAttributes.filter "url(#a)"
+            , SvgAttributes.clipPath "url(#b)"
             ]
             [ Svg.g
-                [ SvgAttributes.clipPath "url(#clip0_1726_23)"
+                [ SvgAttributes.clipPath "url(#d)"
                 ]
                 [ Svg.path
-                    [ SvgAttributes.d "M21 11.5H10.5V17H21V11.5Z"
-                    , SvgAttributes.fill "white"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M10.5 3V8.5H21V3H10.5Z"
-                    , SvgAttributes.fill "white"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M7.5 8.5V3H3V8.5H7.5Z"
-                    , SvgAttributes.fill "white"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M7.5 11.5H3V17H7.5V11.5Z"
-                    , SvgAttributes.fill "white"
+                    [ SvgAttributes.d "M21 13.5H10.5V19H21zM10.5 5v5.5H21V5zm-3 5.5V5H3v5.5zm0 3H3V19h4.5z"
+                    , SvgAttributes.fill "#fff"
                     ]
                     []
                 , Svg.path
                     [ SvgAttributes.fillRule "evenodd"
                     , SvgAttributes.clipRule "evenodd"
-                    , SvgAttributes.d "M7.5 8.5V3H8.5V9.5H3V8.5H7.5ZM3 10.5V11.5H7.5V17H8.5V10.5H3ZM9.5 17H10.5V11.5H21V10.5H9.5V17ZM21 9.5V8.5H10.5V3H9.5V9.5H21Z"
-                    , SvgAttributes.fill "#0E4CB5"
+                    , SvgAttributes.d "M7.5 10.5V5h1v6.5H3v-1zm-4.5 2v1h4.5V19h1v-6.5zM9.5 19h1v-5.5H21v-1H9.5zM21 11.5v-1H10.5V5h-1v6.5z"
+                    , SvgAttributes.fill "#0e4cb5"
                     ]
                     []
                 , Svg.path
-                    [ SvgAttributes.d "M8.5 3V9.5H3V10.5H8.5V17H9.5V10.5H21V9.5H9.5V3H8.5Z"
-                    , SvgAttributes.fill "#EB363A"
+                    [ SvgAttributes.d "M8.5 5v6.5H3v1h5.5V19h1v-6.5H21v-1H9.5V5z"
+                    , SvgAttributes.fill "#eb363a"
                     ]
                     []
                 ]
             ]
         , Svg.defs []
-            [ Svg.filter
-                [ SvgAttributes.id "filter0_dd_1726_23"
+            [ Svg.clipPath
+                [ SvgAttributes.id "b"
+                ]
+                [ Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M0 0h24v24H0z"
+                    ]
+                    []
+                ]
+            , Svg.clipPath
+                [ SvgAttributes.id "d"
+                ]
+                [ Svg.rect
+                    [ SvgAttributes.x "3"
+                    , SvgAttributes.y "5"
+                    , SvgAttributes.width "18"
+                    , SvgAttributes.height "14"
+                    , SvgAttributes.rx "2"
+                    , SvgAttributes.fill "#fff"
+                    ]
+                    []
+                ]
+            , Svg.filter
+                [ SvgAttributes.id "a"
                 , SvgAttributes.x "-1"
-                , SvgAttributes.y "0"
+                , SvgAttributes.y "2"
                 , SvgAttributes.width "26"
                 , SvgAttributes.height "22"
                 , SvgAttributes.filterUnits "userSpaceOnUse"
@@ -811,7 +758,6 @@ faroeIslands =
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -830,19 +776,16 @@ faroeIslands =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "BackgroundImageFix"
-                    , SvgAttributes.result "effect1_dropShadow_1726_23"
+                    [ SvgAttributes.in2 "BackgroundImageFix"
+                    , SvgAttributes.result "effect1_dropShadow_1726_44"
                     ]
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -861,34 +804,18 @@ faroeIslands =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "effect1_dropShadow_1726_23"
-                    , SvgAttributes.result "effect2_dropShadow_1726_23"
+                    [ SvgAttributes.in2 "effect1_dropShadow_1726_44"
+                    , SvgAttributes.result "effect2_dropShadow_1726_44"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in_ "SourceGraphic"
-                    , SvgAttributes.in2 "effect2_dropShadow_1726_23"
+                    [ SvgAttributes.in_ "SourceGraphic"
+                    , SvgAttributes.in2 "effect2_dropShadow_1726_44"
                     , SvgAttributes.result "shape"
-                    ]
-                    []
-                ]
-            , Svg.clipPath
-                [ SvgAttributes.id "clip0_1726_23"
-                ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "white"
                     ]
                     []
                 ]
@@ -901,76 +828,81 @@ unitedKingdom : Html msg
 unitedKingdom =
     Svg.svg
         [ SvgAttributes.width "24"
-        , SvgAttributes.height "22"
-        , SvgAttributes.viewBox "0 0 24 22"
+        , SvgAttributes.height "24"
+        , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
         [ Svg.g
-            [ SvgAttributes.filter "url(#filter0_dd_1674_6)"
+            [ SvgAttributes.filter "url(#a)"
+            , SvgAttributes.clipPath "url(#b)"
             ]
             [ Svg.g
-                [ SvgAttributes.clipPath "url(#clip0_1674_6)"
+                [ SvgAttributes.clipPath "url(#d)"
                 ]
                 [ Svg.rect
                     [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
+                    , SvgAttributes.y "5"
                     , SvgAttributes.width "18"
                     , SvgAttributes.height "14"
                     , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "#0A17A7"
+                    , SvgAttributes.fill "#0a17a7"
                     ]
                     []
                 , Svg.path
-                    [ SvgAttributes.d "M21 3L3 17M21 17L3 3"
-                    , SvgAttributes.stroke "white"
+                    [ SvgAttributes.d "M21 5 3 19m18 0L3 5"
+                    , SvgAttributes.stroke "#fff"
                     , SvgAttributes.strokeWidth "2"
                     ]
                     []
                 , Svg.path
-                    [ SvgAttributes.d "M21 3.5L12 10.5"
-                    , SvgAttributes.stroke "#DB1F35"
-                    , SvgAttributes.strokeWidth "0.5"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M21 16.5L12 9.5"
-                    , SvgAttributes.stroke "#DB1F35"
-                    , SvgAttributes.strokeWidth "0.5"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M3 3.5L12 10.5"
-                    , SvgAttributes.stroke "#DB1F35"
-                    , SvgAttributes.strokeWidth "0.5"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M3 16.5L12 9.5"
-                    , SvgAttributes.stroke "#DB1F35"
-                    , SvgAttributes.strokeWidth "0.5"
+                    [ SvgAttributes.d "m21 5.5-9 7m9 6-9-7m-9-6 9 7m-9 6 9-7"
+                    , SvgAttributes.stroke "#db1f35"
+                    , SvgAttributes.strokeWidth ".5"
                     ]
                     []
                 , Svg.path
                     [ SvgAttributes.fillRule "evenodd"
                     , SvgAttributes.clipRule "evenodd"
-                    , SvgAttributes.d "M3 12H10V17L14 17V12L21 12V8L14 8V3H10V8L3 8V12Z"
-                    , SvgAttributes.fill "white"
+                    , SvgAttributes.d "M3 14h7v5h4v-5h7v-4h-7V5h-4v5H3z"
+                    , SvgAttributes.fill "#fff"
                     ]
                     []
                 , Svg.path
                     [ SvgAttributes.fillRule "evenodd"
                     , SvgAttributes.clipRule "evenodd"
-                    , SvgAttributes.d "M3 11H11V17L13 17V11L21 11V9L13 9V3H11V9L3 9V11Z"
-                    , SvgAttributes.fill "#DB1F35"
+                    , SvgAttributes.d "M3 13h8v6h2v-6h8v-2h-8V5h-2v6H3z"
+                    , SvgAttributes.fill "#db1f35"
                     ]
                     []
                 ]
             ]
         , Svg.defs []
-            [ Svg.filter
-                [ SvgAttributes.id "filter0_dd_1674_6"
+            [ Svg.clipPath
+                [ SvgAttributes.id "b"
+                ]
+                [ Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M0 0h24v24H0z"
+                    ]
+                    []
+                ]
+            , Svg.clipPath
+                [ SvgAttributes.id "d"
+                ]
+                [ Svg.rect
+                    [ SvgAttributes.x "3"
+                    , SvgAttributes.y "5"
+                    , SvgAttributes.width "18"
+                    , SvgAttributes.height "14"
+                    , SvgAttributes.rx "2"
+                    , SvgAttributes.fill "#fff"
+                    ]
+                    []
+                ]
+            , Svg.filter
+                [ SvgAttributes.id "a"
                 , SvgAttributes.x "-1"
-                , SvgAttributes.y "0"
+                , SvgAttributes.y "2"
                 , SvgAttributes.width "26"
                 , SvgAttributes.height "22"
                 , SvgAttributes.filterUnits "userSpaceOnUse"
@@ -983,7 +915,6 @@ unitedKingdom =
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -1002,19 +933,16 @@ unitedKingdom =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "BackgroundImageFix"
-                    , SvgAttributes.result "effect1_dropShadow_1674_6"
+                    [ SvgAttributes.in2 "BackgroundImageFix"
+                    , SvgAttributes.result "effect1_dropShadow_1726_52"
                     ]
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -1033,34 +961,18 @@ unitedKingdom =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "effect1_dropShadow_1674_6"
-                    , SvgAttributes.result "effect2_dropShadow_1674_6"
+                    [ SvgAttributes.in2 "effect1_dropShadow_1726_52"
+                    , SvgAttributes.result "effect2_dropShadow_1726_52"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in_ "SourceGraphic"
-                    , SvgAttributes.in2 "effect2_dropShadow_1674_6"
+                    [ SvgAttributes.in_ "SourceGraphic"
+                    , SvgAttributes.in2 "effect2_dropShadow_1726_52"
                     , SvgAttributes.result "shape"
-                    ]
-                    []
-                ]
-            , Svg.clipPath
-                [ SvgAttributes.id "clip0_1674_6"
-                ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "white"
                     ]
                     []
                 ]
@@ -1073,47 +985,61 @@ germany : Html msg
 germany =
     Svg.svg
         [ SvgAttributes.width "24"
-        , SvgAttributes.height "22"
-        , SvgAttributes.viewBox "0 0 24 22"
+        , SvgAttributes.height "24"
+        , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
         [ Svg.g
-            [ SvgAttributes.filter "url(#filter0_dd_1674_15)"
+            [ SvgAttributes.filter "url(#a)"
+            , SvgAttributes.clipPath "url(#b)"
             ]
             [ Svg.g
-                [ SvgAttributes.clipPath "url(#clip0_1674_15)"
+                [ SvgAttributes.clipPath "url(#d)"
                 ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "12.5"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "4.5"
-                    , SvgAttributes.fill "#FFDA44"
+                [ Svg.path
+                    [ SvgAttributes.fill "#ffda44"
+                    , SvgAttributes.d "M3 14.5h18V19H3z"
                     ]
                     []
-                , Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "7.5"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "5"
-                    , SvgAttributes.fill "#D80027"
+                , Svg.path
+                    [ SvgAttributes.fill "#d80027"
+                    , SvgAttributes.d "M3 9.5h18v5H3z"
                     ]
                     []
-                , Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "4.5"
-                    , SvgAttributes.fill "black"
+                , Svg.path
+                    [ SvgAttributes.fill "#000"
+                    , SvgAttributes.d "M3 5h18v4.5H3z"
                     ]
                     []
                 ]
             ]
         , Svg.defs []
-            [ Svg.filter
-                [ SvgAttributes.id "filter0_dd_1674_15"
+            [ Svg.clipPath
+                [ SvgAttributes.id "b"
+                ]
+                [ Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M0 0h24v24H0z"
+                    ]
+                    []
+                ]
+            , Svg.clipPath
+                [ SvgAttributes.id "d"
+                ]
+                [ Svg.rect
+                    [ SvgAttributes.x "3"
+                    , SvgAttributes.y "5"
+                    , SvgAttributes.width "18"
+                    , SvgAttributes.height "14"
+                    , SvgAttributes.rx "2"
+                    , SvgAttributes.fill "#fff"
+                    ]
+                    []
+                ]
+            , Svg.filter
+                [ SvgAttributes.id "a"
                 , SvgAttributes.x "-1"
-                , SvgAttributes.y "0"
+                , SvgAttributes.y "2"
                 , SvgAttributes.width "26"
                 , SvgAttributes.height "22"
                 , SvgAttributes.filterUnits "userSpaceOnUse"
@@ -1126,7 +1052,6 @@ germany =
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -1145,19 +1070,16 @@ germany =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "BackgroundImageFix"
-                    , SvgAttributes.result "effect1_dropShadow_1674_15"
+                    [ SvgAttributes.in2 "BackgroundImageFix"
+                    , SvgAttributes.result "effect1_dropShadow_1726_42"
                     ]
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -1176,34 +1098,18 @@ germany =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "effect1_dropShadow_1674_15"
-                    , SvgAttributes.result "effect2_dropShadow_1674_15"
+                    [ SvgAttributes.in2 "effect1_dropShadow_1726_42"
+                    , SvgAttributes.result "effect2_dropShadow_1726_42"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in_ "SourceGraphic"
-                    , SvgAttributes.in2 "effect2_dropShadow_1674_15"
+                    [ SvgAttributes.in_ "SourceGraphic"
+                    , SvgAttributes.in2 "effect2_dropShadow_1726_42"
                     , SvgAttributes.result "shape"
-                    ]
-                    []
-                ]
-            , Svg.clipPath
-                [ SvgAttributes.id "clip0_1674_15"
-                ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "white"
                     ]
                     []
                 ]
@@ -1216,47 +1122,61 @@ italy : Html msg
 italy =
     Svg.svg
         [ SvgAttributes.width "24"
-        , SvgAttributes.height "22"
-        , SvgAttributes.viewBox "0 0 24 22"
+        , SvgAttributes.height "24"
+        , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
         [ Svg.g
-            [ SvgAttributes.filter "url(#filter0_dd_1674_25)"
+            [ SvgAttributes.filter "url(#a)"
+            , SvgAttributes.clipPath "url(#b)"
             ]
             [ Svg.g
-                [ SvgAttributes.clipPath "url(#clip0_1674_25)"
+                [ SvgAttributes.clipPath "url(#d)"
                 ]
-                [ Svg.rect
-                    [ SvgAttributes.x "15"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "6"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.fill "#D80027"
+                [ Svg.path
+                    [ SvgAttributes.fill "#d80027"
+                    , SvgAttributes.d "M15 5h6v14h-6z"
                     ]
                     []
-                , Svg.rect
-                    [ SvgAttributes.x "9"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "6"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.fill "white"
+                , Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M9 5h6v14H9z"
                     ]
                     []
-                , Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "6"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.fill "#6DA544"
+                , Svg.path
+                    [ SvgAttributes.fill "#6da544"
+                    , SvgAttributes.d "M3 5h6v14H3z"
                     ]
                     []
                 ]
             ]
         , Svg.defs []
-            [ Svg.filter
-                [ SvgAttributes.id "filter0_dd_1674_25"
+            [ Svg.clipPath
+                [ SvgAttributes.id "b"
+                ]
+                [ Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M0 0h24v24H0z"
+                    ]
+                    []
+                ]
+            , Svg.clipPath
+                [ SvgAttributes.id "d"
+                ]
+                [ Svg.rect
+                    [ SvgAttributes.x "3"
+                    , SvgAttributes.y "5"
+                    , SvgAttributes.width "18"
+                    , SvgAttributes.height "14"
+                    , SvgAttributes.rx "2"
+                    , SvgAttributes.fill "#fff"
+                    ]
+                    []
+                ]
+            , Svg.filter
+                [ SvgAttributes.id "a"
                 , SvgAttributes.x "-1"
-                , SvgAttributes.y "0"
+                , SvgAttributes.y "2"
                 , SvgAttributes.width "26"
                 , SvgAttributes.height "22"
                 , SvgAttributes.filterUnits "userSpaceOnUse"
@@ -1269,7 +1189,6 @@ italy =
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -1288,19 +1207,16 @@ italy =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "BackgroundImageFix"
-                    , SvgAttributes.result "effect1_dropShadow_1674_25"
+                    [ SvgAttributes.in2 "BackgroundImageFix"
+                    , SvgAttributes.result "effect1_dropShadow_1726_48"
                     ]
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -1319,34 +1235,18 @@ italy =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "effect1_dropShadow_1674_25"
-                    , SvgAttributes.result "effect2_dropShadow_1674_25"
+                    [ SvgAttributes.in2 "effect1_dropShadow_1726_48"
+                    , SvgAttributes.result "effect2_dropShadow_1726_48"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in_ "SourceGraphic"
-                    , SvgAttributes.in2 "effect2_dropShadow_1674_25"
+                    [ SvgAttributes.in_ "SourceGraphic"
+                    , SvgAttributes.in2 "effect2_dropShadow_1726_48"
                     , SvgAttributes.result "shape"
-                    ]
-                    []
-                ]
-            , Svg.clipPath
-                [ SvgAttributes.id "clip0_1674_25"
-                ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "white"
                     ]
                     []
                 ]
@@ -1359,47 +1259,61 @@ spain : Html msg
 spain =
     Svg.svg
         [ SvgAttributes.width "24"
-        , SvgAttributes.height "22"
-        , SvgAttributes.viewBox "0 0 24 22"
+        , SvgAttributes.height "24"
+        , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
         [ Svg.g
-            [ SvgAttributes.filter "url(#filter0_dd_1674_20)"
+            [ SvgAttributes.filter "url(#a)"
+            , SvgAttributes.clipPath "url(#b)"
             ]
             [ Svg.g
-                [ SvgAttributes.clipPath "url(#clip0_1674_20)"
+                [ SvgAttributes.clipPath "url(#d)"
                 ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "13"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "4"
-                    , SvgAttributes.fill "#D80027"
+                [ Svg.path
+                    [ SvgAttributes.fill "#d80027"
+                    , SvgAttributes.d "M3 15h18v4H3z"
                     ]
                     []
-                , Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "7"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "6"
-                    , SvgAttributes.fill "#FFDA44"
+                , Svg.path
+                    [ SvgAttributes.fill "#ffda44"
+                    , SvgAttributes.d "M3 9h18v6H3z"
                     ]
                     []
-                , Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "4"
-                    , SvgAttributes.fill "#D80027"
+                , Svg.path
+                    [ SvgAttributes.fill "#d80027"
+                    , SvgAttributes.d "M3 5h18v4H3z"
                     ]
                     []
                 ]
             ]
         , Svg.defs []
-            [ Svg.filter
-                [ SvgAttributes.id "filter0_dd_1674_20"
+            [ Svg.clipPath
+                [ SvgAttributes.id "b"
+                ]
+                [ Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M0 0h24v24H0z"
+                    ]
+                    []
+                ]
+            , Svg.clipPath
+                [ SvgAttributes.id "d"
+                ]
+                [ Svg.rect
+                    [ SvgAttributes.x "3"
+                    , SvgAttributes.y "5"
+                    , SvgAttributes.width "18"
+                    , SvgAttributes.height "14"
+                    , SvgAttributes.rx "2"
+                    , SvgAttributes.fill "#fff"
+                    ]
+                    []
+                ]
+            , Svg.filter
+                [ SvgAttributes.id "a"
                 , SvgAttributes.x "-1"
-                , SvgAttributes.y "0"
+                , SvgAttributes.y "2"
                 , SvgAttributes.width "26"
                 , SvgAttributes.height "22"
                 , SvgAttributes.filterUnits "userSpaceOnUse"
@@ -1412,7 +1326,6 @@ spain =
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -1431,19 +1344,16 @@ spain =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "BackgroundImageFix"
-                    , SvgAttributes.result "effect1_dropShadow_1674_20"
+                    [ SvgAttributes.in2 "BackgroundImageFix"
+                    , SvgAttributes.result "effect1_dropShadow_1726_49"
                     ]
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -1462,34 +1372,18 @@ spain =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "effect1_dropShadow_1674_20"
-                    , SvgAttributes.result "effect2_dropShadow_1674_20"
+                    [ SvgAttributes.in2 "effect1_dropShadow_1726_49"
+                    , SvgAttributes.result "effect2_dropShadow_1726_49"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in_ "SourceGraphic"
-                    , SvgAttributes.in2 "effect2_dropShadow_1674_20"
+                    [ SvgAttributes.in_ "SourceGraphic"
+                    , SvgAttributes.in2 "effect2_dropShadow_1726_49"
                     , SvgAttributes.result "shape"
-                    ]
-                    []
-                ]
-            , Svg.clipPath
-                [ SvgAttributes.id "clip0_1674_20"
-                ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "white"
                     ]
                     []
                 ]
@@ -1502,47 +1396,61 @@ austria : Html msg
 austria =
     Svg.svg
         [ SvgAttributes.width "24"
-        , SvgAttributes.height "22"
-        , SvgAttributes.viewBox "0 0 24 22"
+        , SvgAttributes.height "24"
+        , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
         [ Svg.g
-            [ SvgAttributes.filter "url(#filter0_dd_1699_14)"
+            [ SvgAttributes.filter "url(#a)"
+            , SvgAttributes.clipPath "url(#b)"
             ]
             [ Svg.g
-                [ SvgAttributes.clipPath "url(#clip0_1699_14)"
+                [ SvgAttributes.clipPath "url(#d)"
                 ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "12.5"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "4.5"
-                    , SvgAttributes.fill "#D80027"
+                [ Svg.path
+                    [ SvgAttributes.fill "#d80027"
+                    , SvgAttributes.d "M3 14.5h18V19H3z"
                     ]
                     []
-                , Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "7.5"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "5"
-                    , SvgAttributes.fill "white"
+                , Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M3 9.5h18v5H3z"
                     ]
                     []
-                , Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "4.5"
-                    , SvgAttributes.fill "#D80027"
+                , Svg.path
+                    [ SvgAttributes.fill "#d80027"
+                    , SvgAttributes.d "M3 5h18v4.5H3z"
                     ]
                     []
                 ]
             ]
         , Svg.defs []
-            [ Svg.filter
-                [ SvgAttributes.id "filter0_dd_1699_14"
+            [ Svg.clipPath
+                [ SvgAttributes.id "b"
+                ]
+                [ Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M0 0h24v24H0z"
+                    ]
+                    []
+                ]
+            , Svg.clipPath
+                [ SvgAttributes.id "d"
+                ]
+                [ Svg.rect
+                    [ SvgAttributes.x "3"
+                    , SvgAttributes.y "5"
+                    , SvgAttributes.width "18"
+                    , SvgAttributes.height "14"
+                    , SvgAttributes.rx "2"
+                    , SvgAttributes.fill "#fff"
+                    ]
+                    []
+                ]
+            , Svg.filter
+                [ SvgAttributes.id "a"
                 , SvgAttributes.x "-1"
-                , SvgAttributes.y "0"
+                , SvgAttributes.y "2"
                 , SvgAttributes.width "26"
                 , SvgAttributes.height "22"
                 , SvgAttributes.filterUnits "userSpaceOnUse"
@@ -1555,7 +1463,6 @@ austria =
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -1574,19 +1481,16 @@ austria =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "BackgroundImageFix"
-                    , SvgAttributes.result "effect1_dropShadow_1699_14"
+                    [ SvgAttributes.in2 "BackgroundImageFix"
+                    , SvgAttributes.result "effect1_dropShadow_1726_51"
                     ]
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -1605,34 +1509,18 @@ austria =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "effect1_dropShadow_1699_14"
-                    , SvgAttributes.result "effect2_dropShadow_1699_14"
+                    [ SvgAttributes.in2 "effect1_dropShadow_1726_51"
+                    , SvgAttributes.result "effect2_dropShadow_1726_51"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in_ "SourceGraphic"
-                    , SvgAttributes.in2 "effect2_dropShadow_1699_14"
+                    [ SvgAttributes.in_ "SourceGraphic"
+                    , SvgAttributes.in2 "effect2_dropShadow_1726_51"
                     , SvgAttributes.result "shape"
-                    ]
-                    []
-                ]
-            , Svg.clipPath
-                [ SvgAttributes.id "clip0_1699_14"
-                ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "white"
                     ]
                     []
                 ]
@@ -1648,7 +1536,7 @@ czechia =
         , SvgAttributes.height "14"
         , SvgAttributes.viewBox "0 0 640 480"
         , SvgAttributes.fill "none"
-        , HtmlAttributes.css [ Css.borderRadius (Css.px 2), Css.margin2 (Css.px 0) (Css.px 3.5) ]
+        , HtmlAttributes.css [ Css.borderRadius (Css.px 2), Css.margin2 (Css.px 0) (Css.px 2) ]
         ]
         [ Svg.path [ SvgAttributes.fill "#fff", SvgAttributes.d "M0 0h640v240H0z" ] []
         , Svg.path [ SvgAttributes.fill "#d7141a", SvgAttributes.d "M0 240h640v240H0z" ] []
@@ -1661,47 +1549,61 @@ estonia : Html msg
 estonia =
     Svg.svg
         [ SvgAttributes.width "24"
-        , SvgAttributes.height "22"
-        , SvgAttributes.viewBox "0 0 24 22"
+        , SvgAttributes.height "24"
+        , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
         [ Svg.g
-            [ SvgAttributes.filter "url(#filter0_dd_1758_44)"
+            [ SvgAttributes.filter "url(#a)"
+            , SvgAttributes.clipPath "url(#b)"
             ]
             [ Svg.g
-                [ SvgAttributes.clipPath "url(#clip0_1758_44)"
+                [ SvgAttributes.clipPath "url(#d)"
                 ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "12.5"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "4.5"
-                    , SvgAttributes.fill "black"
+                [ Svg.path
+                    [ SvgAttributes.fill "#000"
+                    , SvgAttributes.d "M3 14.5h18V19H3z"
                     ]
                     []
-                , Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "7.5"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "5"
-                    , SvgAttributes.fill "white"
+                , Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M3 9.5h18v5H3z"
                     ]
                     []
-                , Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "4.5"
-                    , SvgAttributes.fill "#5DA8F1"
+                , Svg.path
+                    [ SvgAttributes.fill "#5da8f1"
+                    , SvgAttributes.d "M3 5h18v4.5H3z"
                     ]
                     []
                 ]
             ]
         , Svg.defs []
-            [ Svg.filter
-                [ SvgAttributes.id "filter0_dd_1758_44"
+            [ Svg.clipPath
+                [ SvgAttributes.id "b"
+                ]
+                [ Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M0 0h24v24H0z"
+                    ]
+                    []
+                ]
+            , Svg.clipPath
+                [ SvgAttributes.id "d"
+                ]
+                [ Svg.rect
+                    [ SvgAttributes.x "3"
+                    , SvgAttributes.y "5"
+                    , SvgAttributes.width "18"
+                    , SvgAttributes.height "14"
+                    , SvgAttributes.rx "2"
+                    , SvgAttributes.fill "#fff"
+                    ]
+                    []
+                ]
+            , Svg.filter
+                [ SvgAttributes.id "a"
                 , SvgAttributes.x "-1"
-                , SvgAttributes.y "0"
+                , SvgAttributes.y "2"
                 , SvgAttributes.width "26"
                 , SvgAttributes.height "22"
                 , SvgAttributes.filterUnits "userSpaceOnUse"
@@ -1714,7 +1616,6 @@ estonia =
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -1733,19 +1634,16 @@ estonia =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "BackgroundImageFix"
-                    , SvgAttributes.result "effect1_dropShadow_1758_44"
+                    [ SvgAttributes.in2 "BackgroundImageFix"
+                    , SvgAttributes.result "effect1_dropShadow_1758_43"
                     ]
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -1764,34 +1662,18 @@ estonia =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "effect1_dropShadow_1758_44"
-                    , SvgAttributes.result "effect2_dropShadow_1758_44"
+                    [ SvgAttributes.in2 "effect1_dropShadow_1758_43"
+                    , SvgAttributes.result "effect2_dropShadow_1758_43"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in_ "SourceGraphic"
-                    , SvgAttributes.in2 "effect2_dropShadow_1758_44"
+                    [ SvgAttributes.in_ "SourceGraphic"
+                    , SvgAttributes.in2 "effect2_dropShadow_1758_43"
                     , SvgAttributes.result "shape"
-                    ]
-                    []
-                ]
-            , Svg.clipPath
-                [ SvgAttributes.id "clip0_1758_44"
-                ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "white"
                     ]
                     []
                 ]
@@ -1807,7 +1689,7 @@ latvia =
         , SvgAttributes.height "14"
         , SvgAttributes.viewBox "0 0 640 480"
         , SvgAttributes.fill "none"
-        , HtmlAttributes.css [ Css.borderRadius (Css.px 2), Css.margin2 (Css.px 0) (Css.px 3.5) ]
+        , HtmlAttributes.css [ Css.borderRadius (Css.px 2), Css.margin2 (Css.px 0) (Css.px 2) ]
         ]
         [ Svg.g [ SvgAttributes.fillRule "evenodd" ]
             [ Svg.path [ SvgAttributes.fill "#fff", SvgAttributes.d "M0 0h640v480H0z" ] []
@@ -1821,49 +1703,43 @@ poland : Html msg
 poland =
     Svg.svg
         [ SvgAttributes.width "24"
-        , SvgAttributes.height "22"
-        , SvgAttributes.viewBox "0 0 24 22"
+        , SvgAttributes.height "24"
+        , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
         [ Svg.g
-            [ SvgAttributes.filter "url(#filter0_dd_1789_17)" ]
-            [ Svg.g
-                [ SvgAttributes.clipPath "url(#clip0)" ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "white"
-                    ]
-                    []
-                , Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "10"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "7"
-                    , SvgAttributes.fill "#D80027"
-                    ]
-                    []
+            [ SvgAttributes.filter "url(#a)"
+            , SvgAttributes.clipPath "url(#b)"
+            ]
+            [ Svg.rect
+                [ SvgAttributes.x "3"
+                , SvgAttributes.y "5"
+                , SvgAttributes.width "18"
+                , SvgAttributes.height "14"
+                , SvgAttributes.rx "2"
+                , SvgAttributes.fill "#fff"
                 ]
+                []
+            , Svg.path
+                [ SvgAttributes.fill "#d80027"
+                , SvgAttributes.d "M3 12h18v7H3z"
+                ]
+                []
             ]
         , Svg.defs []
             [ Svg.clipPath
-                [ SvgAttributes.id "clip0" ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
+                [ SvgAttributes.id "b"
+                ]
+                [ Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M0 0h24v24H0z"
                     ]
                     []
                 ]
             , Svg.filter
-                [ SvgAttributes.id "filter0_dd_1789_17"
+                [ SvgAttributes.id "a"
                 , SvgAttributes.x "-1"
-                , SvgAttributes.y "0"
+                , SvgAttributes.y "2"
                 , SvgAttributes.width "26"
                 , SvgAttributes.height "22"
                 , SvgAttributes.filterUnits "userSpaceOnUse"
@@ -1876,7 +1752,6 @@ poland =
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -1895,19 +1770,16 @@ poland =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "BackgroundImageFix"
-                    , SvgAttributes.result "effect1_dropShadow_1789_17"
+                    [ SvgAttributes.in2 "BackgroundImageFix"
+                    , SvgAttributes.result "effect1_dropShadow_1789_16"
                     ]
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -1926,20 +1798,17 @@ poland =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "effect1_dropShadow_1789_17"
-                    , SvgAttributes.result "effect2_dropShadow_1789_17"
+                    [ SvgAttributes.in2 "effect1_dropShadow_1789_16"
+                    , SvgAttributes.result "effect2_dropShadow_1789_16"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in_ "SourceGraphic"
-                    , SvgAttributes.in2 "effect2_dropShadow_1789_17"
+                    [ SvgAttributes.in_ "SourceGraphic"
+                    , SvgAttributes.in2 "effect2_dropShadow_1789_16"
                     , SvgAttributes.result "shape"
                     ]
                     []
@@ -1956,7 +1825,7 @@ slovakia =
         , SvgAttributes.height "14"
         , SvgAttributes.viewBox "0 0 640 480"
         , SvgAttributes.fill "none"
-        , HtmlAttributes.css [ Css.borderRadius (Css.px 2), Css.margin2 (Css.px 0) (Css.px 3.5) ]
+        , HtmlAttributes.css [ Css.borderRadius (Css.px 2), Css.margin2 (Css.px 0) (Css.px 2) ]
         ]
         [ Svg.path [ SvgAttributes.fill "#ee1c25", SvgAttributes.d "M0 0h640v480H0z" ] []
         , Svg.path [ SvgAttributes.fill "#0b4ea2", SvgAttributes.d "M0 0h640v320H0z" ] []
@@ -1973,55 +1842,63 @@ iceland : Html msg
 iceland =
     Svg.svg
         [ SvgAttributes.width "24"
-        , SvgAttributes.height "22"
-        , SvgAttributes.viewBox "0 0 24 22"
+        , SvgAttributes.height "24"
+        , SvgAttributes.viewBox "0 0 24 24"
         , SvgAttributes.fill "none"
         ]
         [ Svg.g
-            [ SvgAttributes.filter "url(#filter0_dd_1674_68)"
+            [ SvgAttributes.filter "url(#a)"
+            , SvgAttributes.clipPath "url(#b)"
             ]
             [ Svg.g
-                [ SvgAttributes.clipPath "url(#clip0_1674_68)"
+                [ SvgAttributes.clipPath "url(#d)"
                 ]
                 [ Svg.path
-                    [ SvgAttributes.d "M21 11.5H10.5V17H21V11.5Z"
-                    , SvgAttributes.fill "#0E4CB5"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M10.5 3V8.5H21V3H10.5Z"
-                    , SvgAttributes.fill "#0E4CB5"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M7.5 8.5V3H3V8.5H7.5Z"
-                    , SvgAttributes.fill "#0E4CB5"
-                    ]
-                    []
-                , Svg.path
-                    [ SvgAttributes.d "M7.5 11.5H3V17H7.5V11.5Z"
-                    , SvgAttributes.fill "#0E4CB5"
+                    [ SvgAttributes.d "M21 13.5H10.5V19H21zM10.5 5v5.5H21V5zm-3 5.5V5H3v5.5zm0 3H3V19h4.5z"
+                    , SvgAttributes.fill "#0e4cb5"
                     ]
                     []
                 , Svg.path
                     [ SvgAttributes.fillRule "evenodd"
                     , SvgAttributes.clipRule "evenodd"
-                    , SvgAttributes.d "M7.5 8.5V3H8.5V9.5H3V8.5H7.5ZM3 10.5V11.5H7.5V17H8.5V10.5H3ZM9.5 17H10.5V11.5H21V10.5H9.5V17ZM21 9.5V8.5H10.5V3H9.5V9.5H21Z"
-                    , SvgAttributes.fill "white"
+                    , SvgAttributes.d "M7.5 10.5V5h1v6.5H3v-1zm-4.5 2v1h4.5V19h1v-6.5zM9.5 19h1v-5.5H21v-1H9.5zM21 11.5v-1H10.5V5h-1v6.5z"
+                    , SvgAttributes.fill "#fff"
                     ]
                     []
                 , Svg.path
-                    [ SvgAttributes.d "M8.5 3V9.5H3V10.5H8.5V17H9.5V10.5H21V9.5H9.5V3H8.5Z"
-                    , SvgAttributes.fill "#EB363A"
+                    [ SvgAttributes.d "M8.5 5v6.5H3v1h5.5V19h1v-6.5H21v-1H9.5V5z"
+                    , SvgAttributes.fill "#eb363a"
                     ]
                     []
                 ]
             ]
         , Svg.defs []
-            [ Svg.filter
-                [ SvgAttributes.id "filter0_dd_1674_68"
+            [ Svg.clipPath
+                [ SvgAttributes.id "b"
+                ]
+                [ Svg.path
+                    [ SvgAttributes.fill "#fff"
+                    , SvgAttributes.d "M0 0h24v24H0z"
+                    ]
+                    []
+                ]
+            , Svg.clipPath
+                [ SvgAttributes.id "d"
+                ]
+                [ Svg.rect
+                    [ SvgAttributes.x "3"
+                    , SvgAttributes.y "5"
+                    , SvgAttributes.width "18"
+                    , SvgAttributes.height "14"
+                    , SvgAttributes.rx "2"
+                    , SvgAttributes.fill "#fff"
+                    ]
+                    []
+                ]
+            , Svg.filter
+                [ SvgAttributes.id "a"
                 , SvgAttributes.x "-1"
-                , SvgAttributes.y "0"
+                , SvgAttributes.y "2"
                 , SvgAttributes.width "26"
                 , SvgAttributes.height "22"
                 , SvgAttributes.filterUnits "userSpaceOnUse"
@@ -2034,7 +1911,6 @@ iceland =
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -2053,19 +1929,16 @@ iceland =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "BackgroundImageFix"
-                    , SvgAttributes.result "effect1_dropShadow_1674_68"
+                    [ SvgAttributes.in2 "BackgroundImageFix"
+                    , SvgAttributes.result "effect1_dropShadow_1726_43"
                     ]
                     []
                 , Svg.feColorMatrix
                     [ SvgAttributes.in_ "SourceAlpha"
-                    , SvgAttributes.type_ "matrix"
                     , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
                     , SvgAttributes.result "hardAlpha"
                     ]
@@ -2084,34 +1957,18 @@ iceland =
                     ]
                     []
                 , Svg.feColorMatrix
-                    [ SvgAttributes.type_ "matrix"
-                    , SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+                    [ SvgAttributes.values "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in2 "effect1_dropShadow_1674_68"
-                    , SvgAttributes.result "effect2_dropShadow_1674_68"
+                    [ SvgAttributes.in2 "effect1_dropShadow_1726_43"
+                    , SvgAttributes.result "effect2_dropShadow_1726_43"
                     ]
                     []
                 , Svg.feBlend
-                    [ SvgAttributes.mode "normal"
-                    , SvgAttributes.in_ "SourceGraphic"
-                    , SvgAttributes.in2 "effect2_dropShadow_1674_68"
+                    [ SvgAttributes.in_ "SourceGraphic"
+                    , SvgAttributes.in2 "effect2_dropShadow_1726_43"
                     , SvgAttributes.result "shape"
-                    ]
-                    []
-                ]
-            , Svg.clipPath
-                [ SvgAttributes.id "clip0_1674_68"
-                ]
-                [ Svg.rect
-                    [ SvgAttributes.x "3"
-                    , SvgAttributes.y "3"
-                    , SvgAttributes.width "18"
-                    , SvgAttributes.height "14"
-                    , SvgAttributes.rx "2"
-                    , SvgAttributes.fill "white"
                     ]
                     []
                 ]
