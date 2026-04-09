@@ -313,4 +313,4 @@ toMaybeThreeLetterIsoString countryCode =
         Nothing
 
     else
-        Just <| toString countryCode
+        Just <| toThreeLetterISOString countryCode
